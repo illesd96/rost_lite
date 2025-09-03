@@ -14,10 +14,11 @@ export async function POST() {
     await seedDatabase();
     
     return NextResponse.json({
-      message: 'Database seeded successfully',
+      message: 'Database seeded successfully with users only',
       credentials: {
         admin: { email: 'admin@webshop.com', password: 'admin123' },
-        customer: { email: 'customer@example.com', password: 'customer123' },
+        customer1: { email: 'customer1@example.com', password: 'customer123' },
+        customer2: { email: 'customer2@example.com', password: 'customer456' },
       },
     });
   } catch (error) {
