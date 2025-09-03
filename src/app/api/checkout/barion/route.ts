@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { orders, orderItems } from '@/lib/db/schema';
 import { BarionClient, checkoutDataSchema } from '@/lib/barion';
+import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
         barionPaymentId: barionResponse.PaymentId,
         barionStatus: barionResponse.Status,
       })
-      .where({ id: orderId });
+      .where(eq(orders.id, orderId));
 
     return NextResponse.json({
       success: true,
