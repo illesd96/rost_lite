@@ -5,6 +5,9 @@ import { validateImageFile, generateUploadFilename } from '@/lib/upload-utils';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication

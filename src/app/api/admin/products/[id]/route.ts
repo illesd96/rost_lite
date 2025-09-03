@@ -6,6 +6,9 @@ import { products } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { productSchema } from '@/lib/validations';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
