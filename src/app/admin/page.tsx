@@ -144,7 +144,7 @@ export default async function AdminDashboard() {
                     #{order.id.slice(0, 8)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.userEmail}
+                    {order.userEmail || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

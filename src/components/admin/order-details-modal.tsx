@@ -127,11 +127,11 @@ export function OrderDetailsModal({ order, onClose }: OrderDetailsModalProps) {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Email:</span>
-                <span className="font-medium">{order.userEmail}</span>
+                <span className="font-medium">{order.userEmail || 'N/A'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">User ID:</span>
-                <span className="font-medium">{order.userId.slice(0, 8)}...</span>
+                <span className="font-medium">{order.userId ? order.userId.slice(0, 8) + '...' : 'N/A'}</span>
               </div>
             </div>
           </div>
