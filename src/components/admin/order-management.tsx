@@ -15,7 +15,7 @@ interface Order {
   barionPaymentId: string | null;
   barionStatus: string | null;
   userEmail: string | null;
-  userId: string;
+  userId: string | null;
 }
 
 interface OrderManagementProps {
