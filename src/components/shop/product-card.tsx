@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useCart } from 'react-use-cart';
+import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/db';
 import { formatPrice, calculateDiscount } from '@/lib/utils';
 import { parseProductImages } from '@/lib/image-utils';
 import { Plus, Minus, ShoppingCart } from 'lucide-react';
+import Link from 'next/link';
 import { ProductGallery } from './product-gallery';
 
 interface ProductCardProps {
@@ -58,17 +60,19 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 overflow-hidden">
-      {/* Product Gallery */}
-      <div className="p-4">
+      {/* Product Gallery - Clickable */}
+      <Link href={`/products/${product.id}`} className="block p-4 hover:opacity-95 transition-opacity">
         <ProductGallery images={productImages} productName={product.name} />
-      </div>
+      </Link>
       
       <div className="p-6 pt-2">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
-              {product.name}
-            </h3>
+            <Link href={`/products/${product.id}`}>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1 hover:text-primary-600 transition-colors cursor-pointer">
+                {product.name}
+              </h3>
+            </Link>
             {product.onSale && (
               <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mb-2">
                 On Sale!
@@ -114,20 +118,20 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4"></div>
           <div className="flex items-center space-x-2">
             <button
               onClick={decrementQuantity}
-              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-4 h-4 text-gray-600" />
             </button>
-            <span className="w-12 text-center font-medium">{quantity}</span>
+            <span className="w-12 text-center font-medium text-gray-900">{quantity}</span>
             <button
               onClick={incrementQuantity}
-              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-gray-600" />
             </button>
           </div>
           

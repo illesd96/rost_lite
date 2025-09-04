@@ -93,19 +93,19 @@ export function CartContent() {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => updateItemQuantity(item.id, (item.quantity || 1) - 1)}
-                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
                       disabled={(item.quantity || 1) <= 1}
                     >
-                      <Minus className="w-4 h-4" />
+                      <Minus className="w-4 h-4 text-gray-600" />
                     </button>
-                    <span className="w-12 text-center font-medium">
+                    <span className="w-12 text-center font-medium text-gray-900">
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => updateItemQuantity(item.id, (item.quantity || 1) + 1)}
-                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-4 h-4 text-gray-600" />
                     </button>
                   </div>
                   
