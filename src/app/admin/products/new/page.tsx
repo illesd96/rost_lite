@@ -29,17 +29,24 @@ export default function NewProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
     setIsLoading(true);
     setError(null);
 
     try {
+      // Validate required fields
+      if (!formData.sku || !formData.name || !formData.basePriceHuf) {
+        throw new Error('Please fill in all required fields');
+      }
+
       // Serialize images for API
       const { images, imageUrl } = serializeProductImages(productImages);
       
       const productData = {
         sku: formData.sku,
         name: formData.name,
-        description: formData.description,
+        description: formData.description || '',
         basePriceHuf: parseInt(formData.basePriceHuf),
         onSale: formData.onSale,
         salePriceHuf: formData.onSale && formData.salePriceHuf ? parseInt(formData.salePriceHuf) : null,
@@ -55,15 +62,16 @@ export default function NewProductPage() {
         body: JSON.stringify(productData),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create product');
+        throw new Error(responseData.error || 'Failed to create product');
       }
 
       // Success - redirect to products page
       router.push('/admin/products');
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error('❌ Error creating product:', error);
       setError(error instanceof Error ? error.message : 'Failed to create product');
     } finally {
       setIsLoading(false);
@@ -72,10 +80,10 @@ export default function NewProductPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
+      <div className="space-y-2">
         <Link
           href="/admin/products"
-          className="flex items-center text-gray-600 hover:text-gray-900"
+          className="flex items-center text-gray-600 hover:text-gray-900 w-fit"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back to Products
@@ -101,7 +109,7 @@ export default function NewProductPage() {
                 type="text"
                 value={formData.sku}
                 onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
                 required
                 placeholder="e.g. PROD-001"
               />
@@ -115,7 +123,7 @@ export default function NewProductPage() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
                 required
                 placeholder="e.g. Premium Headphones"
               />
@@ -131,7 +139,7 @@ export default function NewProductPage() {
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
               placeholder="Detailed product description..."
             />
           </div>
@@ -146,7 +154,7 @@ export default function NewProductPage() {
                 type="number"
                 value={formData.basePriceHuf}
                 onChange={(e) => setFormData(prev => ({ ...prev, basePriceHuf: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
                 required
                 min="0"
                 placeholder="25000"
@@ -174,7 +182,7 @@ export default function NewProductPage() {
                   type="number"
                   value={formData.salePriceHuf}
                   onChange={(e) => setFormData(prev => ({ ...prev, salePriceHuf: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
                   min="0"
                   placeholder="20000"
                 />
@@ -192,7 +200,7 @@ export default function NewProductPage() {
                 type="number"
                 value={formData.discountThreshold}
                 onChange={(e) => setFormData(prev => ({ ...prev, discountThreshold: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
                 min="1"
               />
             </div>
@@ -205,7 +213,7 @@ export default function NewProductPage() {
                 type="number"
                 value={formData.discountPercentage}
                 onChange={(e) => setFormData(prev => ({ ...prev, discountPercentage: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
                 min="0"
                 max="100"
               />

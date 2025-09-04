@@ -108,14 +108,16 @@ export function FileUpload({
     setUploading(false);
   }, [disabled, onUploadComplete, onUploadError]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: {
       'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
     },
     maxFiles,
     disabled: disabled || uploading,
-    multiple: true
+    multiple: true,
+    noClick: false,
+    noKeyboard: false
   });
 
   const removeFile = (fileName: string) => {

@@ -30,13 +30,14 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
   } = useForm<ProductInput>({
     resolver: zodResolver(productSchema),
     defaultValues: {
+      sku: product.sku,
       name: product.name,
       description: product.description || '',
       basePriceHuf: product.basePriceHuf,
       onSale: product.onSale,
       salePriceHuf: product.salePriceHuf || undefined,
-      discountThreshold: product.discountThreshold || 5,
-      discountPercentage: product.discountPercentage || 10,
+      discountThreshold: product.discountThreshold || 1,
+      discountPercentage: product.discountPercentage || 0,
     },
   });
 
@@ -46,10 +47,11 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
     setIsLoading(true);
     try {
       // Include image data in the update
+      const { images, imageUrl } = serializeProductImages(productImages);
       const updateData = {
         ...data,
-        images: serializeProductImages(productImages),
-        imageUrl: productImages.find(img => img.isPrimary)?.url || productImages[0]?.url || null,
+        images,
+        imageUrl,
       };
 
       const response = await fetch(`/api/admin/products/${product.id}`, {
@@ -105,7 +107,7 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
               <input
                 {...register('name')}
                 type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -117,10 +119,14 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
                 SKU
               </label>
               <input
+                {...register('sku')}
                 value={product.sku}
                 disabled
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
               />
+              {errors.sku && (
+                <p className="mt-1 text-sm text-red-600">{errors.sku.message}</p>
+              )}
             </div>
           </div>
 
@@ -131,7 +137,7 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
             <textarea
               {...register('description')}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
             />
             {errors.description && (
               <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
@@ -147,7 +153,7 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
                 {...register('basePriceHuf', { valueAsNumber: true })}
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
               {errors.basePriceHuf && (
                 <p className="mt-1 text-sm text-red-600">{errors.basePriceHuf.message}</p>
@@ -173,7 +179,7 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
                     {...register('salePriceHuf', { valueAsNumber: true })}
                     type="number"
                     min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
                   />
                   {errors.salePriceHuf && (
                     <p className="mt-1 text-sm text-red-600">{errors.salePriceHuf.message}</p>
@@ -192,7 +198,7 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
                 {...register('discountThreshold', { valueAsNumber: true })}
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
               {errors.discountThreshold && (
                 <p className="mt-1 text-sm text-red-600">{errors.discountThreshold.message}</p>
@@ -208,7 +214,7 @@ export function ProductEditModal({ product, onClose, onUpdate }: ProductEditModa
                 type="number"
                 min="0"
                 max="100"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
               {errors.discountPercentage && (
                 <p className="mt-1 text-sm text-red-600">{errors.discountPercentage.message}</p>

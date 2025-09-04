@@ -50,14 +50,19 @@ export function parseProductImages(imagesJson: string | null, imageUrl: string |
   return images;
 }
 
-export function serializeProductImages(images: ProductImage[]): string {
+export function serializeProductImages(images: ProductImage[]): { images: string; imageUrl: string | null } {
   const imageData = images.map(img => ({
     url: img.url,
     alt: img.alt,
     isPrimary: img.isPrimary || false
   }));
   
-  return JSON.stringify(imageData);
+  const primaryImage = images.find(img => img.isPrimary) || images[0] || null;
+  
+  return {
+    images: JSON.stringify(imageData),
+    imageUrl: primaryImage?.url || null
+  };
 }
 
 export function getPrimaryImage(images: ProductImage[]): ProductImage | null {

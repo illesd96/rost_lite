@@ -18,7 +18,7 @@ export const productSchema = z.object({
   images: z.string().optional(),
   basePriceHuf: z.number().min(1, 'Price must be greater than 0'),
   onSale: z.boolean().default(false),
-  salePriceHuf: z.number().optional(),
+  salePriceHuf: z.number().nullable().optional(),
   discountThreshold: z.number().min(1).default(1),
   discountPercentage: z.number().min(0).max(100).default(0),
 });

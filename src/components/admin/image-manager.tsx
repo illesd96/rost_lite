@@ -17,7 +17,8 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
   const [error, setError] = useState<string | null>(null);
   const [uploadMode, setUploadMode] = useState<'upload' | 'url'>('upload');
 
-  const addImageFromUrl = () => {
+  const addImageFromUrl = (e?: React.MouseEvent) => {
+    e?.preventDefault();
     setError(null);
     
     if (!newImageUrl.trim()) {
@@ -135,6 +136,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
         {/* Upload Mode Toggle */}
         <div className="flex items-center justify-center space-x-1 mb-4">
           <button
+            type="button"
             onClick={() => setUploadMode('upload')}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
               uploadMode === 'upload' 
@@ -147,6 +149,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
           </button>
           <span className="text-gray-300">|</span>
           <button
+            type="button"
             onClick={() => setUploadMode('url')}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
               uploadMode === 'url' 
@@ -177,11 +180,13 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white text-sm"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
+                    e.preventDefault();
                     addImageFromUrl();
                   }
                 }}
               />
               <button
+                type="button"
                 onClick={addImageFromUrl}
                 disabled={images.length >= maxImages}
                 className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center text-sm"
@@ -255,6 +260,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
 
               <div className="flex items-center space-x-1 flex-shrink-0">
                 <button
+                  type="button"
                   onClick={() => setPrimaryImage(image.id)}
                   className={`p-1 rounded hover:bg-gray-100 ${
                     image.isPrimary ? 'text-yellow-500' : 'text-gray-400'
@@ -265,6 +271,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
                 </button>
                 
                 <button
+                  type="button"
                   onClick={() => removeImage(image.id)}
                   className="p-1 text-red-600 hover:bg-red-50 rounded"
                   title="Remove image"
