@@ -118,7 +118,7 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between mb-4"></div>
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <button
               onClick={decrementQuantity}
