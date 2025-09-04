@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
     // Upload to Vercel Blob Storage
     const blob = await put(`products/${filename}`, file, {
       access: 'public',
-      handleUploadUrl: '/api/upload/images',
     });
 
     return NextResponse.json({
