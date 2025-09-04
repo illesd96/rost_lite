@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { validateImageFile, generateUploadFilename } from '@/lib/upload-utils';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { put } from '@vercel/blob';
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic';
@@ -38,33 +37,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'products');
-    await mkdir(uploadsDir, { recursive: true });
-
-    // Generate unique filename
+    // Generate unique filename for blob storage
     const filename = generateUploadFilename(file.name);
-    const filepath = join(uploadsDir, filename);
-
-    // Convert file to buffer and save
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
-
-    // Return the public URL
-    const publicUrl = `/uploads/products/${filename}`;
+    
+    // Upload to Vercel Blob Storage
+    const blob = await put(`products/${filename}`, file, {
+      access: 'public',
+      handleUploadUrl: '/api/upload/images',
+    });
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
+      url: blob.url,
       filename: file.name,
       size: file.size
     });
 
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Blob upload error:', error);
     return NextResponse.json(
-      { error: 'Upload failed' },
+      { error: 'Failed to upload image to blob storage' },
       { status: 500 }
     );
   }

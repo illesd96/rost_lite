@@ -50,7 +50,14 @@ export function parseProductImages(imagesJson: string | null, imageUrl: string |
   return images;
 }
 
-export function serializeProductImages(images: ProductImage[]): { images: string; imageUrl: string | null } {
+export function serializeProductImages(images: ProductImage[]): { images: string | null; imageUrl: string | null } {
+  if (!images || images.length === 0) {
+    return {
+      images: null,
+      imageUrl: null
+    };
+  }
+
   const imageData = images.map(img => ({
     url: img.url,
     alt: img.alt,
