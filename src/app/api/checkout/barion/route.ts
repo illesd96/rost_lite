@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
 
     // Create redirect URLs
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-    const redirectUrl = `${baseUrl}/checkout/success?orderId=${orderId}&paymentId=PAYMENT_ID`;
+    const redirectUrl = `${baseUrl}/checkout/success?orderId=${orderId}`;
     const callbackUrl = `${baseUrl}/api/webhooks/barion`;
 
     // Create Barion payment

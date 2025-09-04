@@ -6,12 +6,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(priceInHuf: number): string {
-  return new Intl.NumberFormat('hu-HU', {
-    style: 'currency',
-    currency: 'HUF',
+  // Use a consistent format to avoid hydration mismatches
+  // Format: "9,000 Ft" with comma separators
+  return `${priceInHuf.toLocaleString('en-US', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(priceInHuf);
+    useGrouping: true
+  })} Ft`;
 }
 
 export function calculateDiscount(quantity: number, basePrice: number, threshold: number, percentage: number): number {
