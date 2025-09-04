@@ -60,10 +60,10 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 overflow-hidden">
-      {/* Product Gallery - Clickable */}
-      <Link href={`/products/${product.id}`} className="block p-4 hover:opacity-95 transition-opacity">
+      {/* Product Gallery */}
+      <div className="p-4">
         <ProductGallery images={productImages} productName={product.name} />
-      </Link>
+      </div>
       
       <div className="p-6 pt-2">
         <div className="flex justify-between items-start mb-4">
@@ -87,9 +87,11 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {product.description && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-            {product.description}
-          </p>
+          <Link href={`/products/${product.id}`}>
+            <p className="text-gray-600 text-sm mb-4 line-clamp-2 hover:text-gray-800 transition-colors cursor-pointer">
+              {product.description}
+            </p>
+          </Link>
         )}
 
         <div className="mb-4">

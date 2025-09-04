@@ -18,15 +18,7 @@ export default async function OrdersPage() {
 
   // Fetch user's orders
   const userOrders = await db
-    .select({
-      id: orders.id,
-      createdAt: orders.createdAt,
-      status: orders.status,
-      subtotalHuf: orders.subtotalHuf,
-      deliveryFeeHuf: orders.deliveryFeeHuf,
-      totalHuf: orders.totalHuf,
-      barionPaymentId: orders.barionPaymentId,
-    })
+    .select()
     .from(orders)
     .where(eq(orders.userId, session.user.id))
     .orderBy(desc(orders.createdAt));
