@@ -11,13 +11,16 @@ export const signInSchema = z.object({
 });
 
 export const productSchema = z.object({
+  sku: z.string().min(1, 'SKU is required'),
   name: z.string().min(1, 'Product name is required'),
   description: z.string().optional(),
+  imageUrl: z.string().optional(),
+  images: z.string().optional(),
   basePriceHuf: z.number().min(1, 'Price must be greater than 0'),
   onSale: z.boolean().default(false),
   salePriceHuf: z.number().optional(),
-  discountThreshold: z.number().min(1).default(5),
-  discountPercentage: z.number().min(0).max(100).default(10),
+  discountThreshold: z.number().min(1).default(1),
+  discountPercentage: z.number().min(0).max(100).default(0),
 });
 
 export const cartItemSchema = z.object({
