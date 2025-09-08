@@ -139,10 +139,9 @@ export default function HomePage() {
           {/* Product Images Grid - 4x2 layout */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
             {productImages.map((image, index) => (
-              <button
+              <div
                 key={index}
-                onClick={() => openLightbox(index)}
-                className="aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                className="aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group"
               >
                 <Image
                   src={image.src}
@@ -151,7 +150,7 @@ export default function HomePage() {
                   height={300}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-              </button>
+              </div>
             ))}
           </div>
 
