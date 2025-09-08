@@ -20,8 +20,6 @@ export async function POST(request: NextRequest) {
     // Generate QR code as data URL
     const qrCodeUrl = await QRCode.toDataURL(qrString, {
       errorCorrectionLevel: 'M',
-      type: 'image/png',
-      quality: 0.92,
       margin: 1,
       color: {
         dark: '#000000',
