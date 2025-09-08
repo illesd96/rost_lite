@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { formatPrice } from '@/lib/utils';
 import { CreditCard, ShoppingBag, Receipt } from 'lucide-react';
 import { DeliverySelection } from './delivery-selection';
+import { BankTransferPayment } from './bank-transfer-payment';
 
 interface CheckoutFormProps {
   userEmail: string;
@@ -76,10 +77,9 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
         total: finalTotal,
       };
 
-      // Always try Barion first, fallback to mock if it fails
-      console.log('🛒 Attempting Barion checkout...');
+      console.log('🛒 Creating bank transfer order...');
       
-      const response = await fetch('/api/checkout/barion', {
+      const response = await fetch('/api/checkout/bank-transfer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,9 +93,11 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
         throw new Error(result.error || 'Checkout failed');
       }
 
-      // Clear cart and redirect to Barion payment page
+      console.log('✅ Bank transfer order created:', result.orderId);
+      
+      // Clear cart and redirect to order success page
       emptyCart();
-      window.location.href = result.gatewayUrl;
+      router.push(`/orders/${result.orderId}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred during checkout');
     } finally {
@@ -185,81 +187,20 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
         />
       </div>
 
-      {/* Payment Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-          <CreditCard className="w-5 h-5 mr-2" />
-          Payment
-        </h2>
+      {/* Bank Transfer Payment Section */}
+      <BankTransferPayment
+        amount={finalTotal}
+        orderId={`TEMP-${Date.now()}`}
+        userEmail={userEmail}
+        onOrderConfirm={handleCheckout}
+        isProcessing={isProcessing}
+      />
 
-        <div className="mb-6">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-            <h3 className="font-medium text-blue-900 mb-2">Secure Payment with Barion</h3>
-            <p className="text-sm text-blue-700">
-              You will be redirected to Barion&apos;s secure payment gateway to complete your purchase.
-              We accept all major credit cards and bank transfers.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center text-sm text-gray-600">
-              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-              SSL encrypted secure payment
-            </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-              PCI DSS compliant
-            </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-              Instant payment confirmation
-            </div>
-          </div>
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+          <p className="text-sm text-red-600">{error}</p>
         </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Email Address
-          </label>
-          <input
-            type="email"
-            value={userEmail}
-            disabled
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Payment confirmation will be sent to this email
-          </p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-red-600">{error}</p>
-          </div>
-        )}
-
-        <button
-          onClick={handleCheckout}
-          disabled={isProcessing || items.length === 0}
-          className="w-full flex items-center justify-center px-6 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-        >
-          {isProcessing ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              Processing...
-            </>
-          ) : (
-            <>
-              <CreditCard className="w-5 h-5 mr-2" />
-              Pay {formatPrice(finalTotal)} with Barion
-            </>
-          )}
-        </button>
-
-        <p className="text-xs text-gray-500 text-center mt-3">
-          By clicking &quot;Pay with Barion&quot;, you agree to our terms of service and privacy policy.
-        </p>
-      </div>
+      )}
     </div>
   );
 }

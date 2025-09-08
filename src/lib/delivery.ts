@@ -132,7 +132,8 @@ export function calculateDeliveryFee(
 }
 
 export function getAvailableDeliveryOptions(): DeliveryOption[] {
-  return DELIVERY_OPTIONS.filter(option => option.enabled);
+  // Temporarily show only own delivery service
+  return DELIVERY_OPTIONS.filter(option => option.enabled && option.provider === 'own');
 }
 
 export function getDeliveryOption(id: string): DeliveryOption | undefined {
