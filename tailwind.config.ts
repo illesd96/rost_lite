@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
@@ -32,6 +35,8 @@ const config: Config = {
           'gold-light': '#e8c999',
           brown: '#8b6f47',
           'brown-dark': '#6b5435',
+          'fiber-green': '#004a2c',
+          'disease-red': '#780204',
         },
         // Ingredient colors
         ingredient: {

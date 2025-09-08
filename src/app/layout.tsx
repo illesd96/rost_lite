@@ -8,9 +8,9 @@ import { KeepAliveProvider } from '@/components/providers/keep-alive-provider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'WebShop - Premium Products',
-  description: 'Your trusted webshop for premium products with secure payment and fast delivery.',
-  keywords: 'webshop, online store, premium products, secure payment',
+  title: 'Rosti - Friss és Természetes Zöldségitalok',
+  description: 'Friss és nyers zöldségekből készült Rosti italok. Természetes vitaminok és rostok a napi egészségért.',
+  keywords: 'rosti, zöldségital, természetes, egészséges, vitaminok, rostok, friss, nyers zöldségek',
 };
 
 export default function RootLayout({

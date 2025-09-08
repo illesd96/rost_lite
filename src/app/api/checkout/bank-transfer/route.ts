@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { orders, orderItems } from '@/lib/db/schema';
+import { orders, orderItems, users } from '@/lib/db/schema';
 import { generateHungarianPaymentData, generateBankTransferInfo } from '@/lib/hungarian-payment';
 import { z } from 'zod';
+import { eq } from 'drizzle-orm';
 
 // Validation schema for checkout data
 const checkoutSchema = z.object({
@@ -44,41 +45,44 @@ export async function POST(request: NextRequest) {
     // Validate request data
     const validatedData = checkoutSchema.parse(body);
 
-    // Generate unique order ID
-    const orderId = `BT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const paymentRequestId = `PAY-${orderId}`;
+    // Find user by email
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, session.user.email))
+      .limit(1);
 
-    console.log('🆔 Generated order ID:', orderId);
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
 
-    // Create order in database
+    console.log('🆔 Creating order for user:', user.id);
+
+    // Create order in database (let DB generate UUID)
     const [newOrder] = await db
       .insert(orders)
       .values({
-        id: orderId,
-        userId: session.user.email,
-        userEmail: session.user.email,
-        status: 'pending_payment',
-        paymentMethod: 'bank_transfer',
-        paymentStatus: 'pending',
-        subtotal: validatedData.total - validatedData.deliveryFee,
-        deliveryFee: validatedData.deliveryFee,
-        total: validatedData.total,
+        userId: user.id,
+        status: 'PENDING',
+        subtotalHuf: validatedData.total - validatedData.deliveryFee,
+        deliveryFeeHuf: validatedData.deliveryFee,
+        totalHuf: validatedData.total,
         deliveryMethod: validatedData.deliveryMethod,
-        deliveryData: validatedData.deliveryData ? JSON.stringify(validatedData.deliveryData) : null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        deliveryAddress: validatedData.deliveryData?.deliveryAddress || null,
+        pickupPointId: validatedData.deliveryData?.pickupPointId || null,
       })
       .returning();
 
     // Insert order items
     const orderItemsData = validatedData.items.map(item => ({
-      id: `${orderId}-${item.id}`,
-      orderId: orderId,
+      orderId: newOrder.id,
       productId: item.id,
-      productName: item.name,
-      price: item.price,
       quantity: item.quantity,
-      total: item.price * item.quantity,
+      unitPriceHuf: item.price,
+      discountAppliedHuf: 0,
     }));
 
     await db.insert(orderItems).values(orderItemsData);
@@ -86,16 +90,16 @@ export async function POST(request: NextRequest) {
     console.log('✅ Order created successfully:', {
       orderId: newOrder.id,
       itemCount: orderItemsData.length,
-      total: newOrder.total
+      total: newOrder.totalHuf
     });
 
     // Generate payment information
-    const paymentData = generateHungarianPaymentData(validatedData.total, orderId);
-    const bankTransferInfo = generateBankTransferInfo(validatedData.total, orderId);
+    const paymentData = generateHungarianPaymentData(validatedData.total, newOrder.id);
+    const bankTransferInfo = generateBankTransferInfo(validatedData.total, newOrder.id);
 
     return NextResponse.json({
       success: true,
-      orderId: orderId,
+      orderId: newOrder.id,
       paymentData,
       bankTransferInfo,
       message: 'Order created successfully. Please complete the bank transfer to confirm your order.'

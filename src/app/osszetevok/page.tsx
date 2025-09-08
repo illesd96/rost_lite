@@ -112,7 +112,7 @@ export default function OsszetevokPage() {
           {/* Why Fiber is Important Section */}
           <div className="bg-rosti-gold rounded-3xl p-8 md:p-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-              MIÉRT FONTOS A <span className="text-rosti-cream">ROST</span>?
+              MIÉRT FONTOS A <span className="text-rosti-fiber-green">ROST</span>?
             </h2>
             
             <div className="max-w-4xl mx-auto mb-8">
@@ -122,8 +122,8 @@ export default function OsszetevokPage() {
               </p>
               
               <p className="text-lg md:text-xl text-rosti-cream leading-relaxed mb-8">
-                A tudomány jelenlegi állása szerint a megfelelő rostbevitel 
-                az egyik legerősebb prevenciós tényező a <strong>krónikus betegségek ellen</strong>.
+                A tudomány jelenlegi állása szerint a <strong className="text-rosti-fiber-green">megfelelő rostbevitel</strong> 
+                az egyik legerősebb prevenciós tényező a <strong className="text-rosti-disease-red">krónikus betegségek ellen.</strong>
               </p>
             </div>
 
