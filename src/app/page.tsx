@@ -86,7 +86,7 @@ export default function HomePage() {
       {/* Full-Screen Hero Banner */}
       <div className="relative w-full h-screen">
         <Image
-          src="/images/teszt-bg-sora.png"
+          src="/images/bg-new.png"
           fill
           alt="Premium products and fresh ingredients"
           className="object-cover"
@@ -98,14 +98,15 @@ export default function HomePage() {
         {/* Hero Content - Description at top */}
         <div className="absolute top-32 left-0 right-0 flex justify-center">
           <div className="text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-            <p className="text-xl md:text-2xl text-gray-100 leading-relaxed">
-              Nem Juice. Nem szűrt. És nem is bolti cukros gyümölcs_smoothie.
+            <p className="text-xl md:text-3xl text-gray-100 leading-relaxed">
+              Nem juice. Nem szűrt.<br />
+              És nem is cukros gyümölcs-smoothie.
             </p>
           </div>
         </div>
 
         {/* Hero Content - Title at bottom */}
-        <div className="absolute bottom-32 left-0 right-0 flex justify-center">
+        <div className="absolute bottom-16 left-0 right-0 flex justify-center">
           <div className="text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               Ez Rosti.
@@ -114,11 +115,11 @@ export default function HomePage() {
         </div>
         
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        {/* <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
             <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Mi az a Rosti Section */}
@@ -127,11 +128,11 @@ export default function HomePage() {
           {/* Title */}
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
-              Mi az a Rosti?
+              Friss és nyers
             </h2>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Friss és nyers zöldségekből készül, minden rost és tápanyag benne marad, hogy egyszerűen hozzájuthass a napi 
-              zöldség- és vitaminadaghoz.
+              Zöldségekből készül, minden rost és tápanyag benne marad, hogy egyszerűen hozzájuthass a napi 
+              zöldség- és vitaminadagodhoz.
             </p>
           </div>
 
@@ -154,15 +155,11 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Link to ingredients */}
+          {/* Product description */}
           <div className="text-center">
-            <Link
-              href="/osszetevok"
-              className="inline-flex items-center text-lg font-semibold text-rosti-brown hover:text-rosti-brown-dark transition-colors duration-200 border-b-2 border-rosti-brown hover:border-rosti-brown-dark pb-1"
-            >
-              Ismerd meg az összetevőinket
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Link>
+            <p className="text-lg text-gray-700 font-medium">
+              Semmi mesterséges adalék. Semmi tartósítószer. Friss és nyers.
+            </p>
           </div>
         </div>
       </section>
