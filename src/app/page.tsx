@@ -84,7 +84,7 @@ export default function HomePage() {
       <UnifiedNavbar />
       
       {/* Full-Screen Hero Banner */}
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-[calc(100vh-4rem)] md:h-screen">
         <Image
           src="/images/bg-new.png"
           fill
