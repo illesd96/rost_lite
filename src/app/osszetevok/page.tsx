@@ -112,7 +112,7 @@ export default function OsszetevokPage() {
           {/* Why Fiber is Important Section */}
           <div className="bg-rosti-gold rounded-3xl p-8 md:p-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-              MIÉRT FONTOS A <span className="text-rosti-fiber-green">ROST</span>?
+              MIÉRT FONTOS A <span className="text-rosti-fiber-green">ROST?</span>
             </h2>
             
             <div className="max-w-4xl mx-auto mb-8">
@@ -128,46 +128,46 @@ export default function OsszetevokPage() {
             </div>
 
             {/* Scientific Sources */}
-            <div className="mt-6 text-sm text-center">
-              <h4 className="font-semibold mb-2">Tudományos források:</h4>
-              <div className="flex flex-wrap justify-center items-center gap-x-2">
-                <span>Frontiers in Nutrition</span>
+            <div className="mt-6 text-sm text-center text-rosti-fiber-green">
+              <h4 className="font-semibold mb-2 text-rosti-fiber-green">Tudományos források:</h4>
+              <div className="flex flex-wrap justify-center items-center gap-x-2 text-rosti-fiber-green">
+                <span className="text-rosti-fiber-green">Frontiers in Nutrition</span>
                 <a
                   href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2024.1510564/full"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [1]
                 </a>
-                <span className="text-rosti-cream">|</span>
-                <span>Cell Host & Microbe</span>
+                <span className="text-rosti-fiber-green">|</span>
+                <span className="text-rosti-fiber-green">Cell Host & Microbe</span>
                 <a
                   href="https://www.cell.com/cell-host-microbe/fulltext/S193131281830266X"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [2]
                 </a>
-                <span className="text-rosti-cream">|</span>
-                <span>News-Medical.net</span>
+                <span className="text-rosti-fiber-green">|</span>
+                <span className="text-rosti-fiber-green">News-Medical.net</span>
                 <a
                   href="https://www.news-medical.net/health/The-Role-of-Fiber-in-Preventing-Chronic-Disease.aspx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [3]
                 </a>
               </div>
-              <div className="flex flex-wrap justify-center items-center gap-x-2 mt-2">
-                <span>National Library of Medicine</span>
+              <div className="flex flex-wrap justify-center items-center gap-x-2 mt-2 text-rosti-fiber-green">
+                <span className="text-rosti-fiber-green">National Library of Medicine</span>
                 <a
                   href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10498976"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [4]
                 </a>
@@ -175,17 +175,17 @@ export default function OsszetevokPage() {
                   href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9268622"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [5]
                 </a>
-                <span className="text-rosti-cream">|</span>
-                <span>PubMed</span>
+                <span className="text-rosti-fiber-green">|</span>
+                <span className="text-rosti-fiber-green">PubMed</span>
                 <a
                   href="https://pubmed.ncbi.nlm.nih.gov/35471164/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [6]
                 </a>
@@ -193,7 +193,7 @@ export default function OsszetevokPage() {
                   href="https://pubmed.ncbi.nlm.nih.gov/36193993/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [7]
                 </a>
@@ -201,7 +201,7 @@ export default function OsszetevokPage() {
                   href="https://pubmed.ncbi.nlm.nih.gov/32142510/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:no-underline"
+                  className="text-rosti-fiber-green underline hover:no-underline"
                 >
                   [8]
                 </a>

@@ -173,36 +173,33 @@ export default function HomePage() {
             </h2>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-3 gap-8">
             {/* Tartós energia */}
             <div className="text-center p-8">
               <div className="text-6xl mb-6">💪</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Tartós energia</h3>
               <p className="text-gray-600 leading-relaxed">
-                A Rosti zöldségek elnyújtottan felszabaduló tápanyagokat és 
-                rostot adnak. Elkerülheted a hirtelenvárcukor-ingadozásokat és 
-                élvezd érzetet, de még akár a felemelegos napikai is.
+              A Rosti lassan felszabaduló tápanyagokkal, teljes rosttal és komplex, alacsony glikémiás indexű szénhidrátokkal lát el.
               </p>
             </div>
 
             {/* Tiszta tudat és fókusz */}
-            <div className="text-center p-8">
+            {/* <div className="text-center p-8">
               <div className="text-6xl mb-6">🧠</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Tiszta tudat és fókusz</h3>
               <p className="text-gray-600 leading-relaxed">
                 Táplálod tested és elmédét a friss zöldségekben található erős 
                 vitaminokkal és ásványi anyagokkal.
               </p>
-            </div>
+            </div> */}
 
             {/* Természetes jóság */}
             <div className="text-center p-8">
-              <div className="text-6xl mb-6">✨</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Természetes jóság</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Csak friss, teljes értékű alapanyagokat használunk. Nincs 
-                hozzáadott cukor, nincs tartósítószer, csak tiszta íz.
-              </p>
+              <div className="text-6xl mb-6">🍀</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Nem leszel feleslegesen éhes</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Elkerülheted a vércukor-ingadozások miatti éhség érzetet, így a felesleges nasikat, no meg a hűtő előtti lelkiismeret-furdalást.
+                </p>
             </div>
 
             {/* Meglepően finom */}
@@ -210,8 +207,8 @@ export default function HomePage() {
               <div className="text-6xl mb-6">😋</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Meglepően finom</h3>
               <p className="text-gray-600 leading-relaxed">
-                Tapasztald meg egy egyedi, frissítő ízt, amely tökéletes 
-                egyensúlyt teremt a földes és az édes között.
+              Egyedi és frissítő ízvilága miatt még akik nehezen esznek meg elég zöldséget is könnyen megisszák. Na, kipróbálod?  
+
               </p>
             </div>
           </div>
