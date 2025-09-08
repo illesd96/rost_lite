@@ -86,7 +86,7 @@ export default function HomePage() {
       {/* Full-Screen Hero Banner */}
       <div className="relative w-full h-screen">
         <Image
-          src="/images/teszt-bg-2.jpg"
+          src="/images/teszt-bg-sora.png"
           fill
           alt="Premium products and fresh ingredients"
           className="object-cover"
