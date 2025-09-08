@@ -1,18 +1,81 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { ShoppingBag, Shield, Truck, CreditCard, ArrowRight } from 'lucide-react';
-import { Navbar } from '@/components/ui/navbar';
+import { useState, useEffect } from 'react';
+import { ShoppingBag, Shield, Truck, CreditCard, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default async function HomePage() {
-  const session = await getServerSession(authOptions);
-  
-  // If user is already logged in, redirect to shop
-  if (session) {
-    redirect('/shop');
-  }
+// Product images data
+const productImages = [
+  { src: '/images/product_pictures/Rosti1.jpg', alt: 'Rosti 1' },
+  { src: '/images/product_pictures/Rosti2.jpg', alt: 'Rosti 2' },
+  { src: '/images/product_pictures/Rosti3.jpg', alt: 'Rosti 3' },
+  { src: '/images/product_pictures/Rosti4.jpg', alt: 'Rosti 4' },
+  { src: '/images/product_pictures/Rosti5.jpg', alt: 'Rosti 5' },
+  { src: '/images/product_pictures/Rosti6.jpg', alt: 'Rosti 6' },
+  { src: '/images/product_pictures/Rosti7.jpg', alt: 'Rosti 7' },
+  { src: '/images/product_pictures/Rosti8.jpg', alt: 'Rosti 8' },
+];
+
+export default function HomePage() {
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedImageIndex === null) return;
+
+      switch (e.key) {
+        case 'Escape':
+          setSelectedImageIndex(null);
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          setSelectedImageIndex((prev) => 
+            prev === null ? null : prev === 0 ? productImages.length - 1 : prev - 1
+          );
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          setSelectedImageIndex((prev) => 
+            prev === null ? null : prev === productImages.length - 1 ? 0 : prev + 1
+          );
+          break;
+      }
+    };
+
+    if (selectedImageIndex !== null) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedImageIndex]);
+
+  const openLightbox = (index: number) => {
+    setSelectedImageIndex(index);
+  };
+
+  const closeLightbox = () => {
+    setSelectedImageIndex(null);
+  };
+
+  const goToPrevious = () => {
+    setSelectedImageIndex((prev) => 
+      prev === null ? null : prev === 0 ? productImages.length - 1 : prev - 1
+    );
+  };
+
+  const goToNext = () => {
+    setSelectedImageIndex((prev) => 
+      prev === null ? null : prev === productImages.length - 1 ? 0 : prev + 1
+    );
+  };
 
   return (
     <>
@@ -25,13 +88,19 @@ export default async function HomePage() {
                 Rosti
               </Link>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/osszetevok"
+                className="text-white hover:text-gray-200 transition-colors font-medium"
+              >
+                Összetevők
+              </Link>
               <Link
                 href="/auth/signin"
-                className="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors shadow-lg"
+                className="text-white hover:text-gray-200 p-3 transition-colors"
+                title="Enter Shop"
               >
-                <ShoppingBag className="w-4 h-4 mr-2 inline" />
-                Enter Shop
+                <ShoppingBag className="w-5 h-5" />
               </Link>
             </div>
           </div>
@@ -54,12 +123,12 @@ export default async function HomePage() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Rosti
+              Ez Rosti.
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-100 leading-relaxed">
-              Discover our exclusive collection of premium products. Quality crafted, naturally sourced, delivered fresh.
+              Nem Juice. Nem szűrt.És nem is bolti cukros gyümölcs_smoothie.
             </p>
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
               <Link
                 href="/auth/signin"
                 className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg transform hover:scale-105"
@@ -67,7 +136,7 @@ export default async function HomePage() {
                 <ShoppingBag className="w-5 h-5 mr-2" />
                 Enter Shop
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
         
@@ -79,119 +148,217 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Content Section */}
-      <div className="pt-16 pb-24 md:pt-24 md:pb-32">
-        {/* Main Content Grid */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 md:mb-32">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            {/* Left Column - Main Message */}
-            <div className="md:col-span-7">
-              <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
-                Real quality. Premium selection. No compromises.
-              </h2>
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-                Just pure excellence, carefully curated and delivered by us.
-              </p>
-            </div>
-            
-            {/* Right Column - CTA */}
-            <div className="md:col-span-5 flex items-center justify-start md:justify-end">
-              <div className="text-left md:text-right">
-                <p className="text-lg md:text-xl text-gray-700 mb-4 font-medium">
-                  Your Daily Dose of Premium Quality
-                </p>
-                <Link
-                  href="/auth/signin"
-                  className="inline-flex items-center text-lg font-semibold text-primary-600 hover:text-primary-700 transition-colors duration-200 border-b-2 border-primary-600 hover:border-primary-700 pb-1"
-                >
-                  Explore Now
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Mi az a Rosti Section */}
+      <section className="py-20 bg-rosti-cream">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Title */}
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Rosti?
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+              Mi az a Rosti?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We provide a secure, fast, and user-friendly shopping experience with premium products and excellent service.
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Friss és nyers zöldségekből készül, minden rost és tápanyag benne marad, hogy egyszerűen hozzájuthass a napi 
+              zöldség- és vitaminadaghoz.
             </p>
           </div>
+
+          {/* Product Images Grid - 4x2 layout */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            {productImages.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => openLightbox(index)}
+                className="aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={300}
+                  height={300}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </button>
+            ))}
+          </div>
+
+          {/* Link to ingredients */}
+          <div className="text-center">
+            <Link
+              href="/osszetevok"
+              className="inline-flex items-center text-lg font-semibold text-rosti-brown hover:text-rosti-brown-dark transition-colors duration-200 border-b-2 border-rosti-brown hover:border-rosti-brown-dark pb-1"
+            >
+              Ismerd meg az összetevőinket
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Érezd a különbséget Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Érezd a különbséget
+            </h2>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Secure Payment</h3>
-              <p className="text-gray-600">
-                Your transactions are protected with Barion&apos;s secure payment gateway and advanced encryption.
+          <div className="grid md:grid-cols-2 gap-12">
+            {/* Tartós energia */}
+            <div className="text-center p-8">
+              <div className="text-6xl mb-6">💪</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Tartós energia</h3>
+              <p className="text-gray-600 leading-relaxed">
+                A Rosti zöldségek elnyújtottan felszabaduló tápanyagokat és 
+                rostot adnak. Elkerülheted a hirtelenvárcukor-ingadozásokat és 
+                élvezd érzetet, de még akár a felemelegos napikai is.
               </p>
             </div>
-            
-            <div className="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Fast Delivery</h3>
-              <p className="text-gray-600">
-                Quick delivery across Hungary with free shipping on orders over 15,000 HUF.
+
+            {/* Tiszta tudat és fókusz */}
+            <div className="text-center p-8">
+              <div className="text-6xl mb-6">🧠</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Tiszta tudat és fókusz</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Táplálod tested és elmédét a friss zöldségekben található erős 
+                vitaminokkal és ásványi anyagokkal.
               </p>
             </div>
-            
-            <div className="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-8 h-8 text-primary-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Easy Checkout</h3>
-              <p className="text-gray-600">
-                Simple and intuitive checkout process with automatic discount calculations.
+
+            {/* Természetes jóság */}
+            <div className="text-center p-8">
+              <div className="text-6xl mb-6">✨</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Természetes jóság</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Csak friss, teljes értékű alapanyagokat használunk. Nincs 
+                hozzáadott cukor, nincs tartósítószer, csak tiszta íz.
+              </p>
+            </div>
+
+            {/* Meglepően finom */}
+            <div className="text-center p-8">
+              <div className="text-6xl mb-6">😋</div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Meglepően finom</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Tapasztald meg egy egyedi, frissítő ízt, amely tökéletes 
+                egyensúlyt teremt a földes és az édes között.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-50 to-primary-100">
+      {/* Keresd a Rostit az irodai hűtőben Section */}
+      <section className="py-20 bg-gradient-to-b from-rosti-brown to-rosti-brown-dark text-white">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Ready to Start Shopping?
+          <h2 className="text-3xl md:text-4xl font-bold mb-8">
+            Keresd a Rostit az irodai hűtőben!
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Join Rosti and discover premium products with unbeatable service.
-          </p>
+          
+          <div className="space-y-4 mb-8">
+            <p className="text-lg">
+              <strong>Kérdés, visszajelzés, vélemény:</strong> hello@rosti.hu
+            </p>
+            <p className="text-lg">
+              <strong>Rendelés:</strong> rendeles@rosti.hu
+            </p>
+          </div>
+          
           <Link
             href="/auth/signin"
-            className="inline-flex items-center justify-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors duration-200 shadow-lg"
+            className="inline-flex items-center justify-center px-8 py-4 bg-white text-rosti-brown font-semibold rounded-xl hover:bg-gray-100 transition-colors duration-200 shadow-lg"
           >
             <ShoppingBag className="w-5 h-5 mr-2" />
-            Enter Shop
+            Még jobban érdekel a Rosti!
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-rosti-brown-dark text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">Rosti</h3>
-            <p className="text-gray-400 mb-4">
-              Your trusted partner for premium products and exceptional service.
-            </p>
-            <p className="text-gray-500 text-sm">
-              &copy; 2024 Rosti. All rights reserved.
+            <p className="text-gray-300 text-sm">
+              &copy; 2025 Rosti. Minden jog fenntartva.
             </p>
           </div>
         </div>
       </footer>
+
+      {/* Lightbox Modal */}
+      {selectedImageIndex !== null && (
+        <div className="fixed inset-0 z-[100] bg-black bg-opacity-90 flex items-center justify-center p-4">
+          {/* Close button */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-[101]"
+          >
+            <X size={32} />
+          </button>
+
+          {/* Previous button */}
+          <button
+            onClick={goToPrevious}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-[101] p-2"
+          >
+            <ChevronLeft size={40} />
+          </button>
+
+          {/* Next button */}
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-[101] p-2"
+          >
+            <ChevronRight size={40} />
+          </button>
+
+          {/* Main image */}
+          <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center">
+            <Image
+              src={productImages[selectedImageIndex].src}
+              alt={productImages[selectedImageIndex].alt}
+              width={800}
+              height={800}
+              className="max-w-full max-h-full object-contain rounded-lg"
+              priority
+            />
+          </div>
+
+          {/* Image counter */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-3 py-1 rounded-full text-sm">
+            {selectedImageIndex + 1} / {productImages.length}
+          </div>
+
+          {/* Thumbnail navigation */}
+          <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 flex space-x-2 max-w-full overflow-x-auto px-4">
+            {productImages.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedImageIndex(index)}
+                className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                  index === selectedImageIndex
+                    ? 'border-white'
+                    : 'border-transparent opacity-60 hover:opacity-80'
+                }`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+
+          {/* Click outside to close */}
+          <div
+            className="absolute inset-0 -z-10"
+            onClick={closeLightbox}
+          ></div>
+        </div>
+      )}
     </>
   );
 }

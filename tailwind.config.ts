@@ -23,6 +23,26 @@ const config: Config = {
           800: '#1e40af',
           900: '#1e3a8a',
         },
+        // Rosti brand colors
+        rosti: {
+          cream: '#f8f6f3',
+          'cream-dark': '#f0ede8',
+          gold: '#d4a574',
+          'gold-dark': '#c19660',
+          'gold-light': '#e8c999',
+          brown: '#8b6f47',
+          'brown-dark': '#6b5435',
+        },
+        // Ingredient colors
+        ingredient: {
+          beetroot: '#c8102e', // Deep red for beetroot/cékla
+          carrot: '#ff8c42',   // Orange for carrot/sárgarépa
+          cucumber: '#7cb342', // Green for cucumber/uborka
+          berry: '#8e44ad',    // Purple for berries/bogyók
+          citrus: '#f39c12',   // Yellow-orange for citrus
+          apple: '#e74c3c',    // Red for apple/alma
+          mint: '#2ecc71',     // Fresh green for mint/zellergumó
+        }
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
