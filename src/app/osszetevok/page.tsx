@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { UnifiedNavbar } from '@/components/ui/unified-navbar';
 
 // Ingredient data matching the photos
@@ -117,12 +117,12 @@ export default function OsszetevokPage() {
             
             <div className="max-w-4xl mx-auto mb-8">
               <p className="text-lg md:text-xl text-white leading-relaxed mb-6">
-                A rost hozzájárul a jóllakottság érzéséhez, támogatja az egészséges emésztést és létfontosságú 
-                szerepet játszik a bélrendszer, valamint a vércukorszint megfelelő működésében.
+                A rost hozzájárul a <strong>jóllakottság</strong> érzéséhez, támogatja az <strong>egészséges emésztést</strong> és létfontosságú 
+                szerepet játszik a <strong>bélrendszer</strong>, valamint a <strong>vércukorszint</strong> megfelelő működésében.
               </p>
               
               <p className="text-lg md:text-xl text-rosti-cream leading-relaxed mb-8">
-                A tudomány jelenlegi állása szerint a <strong className="text-rosti-fiber-green">megfelelő rostbevitel</strong> 
+                A tudomány jelenlegi állása szerint a <strong className="text-rosti-fiber-green">megfelelő rostbevitel</strong><br />
                 az egyik legerősebb prevenciós tényező a <strong className="text-rosti-disease-red">krónikus betegségek ellen.</strong>
               </p>
             </div>
@@ -211,27 +211,23 @@ export default function OsszetevokPage() {
 
           {/* Call to Action */}
           <div className="text-center mt-16">
-            <Link
-              href="/auth/signin"
-              className="inline-flex items-center px-8 py-4 bg-rosti-brown text-white font-semibold rounded-xl hover:bg-rosti-brown-dark transition-colors duration-200 shadow-lg transform hover:scale-105"
+            <a
+              href="mailto:hello@rosti.hu?subject=Kérdés/Vélemény a Rosti termékekről&body=Kedves Rosti csapat!%0D%0A%0D%0AKérdésem/véleményem:%0D%0A%0D%0A[Itt írd le a kérdésed vagy véleményed]%0D%0A%0D%0AKöszönettel,%0D%0A[Név]"
+              className="inline-flex items-center px-8 py-4 bg-rosti-brown text-white font-semibold rounded-xl hover:bg-rosti-brown-dark transition-colors duration-200 shadow-lg"
             >
-              <CheckCircle className="w-5 h-5 mr-2" />
-              Próbáld ki a Rosti termékeket
-            </Link>
+              <Mail className="w-5 h-5 mr-2" />
+              Kérdésem vagy véleményem van
+            </a>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-20">
+      <footer className="bg-rosti-brown-dark text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">Rosti</h3>
-            <p className="text-gray-400 mb-4">
-              Minden jog fenntartva.
-            </p>
-            <p className="text-gray-500 text-sm">
-              &copy; 2024 Rosti. Minden jog fenntartva.
+            <p className="text-gray-300 text-sm">
+              &copy; 2025 Rosti. Minden jog fenntartva.
             </p>
           </div>
         </div>

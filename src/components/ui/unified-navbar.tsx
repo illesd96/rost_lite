@@ -21,6 +21,7 @@ export function UnifiedNavbar({
         <div className="flex justify-between items-center h-16">
           {/* Left side - Back button or spacer */}
           <div className="flex items-center">
+            {/* Temporarily commented out back button
             {showBackButton ? (
               <Link 
                 href={backHref} 
@@ -32,6 +33,7 @@ export function UnifiedNavbar({
             ) : (
               <div className="w-16"></div> // Spacer for center alignment
             )}
+            */}
           </div>
 
           {/* Center - Logo */}
@@ -49,6 +51,7 @@ export function UnifiedNavbar({
 
           {/* Right side - Shop icon only */}
           <div className="flex items-center">
+            {/* Temporarily commented out shop icon
             <Link
               href="/auth/signin"
               className="text-gray-700 hover:text-gray-900 p-3 transition-colors"
@@ -56,6 +59,7 @@ export function UnifiedNavbar({
             >
               <ShoppingBag className="w-5 h-5" />
             </Link>
+            */}
           </div>
         </div>
       </div>
