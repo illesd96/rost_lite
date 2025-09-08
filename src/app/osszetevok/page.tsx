@@ -1,87 +1,69 @@
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
+import { CheckCircle } from 'lucide-react';
+import { UnifiedNavbar } from '@/components/ui/unified-navbar';
 
 // Ingredient data matching the photos
 const ingredients = [
   {
     id: 'cekla',
     name: 'Cékla',
-    icon: '🌱', 
+    icon: '/images/emoji/beetroot.png', 
     color: 'ingredient-beetroot',
     description: 'Étrendi nitrátokkal és betalain antioxidánsokkal a vérkeringés támogatásáért'
   },
   {
     id: 'sargarep',
     name: 'Sárgarépa',
-    icon: '🥕',
+    icon: '/images/emoji/carrot.png',
     color: 'ingredient-carrot',
     description: 'Magas béta-karotin (A-vitamin) és élelmi rost tartalom a szép bőrért és jó látásért'
   },
   {
     id: 'uborka',
     name: 'Uborka',
-    icon: '🥒',
+    icon: '/images/emoji/cucumber.png',
     color: 'ingredient-cucumber',
     description: 'Elektrolitokban és természetes káliumban gazdag a megfelelő hidratációért'
   },
   {
     id: 'lilakaposzta',
     name: 'Lilakaposzta',
-    icon: '💜',
+    icon: '/images/emoji/red-cabbage.png',
     color: 'ingredient-berry',
     description: 'Antociánok, C és K-vitamin, valamint glükozinolátok az erek és a szív védelméért'
   },
   {
     id: 'citrom',
     name: 'Citrom',
-    icon: '🍋',
+    icon: '/images/emoji/lemon.png',
     color: 'ingredient-citrus',
     description: 'Magas C-vitaminnal támogatja az immunrendszert és segíti a növényi vas felszívódását'
   },
   {
     id: 'zellergum',
     name: 'Zellergumó',
-    icon: '💙',
+    icon: '/images/emoji/celery.png',
     color: 'ingredient-mint',
     description: 'Természetes kálium-, K-vitamin- és élelmirost-forrás a csontok egészségéért'
   },
   {
     id: 'alma',
     name: 'Alma',
-    icon: '🍎',
+    icon: '/images/emoji/red-apple.png',
     color: 'ingredient-apple',
-    description: 'Antioxidánsai támogatják az immunrendert, polifenoljai pedig a szív egészségét védik'
+    description: 'Antioxidánsai támogatják az immunrendrt, polifenoljai pedig a szív egészségét védik'
   }
 ];
 
 export default function OsszetevokPage() {
   return (
     <div className="min-h-screen bg-rosti-cream">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link 
-                href="/" 
-                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                Vissza
-              </Link>
-            </div>
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-rosti-brown hover:text-rosti-brown-dark transition-colors">
-                Rosti
-              </Link>
-            </div>
-            <div className="w-16"></div> {/* Spacer for center alignment */}
-          </div>
-        </div>
-      </header>
+      {/* Unified Navigation with Back Button */}
+      <UnifiedNavbar showBackButton={true} backHref="/" backText="Vissza" />
 
       {/* Main Content */}
-      <main className="py-12">
+      <main className="py-12 pt-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title Section */}
           <div className="text-center mb-16">
@@ -101,8 +83,18 @@ export default function OsszetevokPage() {
                 className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="flex items-start space-x-4">
-                  <div className={`text-4xl p-3 rounded-full bg-${ingredient.color}/10 flex-shrink-0`}>
-                    {ingredient.icon}
+                  <div className={`p-3 rounded-full bg-${ingredient.color}/10 flex-shrink-0 flex items-center justify-center`}>
+                    {ingredient.icon.startsWith('/') ? (
+                      <Image
+                        src={ingredient.icon}
+                        alt={ingredient.name}
+                        width={48}
+                        height={48}
+                        className="w-12 h-12 object-contain"
+                      />
+                    ) : (
+                      <span className="text-4xl">{ingredient.icon}</span>
+                    )}
                   </div>
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-gray-900 mb-3">
@@ -136,16 +128,83 @@ export default function OsszetevokPage() {
             </div>
 
             {/* Scientific Sources */}
-            <div className="text-sm text-rosti-cream/90 space-y-2">
-              <p className="font-medium">Tudományos források:</p>
-              <div className="flex flex-wrap justify-center gap-4 text-xs">
-                <span>Frontiers in Nutrition [1]</span>
-                <span>Cell Host & Microbe [2]</span>
-                <span>News-Medical.net [3]</span>
+            <div className="mt-6 text-sm text-center">
+              <h4 className="font-semibold mb-2">Tudományos források:</h4>
+              <div className="flex flex-wrap justify-center items-center gap-x-2">
+                <span>Frontiers in Nutrition</span>
+                <a
+                  href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2024.1510564/full"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [1]
+                </a>
+                <span className="text-rosti-cream">|</span>
+                <span>Cell Host & Microbe</span>
+                <a
+                  href="https://www.cell.com/cell-host-microbe/fulltext/S193131281830266X"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [2]
+                </a>
+                <span className="text-rosti-cream">|</span>
+                <span>News-Medical.net</span>
+                <a
+                  href="https://www.news-medical.net/health/The-Role-of-Fiber-in-Preventing-Chronic-Disease.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [3]
+                </a>
               </div>
-              <div className="flex flex-wrap justify-center gap-4 text-xs">
-                <span>National Library of Medicine [4] [5]</span>
-                <span>PubMed [6] [7] [8]</span>
+              <div className="flex flex-wrap justify-center items-center gap-x-2 mt-2">
+                <span>National Library of Medicine</span>
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10498976"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [4]
+                </a>
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9268622"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [5]
+                </a>
+                <span className="text-rosti-cream">|</span>
+                <span>PubMed</span>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/35471164/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [6]
+                </a>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/36193993/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [7]
+                </a>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/32142510/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline"
+                >
+                  [8]
+                </a>
               </div>
             </div>
           </div>

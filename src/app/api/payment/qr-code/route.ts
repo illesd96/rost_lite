@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import QRCode from 'qrcode';
+import * as QRCode from 'qrcode';
 import { paymentDataToQRString, type HungarianPaymentData } from '@/lib/hungarian-payment';
 
 export async function POST(request: NextRequest) {

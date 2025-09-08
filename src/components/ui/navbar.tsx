@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from 'react-use-cart';
 import { ShoppingCart, User, LogOut, Settings } from 'lucide-react';
 
@@ -26,8 +27,14 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/shop" className="text-2xl font-bold text-gray-900 hover:text-primary-600 transition-colors">
-              Rosti
+            <Link href="/shop" className="hover:opacity-80 transition-opacity">
+              <Image
+                src="/images/logo.png"
+                alt="Rosti"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+              />
             </Link>
           </div>
 

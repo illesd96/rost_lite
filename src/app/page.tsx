@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ShoppingBag, Shield, Truck, CreditCard, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { UnifiedNavbar } from '@/components/ui/unified-navbar';
 
 // Product images data
 const productImages = [
@@ -79,38 +80,13 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Landing Page Header */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/30 to-transparent backdrop-blur-md transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-white hover:text-gray-200 transition-colors">
-                Rosti
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/osszetevok"
-                className="text-white hover:text-gray-200 transition-colors font-medium"
-              >
-                Összetevők
-              </Link>
-              <Link
-                href="/auth/signin"
-                className="text-white hover:text-gray-200 p-3 transition-colors"
-                title="Enter Shop"
-              >
-                <ShoppingBag className="w-5 h-5" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      {/* Unified Navigation */}
+      <UnifiedNavbar />
       
       {/* Full-Screen Hero Banner */}
       <div className="relative w-full h-screen">
         <Image
-          src="/images/juice-banner.jpg"
+          src="/images/teszt-bg-2.jpg"
           fill
           alt="Premium products and fresh ingredients"
           className="object-cover"
@@ -119,24 +95,21 @@ export default function HomePage() {
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-black/40"></div>
         
-        {/* Hero Content */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        {/* Hero Content - Description at top */}
+        <div className="absolute top-32 left-0 right-0 flex justify-center">
           <div className="text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <p className="text-xl md:text-2xl text-gray-100 leading-relaxed">
+              Nem Juice. Nem szűrt. És nem is bolti cukros gyümölcs_smoothie.
+            </p>
+          </div>
+        </div>
+
+        {/* Hero Content - Title at bottom */}
+        <div className="absolute bottom-32 left-0 right-0 flex justify-center">
+          <div className="text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               Ez Rosti.
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-100 leading-relaxed">
-              Nem Juice. Nem szűrt.És nem is bolti cukros gyümölcs_smoothie.
-            </p>
-            {/* <div className="flex justify-center">
-              <Link
-                href="/auth/signin"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 shadow-lg transform hover:scale-105"
-              >
-                <ShoppingBag className="w-5 h-5 mr-2" />
-                Enter Shop
-              </Link>
-            </div> */}
           </div>
         </div>
         
