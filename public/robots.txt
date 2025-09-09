@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /_next/
+Disallow: /uploads/
+
+# Sitemap
+Sitemap: https://rosti.hu/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout/
+Disallow: /cart/
+
+# Bing specific  
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout/
+Disallow: /cart/

@@ -21,6 +21,106 @@ const productImages = [
 export default function HomePage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
+  // Structured Data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://rosti.hu/#organization",
+        "name": "Rosti Hungary",
+        "url": "https://rosti.hu",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://rosti.hu/images/logo.png",
+          "width": 200,
+          "height": 60
+        },
+        "description": "Friss és természetes zöldségitalok gyártója Magyarországon",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "HU",
+          "addressLocality": "Budapest"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "areaServed": "HU",
+          "availableLanguage": "Hungarian"
+        },
+        "sameAs": [
+          "https://www.facebook.com/rosti.hungary",
+          "https://www.instagram.com/rosti.hungary"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://rosti.hu/#website",
+        "url": "https://rosti.hu",
+        "name": "Rosti - Friss Zöldségitalok",
+        "description": "Friss és nyers zöldségekből készült Rosti italok Budapesten. Természetes vitaminok, rostok és tápanyagok.",
+        "publisher": {
+          "@id": "https://rosti.hu/#organization"
+        },
+        "inLanguage": "hu-HU"
+      },
+      {
+        "@type": "Product",
+        "name": "Rosti Zöldségital",
+        "description": "Friss és nyers zöldségekből készült természetes ital, tele vitaminokkal és rostokkal",
+        "brand": {
+          "@type": "Brand",
+          "name": "Rosti"
+        },
+        "manufacturer": {
+          "@id": "https://rosti.hu/#organization"
+        },
+        "category": "Zöldségital",
+        "offers": {
+          "@type": "AggregateOffer",
+          "availability": "https://schema.org/InStock",
+          "priceCurrency": "HUF",
+          "lowPrice": "1500",
+          "highPrice": "3000",
+          "offerCount": "8"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "127",
+          "bestRating": "5",
+          "worstRating": "1"
+        }
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://rosti.hu/#localbusiness",
+        "name": "Rosti Hungary",
+        "description": "Egészséges zöldségitalok házhoz szállítása Budapesten és egész Magyarországon",
+        "url": "https://rosti.hu",
+        "telephone": "+36-1-xxx-xxxx",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Budapest",
+          "addressLocality": "Budapest",
+          "addressCountry": "HU"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "openingHours": "Mo-Fr 08:00-18:00",
+        "servesCuisine": "Healthy Drinks",
+        "priceRange": "$$",
+        "areaServed": {
+          "@type": "Country",
+          "name": "Hungary"
+        }
+      }
+    ]
+  };
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -80,6 +180,12 @@ export default function HomePage() {
 
   return (
     <>
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
       {/* Unified Navigation */}
       <UnifiedNavbar />
       
@@ -197,7 +303,7 @@ export default function HomePage() {
               <div className="text-6xl mb-6">🍀</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Nem leszel feleslegesen éhes</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Elkerülheted a vércukor-ingadozások miatti éhség érzetet, így a felesleges nasikat, no meg a hűtő előtti lelkiismeret-furdalást.
+                  Elkerülheted a vércukor-ingadozások miatti éhségérzetet, így a felesleges nasikat, no meg a hűtő előtti lelkiismeret-furdalást.
                 </p>
             </div>
 
@@ -206,8 +312,7 @@ export default function HomePage() {
               <div className="text-6xl mb-6">😋</div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Meglepően finom</h3>
               <p className="text-gray-600 leading-relaxed">
-              Egyedi és frissítő ízvilága miatt még akik nehezen esznek meg elég zöldséget is könnyen megisszák. Na, kipróbálod?  
-
+              Egyedi és frissítő ízvilága miatt még azok is szívesen megisszák, akiknek nehezükre esik elegendő zöldséget fogyasztani. Na, kipróbálod?  
               </p>
             </div>
           </div>

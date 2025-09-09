@@ -2,6 +2,26 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Mail } from 'lucide-react';
 import { UnifiedNavbar } from '@/components/ui/unified-navbar';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Rosti Összetevők | Természetes Zöldségek és Gyümölcsök | Budapest',
+  description: 'Ismerd meg a Rosti zöldségitalok természetes összetevőit: cékla, sárgarépa, uborka, lilakáposzta és zeller. Friss, nyers és egészséges alapanyagok vitaminokkal és rostokkal.',
+  keywords: 'rosti összetevők, természetes zöldségek, cékla, sárgarépa, uborka, lilakáposzta, zeller, vitaminok, rostok, egészséges táplálkozás, természetes antioxidánsok, budapest',
+  openGraph: {
+    title: 'Rosti Összetevők - Természetes Zöldségek és Gyümölcsök',
+    description: 'Ismerd meg a Rosti zöldségitalok természetes összetevőit. Friss, nyers és egészséges alapanyagok.',
+    url: 'https://rosti.hu/osszetevok',
+    images: [
+      {
+        url: 'https://rosti.hu/images/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Rosti Összetevők',
+      },
+    ],
+  },
+};
 
 // Ingredient data matching the photos
 const ingredients = [
@@ -28,7 +48,7 @@ const ingredients = [
   },
   {
     id: 'lilakaposzta',
-    name: 'Lilakaposzta',
+    name: 'Lilakáposzta',
     icon: '/images/emoji/red-cabbage.png',
     color: 'ingredient-berry',
     description: 'Antociánok, C és K-vitamin, valamint glükozinolátok az erek és a szív védelméért'
