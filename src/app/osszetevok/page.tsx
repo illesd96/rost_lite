@@ -72,7 +72,7 @@ const ingredients = [
     name: 'Alma',
     icon: '/images/emoji/red-apple.png',
     color: 'ingredient-apple',
-    description: 'Antioxidánsai támogatják az immunrendrt, polifenoljai pedig a szív egészségét védik'
+    description: 'Antioxidánsai támogatják az immunrendszert, polifenoljai pedig a szív egészségét védik'
   }
 ];
 
@@ -91,7 +91,7 @@ export default function OsszetevokPage() {
               A mai friss összetevők
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Ezek a vibráló, friss és nyers összetevők a kezdetben tartott Rostiban
+              Ezek a vibráló, friss és nyers összetevők a kezedben tartott Rostiban
             </p>
           </div>
 
