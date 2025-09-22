@@ -85,7 +85,7 @@ export default async function OrdersPage() {
                       <Package className="w-5 h-5 text-gray-400 mr-2" />
                       <div>
                         <p className="text-sm text-gray-500">Subtotal</p>
-                        <p className="font-semibold">{formatPrice(order.subtotalHuf)}</p>
+                        <p className="font-semibold text-gray-900">{formatPrice(order.subtotalHuf)}</p>
                       </div>
                     </div>
                     
@@ -93,14 +93,14 @@ export default async function OrdersPage() {
                       <CreditCard className="w-5 h-5 text-gray-400 mr-2" />
                       <div>
                         <p className="text-sm text-gray-500">Total</p>
-                        <p className="font-semibold text-lg">{formatPrice(order.totalHuf)}</p>
+                        <p className="font-semibold text-lg text-gray-900">{formatPrice(order.totalHuf)}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center">
                       <div>
                         <p className="text-sm text-gray-500">Delivery</p>
-                        <p className="font-semibold">
+                        <p className="font-semibold text-gray-900">
                           {order.deliveryFeeHuf > 0 
                             ? formatPrice(order.deliveryFeeHuf)
                             : <span className="text-green-600">FREE</span>
