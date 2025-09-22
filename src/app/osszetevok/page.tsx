@@ -1,27 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useEffect } from 'react';
 import { Mail } from 'lucide-react';
 import { UnifiedNavbar } from '@/components/ui/unified-navbar';
-import { Metadata } from 'next';
+import { trackQRCodeVisit } from '@/lib/analytics';
 
-export const metadata: Metadata = {
-  title: 'Rosti Összetevők | Természetes Zöldségek és Gyümölcsök | Budapest',
-  description: 'Ismerd meg a Rosti zöldségitalok természetes összetevőit: cékla, sárgarépa, uborka, lilakáposzta és zeller. Friss, nyers és egészséges alapanyagok vitaminokkal és rostokkal.',
-  keywords: 'rosti összetevők, természetes zöldségek, cékla, sárgarépa, uborka, lilakáposzta, zeller, vitaminok, rostok, egészséges táplálkozás, természetes antioxidánsok, budapest',
-  openGraph: {
-    title: 'Rosti Összetevők - Természetes Zöldségek és Gyümölcsök',
-    description: 'Ismerd meg a Rosti zöldségitalok természetes összetevőit. Friss, nyers és egészséges alapanyagok.',
-    url: 'https://rosti.hu/osszetevok',
-    images: [
-      {
-        url: 'https://rosti.hu/images/logo.png',
-        width: 1200,
-        height: 630,
-        alt: 'Rosti Összetevők',
-      },
-    ],
-  },
-};
 
 // Ingredient data matching the photos
 const ingredients = [
@@ -72,11 +57,16 @@ const ingredients = [
     name: 'Alma',
     icon: '/images/emoji/red-apple.png',
     color: 'ingredient-apple',
-    description: 'Antioxidánsai támogatják az immunrendrt, polifenoljai pedig a szív egészségét védik'
+    description: 'Antioxidánsai támogatják az immunrendszert, polifenoljai pedig a szív egészségét védik'
   }
 ];
 
 export default function OsszetevokPage() {
+  // Track QR code visits on page load
+  useEffect(() => {
+    trackQRCodeVisit('/osszetevok');
+  }, []);
+
   return (
     <div className="min-h-screen bg-rosti-cream">
       {/* Unified Navigation with Back Button */}
@@ -88,10 +78,10 @@ export default function OsszetevokPage() {
           {/* Title Section */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              A mai friss összetevők
+              A mai friss összetevők 
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Ezek a vibráló, friss és nyers összetevők a kezdetben tartott Rostiban
+              Ezek a vibráló, friss és nyers összetevők a kezedben tartott Rostiban
             </p>
           </div>
 

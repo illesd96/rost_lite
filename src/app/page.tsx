@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ShoppingBag, Shield, Truck, CreditCard, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { UnifiedNavbar } from '@/components/ui/unified-navbar';
+import { trackQRCodeVisit } from '@/lib/analytics';
 
 // Product images data
 const productImages = [
@@ -120,6 +121,11 @@ export default function HomePage() {
       }
     ]
   };
+
+  // Track QR code visits on page load
+  useEffect(() => {
+    trackQRCodeVisit('/');
+  }, []);
 
   // Handle keyboard navigation
   useEffect(() => {

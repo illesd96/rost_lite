@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, boolean, timestamp, check } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, integer, boolean, timestamp, check, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
@@ -75,3 +75,16 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+// QR Code Analytics table
+export const qrCodeVisits = pgTable('qr_code_visits', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  page: varchar('page', { length: 50 }).notNull(), // '/osszetevok' or '/'
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
+  userAgent: text('user_agent'),
+  ipAddress: varchar('ip_address', { length: 45 }), // IPv6 compatible
+  referrer: text('referrer'),
+  isDirectVisit: boolean('is_direct_visit').default(true).notNull(),
+  sessionId: varchar('session_id', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});

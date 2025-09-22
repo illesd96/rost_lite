@@ -10,7 +10,11 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "staging:build": "NODE_ENV=staging npm run build",
+    "staging:deploy": "vercel --prod",
+    "staging:db:push": "drizzle-kit push",
+    "preview:deploy": "vercel"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
