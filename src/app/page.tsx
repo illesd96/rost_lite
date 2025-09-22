@@ -325,6 +325,108 @@ export default function HomePage() {
         </div>
       </section>
 
+                {/* Why Fiber is Important Section */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">        
+          <div className="bg-rosti-gold rounded-3xl p-8 md:p-12 mt-10 mb-10 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+              MIÉRT FONTOS A <span className="text-rosti-fiber-green">ROST?</span>
+            </h2>
+            
+            <div className="max-w-4xl mx-auto mb-8">
+              <p className="text-lg md:text-xl text-white leading-relaxed mb-6">
+                A rost hozzájárul a <strong>jóllakottság</strong> érzéséhez, támogatja az <strong>egészséges emésztést</strong> és létfontosságú 
+                szerepet játszik a <strong>bélrendszer</strong>, valamint a <strong>vércukorszint</strong> megfelelő működésében.
+              </p>
+              
+              <p className="text-lg md:text-xl text-rosti-cream leading-relaxed mb-8">
+                A tudomány jelenlegi állása szerint a <strong className="text-rosti-fiber-green">megfelelő rostbevitel</strong><br />
+                az egyik legerősebb prevenciós tényező a <strong className="text-rosti-disease-red">krónikus betegségek ellen.</strong>
+              </p>
+            </div>
+
+            {/* Scientific Sources */}
+            <div className="mt-6 text-sm text-center text-rosti-fiber-green">
+              <h4 className="font-semibold mb-2 text-rosti-fiber-green">Tudományos források:</h4>
+              <div className="flex flex-wrap justify-center items-center gap-x-2 text-rosti-fiber-green">
+                <span className="text-rosti-fiber-green">Frontiers in Nutrition</span>
+                <a
+                  href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2024.1510564/full"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [1]
+                </a>
+                <span className="text-rosti-fiber-green">|</span>
+                <span className="text-rosti-fiber-green">Cell Host & Microbe</span>
+                <a
+                  href="https://www.cell.com/cell-host-microbe/fulltext/S193131281830266X"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [2]
+                </a>
+                <span className="text-rosti-fiber-green">|</span>
+                <span className="text-rosti-fiber-green">News-Medical.net</span>
+                <a
+                  href="https://www.news-medical.net/health/The-Role-of-Fiber-in-Preventing-Chronic-Disease.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [3]
+                </a>
+              </div>
+              <div className="flex flex-wrap justify-center items-center gap-x-2 mt-2 text-rosti-fiber-green">
+                <span className="text-rosti-fiber-green">National Library of Medicine</span>
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10498976"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [4]
+                </a>
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9268622"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [5]
+                </a>
+                <span className="text-rosti-fiber-green">|</span>
+                <span className="text-rosti-fiber-green">PubMed</span>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/35471164/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [6]
+                </a>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/36193993/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [7]
+                </a>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/32142510/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rosti-fiber-green underline hover:no-underline"
+                >
+                  [8]
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       {/* Keresd a Rostit az irodai hűtőben Section */}
       <section className="py-10 bg-gradient-to-b from-rosti-brown to-rosti-brown-dark text-white">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
