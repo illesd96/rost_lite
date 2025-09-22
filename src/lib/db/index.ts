@@ -2,11 +2,17 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
 
-const connectionString = process.env.DATABASE_URL;
+// Support multiple env var names used by Vercel + Neon integrations
+const connectionString =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.POSTGRES_URL_NON_POOLING ||
+  '';
 
 if (!connectionString) {
   throw new Error(
-    'DATABASE_URL is not set. Please set it in your environment variables.'
+    'DATABASE_URL is not set. Please set it (or POSTGRES_URL) in your environment variables.'
   );
 }
 
@@ -24,7 +30,7 @@ const clientConfig: postgres.Options<{}> = {
 
 // Add SSL configuration for production/staging environments
 if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'preview') {
-  clientConfig.ssl = process.env.DATABASE_URL?.includes('localhost') ? false : 'require';
+  clientConfig.ssl = connectionString.includes('localhost') ? false : 'require';
 }
 
 const client = postgres(connectionString, clientConfig);
