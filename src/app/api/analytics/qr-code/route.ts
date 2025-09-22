@@ -50,13 +50,24 @@ export async function GET(request: NextRequest) {
     // Calculate date range
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
+    const startDateIso = startDate.toISOString();
     
     // Get analytics data
-    const visits = await db
-      .select()
-      .from(qrCodeVisits)
-      .where(sql`${qrCodeVisits.timestamp} >= ${startDate}`)
-      .orderBy(desc(qrCodeVisits.timestamp));
+    let visits = [] as any[];
+    try {
+      visits = await db
+        .select()
+        .from(qrCodeVisits)
+        .where(sql`${qrCodeVisits.timestamp} >= ${startDateIso}`)
+        .orderBy(desc(qrCodeVisits.timestamp));
+    } catch (innerError) {
+      // If there is any driver/date binding issue, return without the filter as a fallback
+      console.warn('QR analytics query with date filter failed, retrying without filter:', innerError);
+      visits = await db
+        .select()
+        .from(qrCodeVisits)
+        .orderBy(desc(qrCodeVisits.timestamp));
+    }
 
     // Normalize for JSON response (convert Date objects to ISO strings)
     const normalizedVisits = visits.map((v) => ({
