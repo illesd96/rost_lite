@@ -242,6 +242,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
                   className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
                   placeholder="Image description"
                 />
+                
                 <div className="flex items-center mt-1 space-x-2">
                   <a
                     href={image.url}
