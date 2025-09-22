@@ -57,24 +57,31 @@ export async function GET(request: NextRequest) {
       .from(qrCodeVisits)
       .where(sql`${qrCodeVisits.timestamp} >= ${startDate}`)
       .orderBy(desc(qrCodeVisits.timestamp));
+
+    // Normalize for JSON response (convert Date objects to ISO strings)
+    const normalizedVisits = visits.map((v) => ({
+      ...v,
+      timestamp: new Date(v.timestamp as unknown as Date).toISOString(),
+      createdAt: v.createdAt ? new Date(v.createdAt as unknown as Date).toISOString() : undefined,
+    }));
     
     // Calculate statistics
     const stats = {
-      totalVisits: visits.length,
-      osszetevokDirectVisits: visits.filter(v => v.page === '/osszetevok' && v.isDirectVisit).length,
-      mainPageNoReferrerVisits: visits.filter(v => v.page === '/' && v.isDirectVisit).length,
-      todayVisits: visits.filter(v => {
+      totalVisits: normalizedVisits.length,
+      osszetevokDirectVisits: normalizedVisits.filter(v => v.page === '/osszetevok' && v.isDirectVisit).length,
+      mainPageNoReferrerVisits: normalizedVisits.filter(v => v.page === '/' && v.isDirectVisit).length,
+      todayVisits: normalizedVisits.filter(v => {
         const today = new Date();
         const visitDate = new Date(v.timestamp);
         return visitDate.toDateString() === today.toDateString();
       }).length,
-      weeklyVisits: visits.filter(v => {
+      weeklyVisits: normalizedVisits.filter(v => {
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         return new Date(v.timestamp) >= weekAgo;
       }).length,
-      monthlyVisits: visits.length, // Already filtered by days parameter
-      recentVisits: visits.slice(0, 20), // Last 20 visits
+      monthlyVisits: normalizedVisits.length, // Already filtered by days parameter
+      recentVisits: normalizedVisits.slice(0, 20), // Last 20 visits
     };
     
     return NextResponse.json(stats);
