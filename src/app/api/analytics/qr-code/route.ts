@@ -80,8 +80,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(stats);
   } catch (error) {
     console.error('Error fetching QR analytics:', error);
+    const isProd = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to fetch analytics' },
+      isProd
+        ? { error: 'Failed to fetch analytics' }
+        : { error: 'Failed to fetch analytics', details: message },
       { status: 500 }
     );
   }
