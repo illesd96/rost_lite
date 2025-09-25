@@ -155,19 +155,19 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
 
   return (
     <div className="space-y-8">
-      {/* Address Forms */}
-      <AddressSection
-        deliveryAddress={deliveryAddress}
-        billingAddress={billingAddress}
-        onDeliveryAddressChange={setDeliveryAddress}
-        onBillingAddressChange={setBillingAddress}
-        onDeliveryValidChange={setIsDeliveryAddressValid}
-        onBillingValidChange={setIsBillingAddressValid}
-      />
+      {/* 3-Column Layout on Desktop */}
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Column 1: Address Forms */}
+        <AddressSection
+          deliveryAddress={deliveryAddress}
+          billingAddress={billingAddress}
+          onDeliveryAddressChange={setDeliveryAddress}
+          onBillingAddressChange={setBillingAddress}
+          onDeliveryValidChange={setIsDeliveryAddressValid}
+          onBillingValidChange={setIsBillingAddressValid}
+        />
 
-      {/* Order Summary & Payment */}
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Order Summary */}
+        {/* Column 2: Order Summary */}
         <OrderSummary
           items={items}
           cartTotal={cartTotal}
@@ -179,7 +179,7 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
           onDeliveryChange={handleDeliveryChange}
         />
 
-        {/* Bank Transfer Payment Section */}
+        {/* Column 3: Bank Transfer Payment */}
         <BankTransferPayment
           amount={finalTotal}
           orderId={`TEMP-${Date.now()}`}

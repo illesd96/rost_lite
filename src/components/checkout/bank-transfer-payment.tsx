@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { QrCode, Copy, Check, CreditCard, Clock, Info } from 'lucide-react';
+import { QrCode, Copy, Check, CreditCard, Clock, Info, X } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { 
   generateHungarianPaymentData, 
@@ -29,7 +29,8 @@ export function BankTransferPayment({
   const [bankTransferInfo, setBankTransferInfo] = useState<BankTransferInfo | null>(null);
   const [copiedField, setCopiedField] = useState<string>('');
   const [showQRCode, setShowQRCode] = useState(false);
-  const [customEmail, setCustomEmail] = useState(userEmail);
+  const [additionalEmails, setAdditionalEmails] = useState<string[]>([]);
+  const [emailInput, setEmailInput] = useState('');
 
   useEffect(() => {
     // Generate bank transfer information
@@ -69,6 +70,32 @@ export function BankTransferPayment({
       setTimeout(() => setCopiedField(''), 2000);
     } catch (err) {
       console.error('Failed to copy text: ', err);
+    }
+  };
+
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const addEmail = () => {
+    if (emailInput.trim() && isValidEmail(emailInput.trim())) {
+      const email = emailInput.trim();
+      if (email !== userEmail && !additionalEmails.includes(email)) {
+        setAdditionalEmails([...additionalEmails, email]);
+        setEmailInput('');
+      }
+    }
+  };
+
+  const removeEmail = (emailToRemove: string) => {
+    setAdditionalEmails(additionalEmails.filter(email => email !== emailToRemove));
+  };
+
+  const handleEmailKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addEmail();
     }
   };
 
@@ -202,17 +229,45 @@ export function BankTransferPayment({
             <Info className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <label className="block text-sm font-medium text-blue-900 mb-2">
-                E-mail cím a megerősítéshez
+                E-mail címek a megerősítéshez
               </label>
-              <input
-                type="email"
-                value={customEmail}
-                onChange={(e) => setCustomEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                placeholder="email@example.com"
-              />
-              <p className="text-xs text-blue-700 mt-1">
-                A rendelés megerősítését és fizetési instrukciót erre az e-mail címre küldjük.
+              
+              {/* Email Tags */}
+              <div className="flex flex-wrap gap-2 mb-3 p-3 border border-blue-300 rounded-lg bg-blue-50 min-h-[60px]">
+                {/* Primary User Email - Cannot be deleted */}
+                <div className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded-full">
+                  <span>{userEmail}</span>
+                  <span className="ml-2 text-blue-200 text-xs">(fő)</span>
+                </div>
+                
+                {/* Additional Emails */}
+                {additionalEmails.map((email, index) => (
+                  <div key={index} className="inline-flex items-center px-3 py-1 bg-gray-600 text-white text-sm rounded-full">
+                    <span>{email}</span>
+                    <button
+                      onClick={() => removeEmail(email)}
+                      className="ml-2 text-gray-300 hover:text-white"
+                      type="button"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                
+                {/* Input for new emails */}
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  onKeyPress={handleEmailKeyPress}
+                  onBlur={addEmail}
+                  className="flex-1 min-w-[200px] px-2 py-1 text-sm border-none outline-none bg-transparent placeholder-blue-400"
+                  placeholder="További e-mail cím hozzáadása..."
+                />
+              </div>
+              
+              <p className="text-xs text-blue-700">
+                A rendelés megerősítését és fizetési instrukciót ezekre az e-mail címekre küldjük.
               </p>
             </div>
           </div>
