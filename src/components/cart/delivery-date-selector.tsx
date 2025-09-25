@@ -42,8 +42,10 @@ export function DeliveryDateSelector({
     const isSelected = selectedDates.some(d => d.getTime() === dateTime);
     
     if (isSelected) {
+      // If already selected, remove it (deselect)
       onDatesChange(selectedDates.filter(d => d.getTime() !== dateTime));
     } else {
+      // If not selected, add it (select)
       onDatesChange([...selectedDates, date]);
     }
   };
@@ -102,8 +104,8 @@ export function DeliveryDateSelector({
               className={`
                 p-3 rounded-lg border-2 text-center transition-all
                 ${isSelected 
-                  ? 'border-green-500 bg-green-50 text-green-900' 
-                  : 'border-gray-200 bg-white hover:border-gray-300'
+                  ? 'border-green-500 bg-green-100 text-green-800 shadow-md' 
+                  : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
                 }
                 ${isDisabled 
                   ? 'opacity-50 cursor-not-allowed bg-gray-100' 
