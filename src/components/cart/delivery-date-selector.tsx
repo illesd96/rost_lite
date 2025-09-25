@@ -32,7 +32,8 @@ export function DeliveryDateSelector({
     if (selectedDates.length === 0) {
       const nearest = getNearestAvailableDate(dates);
       if (nearest) {
-        onDatesChange([nearest]);
+        const normalizedNearest = new Date(nearest.getFullYear(), nearest.getMonth(), nearest.getDate());
+        onDatesChange([normalizedNearest]);
       }
     }
   }, [deliverySettings, selectedDates.length, onDatesChange]);
@@ -64,12 +65,21 @@ export function DeliveryDateSelector({
 
   const handleQuickSelect = (type: 'weekly' | 'biweekly') => {
     const quickDates = getQuickSelectDates(deliverySettings, type);
-    // Filter only available dates
-    const availableQuickDates = quickDates.filter(date => 
-      availableDates.some(ad => 
-        ad.date.getTime() === date.getTime() && ad.isAvailable
-      )
+    
+    // Normalize quick dates and filter only available dates
+    const normalizedQuickDates = quickDates.map(date => 
+      new Date(date.getFullYear(), date.getMonth(), date.getDate())
     );
+    
+    const availableQuickDates = normalizedQuickDates.filter(date => {
+      const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      return availableDates.some(ad => {
+        const normalizedAvailable = new Date(ad.date.getFullYear(), ad.date.getMonth(), ad.date.getDate());
+        return normalizedAvailable.getTime() === normalizedDate.getTime() && ad.isAvailable;
+      });
+    });
+    
+    console.log('Quick select:', type, 'availableQuickDates:', availableQuickDates);
     onDatesChange(availableQuickDates);
   };
 
@@ -95,7 +105,7 @@ export function DeliveryDateSelector({
           className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
           Heti 1x
-          <span className="block text-xs opacity-90">Következő 4 hétfő</span>
+          <span className="block text-xs opacity-90">Hétfő (4 hét)</span>
         </button>
         <button
           onClick={() => handleQuickSelect('biweekly')}
