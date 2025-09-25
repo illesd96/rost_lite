@@ -29,6 +29,7 @@ export function BankTransferPayment({
   const [bankTransferInfo, setBankTransferInfo] = useState<BankTransferInfo | null>(null);
   const [copiedField, setCopiedField] = useState<string>('');
   const [showQRCode, setShowQRCode] = useState(false);
+  const [customEmail, setCustomEmail] = useState(userEmail);
 
   useEffect(() => {
     // Generate bank transfer information
@@ -104,47 +105,10 @@ export function BankTransferPayment({
       <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
         <h3 className="font-medium text-green-900 mb-2">Azonnali fizetés</h3>
         <p className="text-sm text-green-700">
-          Fizessen gyorsan és biztonságosan banki átutalással. Használja a QR kódot az azonnali fizetéshez, 
-          vagy másolja át az adatokat kézi átutaláshoz.
+          Fizessen gyorsan és biztonságosan banki átutalással. Másolja át az adatokat kézi átutaláshoz.
         </p>
       </div>
 
-      {/* QR Code Section */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium text-gray-900">QR kód - Azonnali fizetés</h3>
-          <button
-            onClick={() => setShowQRCode(!showQRCode)}
-            className="flex items-center text-primary-600 hover:text-primary-700 text-sm font-medium"
-          >
-            <QrCode className="w-4 h-4 mr-1" />
-            {showQRCode ? 'QR kód elrejtése' : 'QR kód megjelenítése'}
-          </button>
-        </div>
-
-        {showQRCode && (
-          <div className="bg-gray-50 rounded-lg p-4 text-center">
-            {qrCodeUrl ? (
-              <div>
-                <img 
-                  src={qrCodeUrl} 
-                  alt="Payment QR Code" 
-                  className="mx-auto mb-3 bg-white p-2 rounded"
-                  style={{ maxWidth: '200px', maxHeight: '200px' }}
-                />
-                <p className="text-sm text-gray-600">
-                  Olvassa be a QR kódot mobilbanki alkalmazásával
-                </p>
-              </div>
-            ) : (
-              <div className="py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-2"></div>
-                <p className="text-sm text-gray-600">QR kód generálása...</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
 
       {/* Manual Transfer Details */}
       <div className="mb-6">
@@ -231,24 +195,26 @@ export function BankTransferPayment({
         </div>
       </div>
 
-      {/* Validity and Email Info */}
-      <div className="mb-6 space-y-4">
-        {bankTransferInfo.validUntil && (
-          <div className="flex items-start text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
-            <Clock className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="font-medium">Fizetési határidő</p>
-              <p>{formatValidUntil(bankTransferInfo.validUntil)}</p>
+      {/* Email Input Section */}
+      <div className="mb-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start">
+            <Info className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-blue-900 mb-2">
+                E-mail cím a megerősítéshez
+              </label>
+              <input
+                type="email"
+                value={customEmail}
+                onChange={(e) => setCustomEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                placeholder="email@example.com"
+              />
+              <p className="text-xs text-blue-700 mt-1">
+                A rendelés megerősítését és fizetési instrukciót erre az e-mail címre küldjük.
+              </p>
             </div>
-          </div>
-        )}
-
-        <div className="flex items-start text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
-          <Info className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-          <div>
-            <p className="font-medium">E-mail cím</p>
-            <p>{userEmail}</p>
-            <p className="text-xs mt-1">A fizetés megerősítését erre az e-mail címre küldjük.</p>
           </div>
         </div>
       </div>

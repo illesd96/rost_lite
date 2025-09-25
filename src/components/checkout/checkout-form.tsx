@@ -192,12 +192,12 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
 
                   <div className="space-y-3 border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-gray-600">Subtotal (per order)</span>
+              <span className="text-gray-900 font-medium">Subtotal (per order)</span>
               <span className="font-medium">{formatPrice(cartTotal)}</span>
             </div>
             
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Delivery (per order)</span>
+              <span className="text-gray-900 font-medium">Delivery (per order)</span>
               <span className="font-medium">
                 {deliveryFee === 0 ? (
                   <span className="text-green-600">INGYEN</span>
@@ -209,7 +209,7 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
             
             {selectedDeliveryDates.length > 1 && (
               <div className="flex justify-between">
-                <span className="text-gray-600">Number of orders</span>
+                <span className="text-gray-900 font-medium">Number of orders</span>
                 <span className="font-medium">{selectedDeliveryDates.length}</span>
               </div>
             )}
@@ -220,6 +220,15 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
               </p>
             )}
           </div>
+
+        {/* Delivery Selection inside Order Summary */}
+        <div className="border-t pt-4 mt-4">
+          <DeliverySelection
+            subtotal={cartTotal}
+            onDeliveryChange={handleDeliveryChange}
+            selectedDeliveryId={deliveryMethod}
+          />
+        </div>
 
         <div className="border-t pt-4 mt-4">
           <div className="flex justify-between items-center text-lg font-semibold">
@@ -232,15 +241,6 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Delivery Selection */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <DeliverySelection
-          subtotal={cartTotal}
-          onDeliveryChange={handleDeliveryChange}
-          selectedDeliveryId={deliveryMethod}
-        />
       </div>
 
       {/* Bank Transfer Payment Section */}
