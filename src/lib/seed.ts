@@ -10,7 +10,7 @@ export async function seedDatabase() {
     const adminPassword = await bcrypt.hash('admin123', 12);
     
     await db.insert(users).values({
-      email: 'admin@webshop.com',
+      email: 'dani.illes96@gmail.com',
       password: adminPassword,
       role: 'admin',
     }).onConflictDoNothing();
@@ -34,7 +34,7 @@ export async function seedDatabase() {
     }).onConflictDoNothing();
 
     console.log('✅ Database seeded successfully with users only!');
-    console.log('👤 Admin login: admin@webshop.com / admin123');
+    console.log('👤 Admin login: dani.illes96@gmail.com / admin123');
     console.log('👤 Customer 1 login: customer1@example.com / customer123');
     console.log('👤 Customer 2 login: customer2@example.com / customer456');
   } catch (error) {

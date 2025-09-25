@@ -35,6 +35,7 @@ export const orders = pgTable('orders', {
   deliveryMethod: text('delivery_method').default('own-delivery'), // Delivery option ID
   deliveryAddress: text('delivery_address'), // For home delivery
   pickupPointId: text('pickup_point_id'), // For pickup points
+  deliveryDate: timestamp('delivery_date'), // Scheduled delivery date
   barionPaymentId: text('barion_payment_id'),
   barionStatus: text('barion_status'),
 });
@@ -86,5 +87,16 @@ export const qrCodeVisits = pgTable('qr_code_visits', {
   referrer: text('referrer'),
   isDirectVisit: boolean('is_direct_visit').default(true).notNull(),
   sessionId: varchar('session_id', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Delivery Settings table
+export const deliverySettings = pgTable('delivery_settings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  deliveryDays: text('delivery_days').notNull().default('["monday","wednesday"]'), // JSON array of days
+  weeksInAdvance: integer('weeks_in_advance').notNull().default(4), // How many weeks in advance to show
+  cutoffHours: integer('cutoff_hours').notNull().default(24), // Hours before delivery to stop accepting orders
+  isActive: boolean('is_active').notNull().default(true),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

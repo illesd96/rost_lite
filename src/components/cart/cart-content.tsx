@@ -5,9 +5,19 @@ import { useCart } from 'react-use-cart';
 import { formatPrice, calculateDeliveryFee } from '@/lib/utils';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
+import { DeliveryDateSelector } from './delivery-date-selector';
+import { DeliverySettings } from '@/lib/delivery-dates';
 
 export function CartContent() {
   const [isClient, setIsClient] = useState(false);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [deliverySettings, setDeliverySettings] = useState<DeliverySettings>({
+    deliveryDays: ['monday', 'wednesday'],
+    weeksInAdvance: 4,
+    cutoffHours: 24,
+    isActive: true
+  });
+  
   const { 
     items, 
     isEmpty, 
@@ -20,10 +30,17 @@ export function CartContent() {
 
   useEffect(() => {
     setIsClient(true);
+    
+    // Fetch delivery settings
+    fetch('/api/delivery-settings')
+      .then(res => res.json())
+      .then(data => setDeliverySettings(data))
+      .catch(err => console.error('Failed to fetch delivery settings:', err));
   }, []);
 
   const deliveryFee = calculateDeliveryFee(cartTotal);
-  const finalTotal = cartTotal + deliveryFee;
+  const singleOrderTotal = cartTotal + deliveryFee;
+  const finalTotal = singleOrderTotal * Math.max(selectedDates.length, 1);
 
   if (!isClient) {
     return (
@@ -53,6 +70,13 @@ export function CartContent() {
   return (
     <div className="grid lg:grid-cols-3 gap-8">
       <div className="lg:col-span-2">
+        {/* Delivery Date Selection */}
+        <DeliveryDateSelector
+          selectedDates={selectedDates}
+          onDatesChange={setSelectedDates}
+          deliverySettings={deliverySettings}
+        />
+        
         <div className="bg-white rounded-lg shadow-sm">
           <div className="p-6 border-b">
             <div className="flex justify-between items-center">
@@ -142,6 +166,13 @@ export function CartContent() {
               </span>
             </div>
             
+            {selectedDates.length > 1 && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Delivery dates</span>
+                <span className="font-medium">{selectedDates.length} db</span>
+              </div>
+            )}
+            
             {deliveryFee === 0 && cartTotal > 0 && (
               <p className="text-sm text-green-600">
                 🎉 You qualify for free delivery!
@@ -155,6 +186,16 @@ export function CartContent() {
             )}
           </div>
 
+          {selectedDates.length > 1 && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div className="text-sm text-blue-800">
+                <strong>{selectedDates.length} separate orders</strong> will be created
+                <br />
+                <span className="text-xs">One order per delivery date</span>
+              </div>
+            </div>
+          )}
+
           <div className="border-t pt-4 mb-6">
             <div className="flex justify-between items-center">
               <span className="text-lg font-semibold text-gray-900">Total</span>
@@ -162,14 +203,28 @@ export function CartContent() {
                 {formatPrice(finalTotal)}
               </span>
             </div>
+            {selectedDates.length > 1 && (
+              <div className="text-sm text-gray-500 mt-1">
+                {formatPrice(singleOrderTotal)} × {selectedDates.length} orders
+              </div>
+            )}
           </div>
 
-          <Link
-            href="/checkout"
-            className="w-full flex items-center justify-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200 mb-3"
-          >
-            Proceed to Checkout
-          </Link>
+          {selectedDates.length > 0 ? (
+            <Link
+              href="/checkout"
+              className="w-full flex items-center justify-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200 mb-3"
+            >
+              Proceed to Checkout
+            </Link>
+          ) : (
+            <button
+              disabled
+              className="w-full flex items-center justify-center px-6 py-3 bg-gray-300 text-gray-500 font-medium rounded-lg cursor-not-allowed mb-3"
+            >
+              Select delivery date first
+            </button>
+          )}
           
           <Link
             href="/shop"

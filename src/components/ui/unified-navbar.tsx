@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { ShoppingBag } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 interface UnifiedNavbarProps {
   showBackButton?: boolean;
@@ -15,25 +17,22 @@ export function UnifiedNavbar({
   backHref = "/", 
   backText = "Vissza" 
 }: UnifiedNavbarProps) {
+  const pathname = usePathname();
+  const showHomeIcon = pathname?.includes('/osszetevok');
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className=" mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Left side - Back button or spacer */}
+          {/* Left side - Cart icon linking to /shop */}
           <div className="flex items-center">
-            {/* Temporarily commented out back button
-            {showBackButton ? (
-              <Link 
-                href={backHref} 
-                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5 mr-2" />
-                {backText}
-              </Link>
-            ) : (
-              <div className="w-16"></div> // Spacer for center alignment
-            )}
-            */}
+            <Link
+              href="/shop"
+              className="text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
+              aria-label="Shop"
+              title="Shop"
+            >
+              <ShoppingBag className="w-5 h-5" />
+            </Link>
           </div>
 
           {/* Center - Logo */}
@@ -49,18 +48,21 @@ export function UnifiedNavbar({
             </Link>
           </div>
 
-          {/* Right side - Shop icon only */}
-          <div className="flex items-center">
-            {/* Temporarily commented out shop icon
-            <Link
-              href="/auth/signin"
-              className="text-gray-700 hover:text-gray-900 p-3 transition-colors"
-              title="Enter Shop"
-            >
-              <ShoppingBag className="w-5 h-5" />
-            </Link>
-            */}
-          </div>
+          {/* Right side - Home icon (only on /osszetevok pages) */}
+          {showHomeIcon ? (
+            <div className="flex items-center justify-end w-10">
+              <Link
+                href="/"
+                className="text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
+                aria-label="Home"
+                title="Home"
+              >
+                <Home className="w-5 h-5" />
+              </Link>
+            </div>
+          ) : (
+            <div className="w-10" />
+          )}
         </div>
       </div>
     </nav>
