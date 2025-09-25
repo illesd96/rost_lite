@@ -9,6 +9,45 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// User addresses table for delivery and billing
+export const userAddresses = pgTable('user_addresses', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  type: text('type').notNull(), // 'delivery' or 'billing'
+  isDefault: boolean('is_default').notNull().default(false),
+  
+  // Personal/Company info
+  isCompany: boolean('is_company').notNull().default(false),
+  companyName: text('company_name'),
+  contactPerson: text('contact_person'),
+  
+  // Hungarian tax information (for companies)
+  taxNumber: text('tax_number'), // Adószám (8 digits)
+  vatNumber: text('vat_number'), // EU VAT number (HU + 8 digits)
+  registrationNumber: text('registration_number'), // Cégjegyzékszám
+  
+  // Address details
+  fullName: text('full_name').notNull(),
+  email: text('email'),
+  phone: text('phone'),
+  
+  // Hungarian address format
+  country: text('country').notNull().default('Hungary'),
+  postalCode: text('postal_code').notNull(), // 4 digits
+  city: text('city').notNull(),
+  district: text('district'), // Kerület (for Budapest)
+  streetAddress: text('street_address').notNull(),
+  houseNumber: text('house_number'), 
+  floor: text('floor'), // Emelet
+  door: text('door'), // Ajtó
+  
+  // Additional notes
+  notes: text('notes'),
+  
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 export const products = pgTable('products', {
   id: uuid('id').primaryKey().defaultRandom(),
   sku: text('sku').unique().notNull(),
@@ -52,6 +91,14 @@ export const orderItems = pgTable('order_items', {
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
+  addresses: many(userAddresses),
+}));
+
+export const userAddressesRelations = relations(userAddresses, ({ one }) => ({
+  user: one(users, {
+    fields: [userAddresses.userId],
+    references: [users.id],
+  }),
 }));
 
 export const productsRelations = relations(products, ({ many }) => ({

@@ -7,7 +7,9 @@ import { formatPrice } from '@/lib/utils';
 import { CreditCard, ShoppingBag, Receipt, Calendar } from 'lucide-react';
 import { DeliverySelection } from './delivery-selection';
 import { BankTransferPayment } from './bank-transfer-payment';
+import { AddressForm } from './address-form';
 import { formatDateWithDay } from '@/lib/delivery-dates';
+import { type HungarianAddress } from '@/lib/address-validation';
 
 interface CheckoutFormProps {
   userEmail: string;
@@ -21,6 +23,11 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   const [deliveryFee, setDeliveryFee] = useState(1500);
   const [deliveryData, setDeliveryData] = useState<any>({});
   const [selectedDeliveryDates, setSelectedDeliveryDates] = useState<Date[]>([]);
+  const [deliveryAddress, setDeliveryAddress] = useState<HungarianAddress | null>(null);
+  const [billingAddress, setBillingAddress] = useState<HungarianAddress | null>(null);
+  const [isDeliveryAddressValid, setIsDeliveryAddressValid] = useState(false);
+  const [isBillingAddressValid, setIsBillingAddressValid] = useState(false);
+  const [useSameAddress, setUseSameAddress] = useState(true);
   const { items, cartTotal, emptyCart } = useCart();
   const router = useRouter();
 
@@ -61,6 +68,23 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   const handleCheckout = async () => {
     if (items.length === 0) {
       setError('Your cart is empty');
+      return;
+    }
+
+    // Validate delivery dates
+    if (selectedDeliveryDates.length === 0) {
+      setError('Please select at least one delivery date');
+      return;
+    }
+
+    // Validate addresses
+    if (!deliveryAddress || !isDeliveryAddressValid) {
+      setError('Please provide a valid delivery address');
+      return;
+    }
+
+    if (!useSameAddress && (!billingAddress || !isBillingAddressValid)) {
+      setError('Please provide a valid billing address');
       return;
     }
 
@@ -137,9 +161,62 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   }
 
   return (
-    <div className="grid lg:grid-cols-2 gap-8">
-      {/* Order Summary */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="space-y-8">
+      {/* Address Forms */}
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Delivery Address */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <AddressForm
+            type="delivery"
+            onAddressChange={setDeliveryAddress}
+            onValidChange={setIsDeliveryAddressValid}
+          />
+        </div>
+
+        {/* Billing Address */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={useSameAddress}
+                onChange={(e) => setUseSameAddress(e.target.checked)}
+                className="mr-2 text-blue-600"
+              />
+              <span className="text-sm text-gray-700">
+                Számlázási cím megegyezik a szállítási címmel
+              </span>
+            </label>
+          </div>
+          
+          {!useSameAddress && (
+            <AddressForm
+              type="billing"
+              onAddressChange={setBillingAddress}
+              onValidChange={setIsBillingAddressValid}
+            />
+          )}
+          
+          {useSameAddress && deliveryAddress && (
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-sm text-gray-600 mb-2">Számlázási cím:</p>
+              <p className="text-sm text-gray-900 whitespace-pre-line">
+                {deliveryAddress.isCompany && deliveryAddress.companyName && `${deliveryAddress.companyName}\n`}
+                {deliveryAddress.fullName}
+                {deliveryAddress.streetAddress} {deliveryAddress.houseNumber}
+                {deliveryAddress.floor && ` ${deliveryAddress.floor}. emelet`}
+                {deliveryAddress.door && ` ${deliveryAddress.door}. ajtó`}
+                {`\n${deliveryAddress.postalCode} ${deliveryAddress.city}`}
+                {deliveryAddress.district && ` ${deliveryAddress.district}. kerület`}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Order Summary */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
           <Receipt className="w-5 h-5 mr-2" />
           Order Summary
