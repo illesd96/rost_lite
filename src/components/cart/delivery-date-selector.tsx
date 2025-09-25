@@ -38,15 +38,27 @@ export function DeliveryDateSelector({
   }, [deliverySettings, selectedDates.length, onDatesChange]);
 
   const toggleDate = (date: Date) => {
-    const dateTime = date.getTime();
-    const isSelected = selectedDates.some(d => d.getTime() === dateTime);
+    // Normalize the date to avoid time differences
+    const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const dateTime = normalizedDate.getTime();
+    
+    const isSelected = selectedDates.some(d => {
+      const normalizedSelected = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      return normalizedSelected.getTime() === dateTime;
+    });
+    
+    console.log('Toggle date:', normalizedDate, 'isSelected:', isSelected, 'selectedDates:', selectedDates);
     
     if (isSelected) {
       // If already selected, remove it (deselect)
-      onDatesChange(selectedDates.filter(d => d.getTime() !== dateTime));
+      const newDates = selectedDates.filter(d => {
+        const normalizedSelected = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        return normalizedSelected.getTime() !== dateTime;
+      });
+      onDatesChange(newDates);
     } else {
       // If not selected, add it (select)
-      onDatesChange([...selectedDates, date]);
+      onDatesChange([...selectedDates, normalizedDate]);
     }
   };
 
@@ -61,8 +73,13 @@ export function DeliveryDateSelector({
     onDatesChange(availableQuickDates);
   };
 
-  const isDateSelected = (date: Date) => 
-    selectedDates.some(d => d.getTime() === date.getTime());
+  const isDateSelected = (date: Date) => {
+    const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return selectedDates.some(d => {
+      const normalizedSelected = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      return normalizedSelected.getTime() === normalizedDate.getTime();
+    });
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -113,7 +130,9 @@ export function DeliveryDateSelector({
                 }
               `}
             >
-              <div className="font-medium text-sm text-black">{formattedWithDay}</div>
+              <div className={`font-medium text-sm ${isSelected ? 'text-green-800' : 'text-black'}`}>
+                {formattedWithDay}
+              </div>
               {isDisabled && (
                 <div className="flex items-center justify-center gap-1 mt-1">
                   <Clock className="w-3 h-3 text-red-500" />
