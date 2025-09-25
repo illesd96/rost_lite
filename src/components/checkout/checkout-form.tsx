@@ -4,11 +4,10 @@ import { useState, useEffect } from 'react';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/navigation';
 import { formatPrice } from '@/lib/utils';
-import { CreditCard, ShoppingBag, Receipt, Calendar } from 'lucide-react';
-import { DeliverySelection } from './delivery-selection';
+import { ShoppingBag } from 'lucide-react';
 import { BankTransferPayment } from './bank-transfer-payment';
-import { AddressForm } from './address-form';
-import { formatDateWithDay } from '@/lib/delivery-dates';
+import { AddressSection } from './address-section';
+import { OrderSummary } from './order-summary';
 import { type HungarianAddress } from '@/lib/address-validation';
 
 interface CheckoutFormProps {
@@ -27,7 +26,6 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   const [billingAddress, setBillingAddress] = useState<HungarianAddress | null>(null);
   const [isDeliveryAddressValid, setIsDeliveryAddressValid] = useState(false);
   const [isBillingAddressValid, setIsBillingAddressValid] = useState(false);
-  const [useSameAddress, setUseSameAddress] = useState(true);
   const { items, cartTotal, emptyCart } = useCart();
   const router = useRouter();
 
@@ -80,11 +78,6 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
     // Validate addresses
     if (!deliveryAddress || !isDeliveryAddressValid) {
       setError('Please provide a valid delivery address');
-      return;
-    }
-
-    if (!useSameAddress && (!billingAddress || !isBillingAddressValid)) {
-      setError('Please provide a valid billing address');
       return;
     }
 
@@ -163,161 +156,28 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   return (
     <div className="space-y-8">
       {/* Address Forms */}
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Delivery Address */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <AddressForm
-            type="delivery"
-            onAddressChange={setDeliveryAddress}
-            onValidChange={setIsDeliveryAddressValid}
-          />
-        </div>
+      <AddressSection
+        deliveryAddress={deliveryAddress}
+        billingAddress={billingAddress}
+        onDeliveryAddressChange={setDeliveryAddress}
+        onBillingAddressChange={setBillingAddress}
+        onDeliveryValidChange={setIsDeliveryAddressValid}
+        onBillingValidChange={setIsBillingAddressValid}
+      />
 
-        {/* Billing Address */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="mb-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={useSameAddress}
-                onChange={(e) => setUseSameAddress(e.target.checked)}
-                className="mr-2 text-blue-600"
-              />
-              <span className="text-sm text-gray-700">
-                Számlázási cím megegyezik a szállítási címmel
-              </span>
-            </label>
-          </div>
-          
-          {!useSameAddress && (
-            <AddressForm
-              type="billing"
-              onAddressChange={setBillingAddress}
-              onValidChange={setIsBillingAddressValid}
-            />
-          )}
-          
-          {useSameAddress && deliveryAddress && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-2">Számlázási cím:</p>
-              <p className="text-sm text-gray-900 whitespace-pre-line">
-                {deliveryAddress.isCompany && deliveryAddress.companyName && `${deliveryAddress.companyName}\n`}
-                {deliveryAddress.fullName}
-                {deliveryAddress.streetAddress} {deliveryAddress.houseNumber}
-                {deliveryAddress.floor && ` ${deliveryAddress.floor}. emelet`}
-                {deliveryAddress.door && ` ${deliveryAddress.door}. ajtó`}
-                {`\n${deliveryAddress.postalCode} ${deliveryAddress.city}`}
-                {deliveryAddress.district && ` ${deliveryAddress.district}. kerület`}
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
+      {/* Order Summary & Payment */}
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Order Summary */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-          <Receipt className="w-5 h-5 mr-2" />
-          Order Summary
-        </h2>
-        
-        <div className="space-y-4 mb-6">
-          {items.map((item) => (
-            <div key={item.id} className="flex justify-between items-center py-3 border-b border-gray-100">
-              <div>
-                <h3 className="font-medium text-gray-900">{item.name}</h3>
-                <p className="text-sm text-gray-600">
-                  {item.quantity} × {formatPrice(item.price)}
-                  {selectedDeliveryDates.length > 1 && (
-                    <span className="text-blue-600 ml-2">
-                      × {selectedDeliveryDates.length} delivery dates
-                    </span>
-                  )}
-                </p>
-              </div>
-              <span className="font-medium text-gray-900">
-                {formatPrice(item.price * (item.quantity || 1) * Math.max(selectedDeliveryDates.length, 1))}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Delivery Dates Section */}
-        {selectedDeliveryDates.length > 0 && (
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-            <div className="flex items-center gap-2 mb-3">
-              <Calendar className="w-4 h-4 text-blue-600" />
-              <h3 className="font-medium text-blue-900">
-                Selected Delivery Dates ({selectedDeliveryDates.length})
-              </h3>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {selectedDeliveryDates.map((date, index) => (
-                <div key={index} className="text-sm text-blue-800 bg-blue-100 rounded px-2 py-1">
-                  {formatDateWithDay(date)}
-                </div>
-              ))}
-            </div>
-            {selectedDeliveryDates.length > 1 && (
-              <p className="text-xs text-blue-700 mt-2">
-                {selectedDeliveryDates.length} separate orders will be created
-              </p>
-            )}
-          </div>
-        )}
-
-                  <div className="space-y-3 border-t pt-4">
-            <div className="flex justify-between">
-              <span className="text-gray-900 font-medium">Subtotal (per order)</span>
-              <span className="font-medium">{formatPrice(cartTotal)}</span>
-            </div>
-            
-            <div className="flex justify-between items-center">
-              <span className="text-gray-900 font-medium">Delivery (per order)</span>
-              <span className="font-medium">
-                {deliveryFee === 0 ? (
-                  <span className="text-green-600">INGYEN</span>
-                ) : (
-                  formatPrice(deliveryFee)
-                )}
-              </span>
-            </div>
-            
-            {selectedDeliveryDates.length > 1 && (
-              <div className="flex justify-between">
-                <span className="text-gray-900 font-medium">Number of orders</span>
-                <span className="font-medium">{selectedDeliveryDates.length}</span>
-              </div>
-            )}
-            
-            {deliveryFee === 0 && (
-              <p className="text-sm text-green-600">
-                🎉 Ingyenes szállítás!
-              </p>
-            )}
-          </div>
-
-        {/* Delivery Selection inside Order Summary */}
-        <div className="border-t pt-4 mt-4">
-          <DeliverySelection
-            subtotal={cartTotal}
-            onDeliveryChange={handleDeliveryChange}
-            selectedDeliveryId={deliveryMethod}
-          />
-        </div>
-
-        <div className="border-t pt-4 mt-4">
-          <div className="flex justify-between items-center text-lg font-semibold">
-            <span>Total</span>
-            <span>{formatPrice(finalTotal)}</span>
-          </div>
-          {selectedDeliveryDates.length > 1 && (
-            <div className="text-sm text-gray-500 mt-1 text-right">
-              {formatPrice(singleOrderTotal)} × {selectedDeliveryDates.length} orders
-            </div>
-          )}
-        </div>
+        <OrderSummary
+          items={items}
+          cartTotal={cartTotal}
+          deliveryFee={deliveryFee}
+          deliveryMethod={deliveryMethod}
+          selectedDeliveryDates={selectedDeliveryDates}
+          finalTotal={finalTotal}
+          singleOrderTotal={singleOrderTotal}
+          onDeliveryChange={handleDeliveryChange}
+        />
 
         {/* Bank Transfer Payment Section */}
         <BankTransferPayment
