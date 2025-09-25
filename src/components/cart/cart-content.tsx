@@ -186,15 +186,6 @@ export function CartContent() {
             )}
           </div>
 
-          {selectedDates.length > 1 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-              <div className="text-sm text-blue-800">
-                <strong>{selectedDates.length} separate orders</strong> will be created
-                <br />
-                <span className="text-xs">One order per delivery date</span>
-              </div>
-            </div>
-          )}
 
           <div className="border-t pt-4 mb-6">
             <div className="flex justify-between items-center">

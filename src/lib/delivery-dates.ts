@@ -81,8 +81,15 @@ export function getNextDayOfWeek(startDate: Date, targetDayIndex: number, weeksO
 
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('hu-HU', {
-    year: 'numeric',
     month: 'long',
+    day: 'numeric'
+  }).format(date);
+}
+
+export function formatDateWithDay(date: Date): string {
+  return new Intl.DateTimeFormat('hu-HU', {
+    weekday: 'long',
+    month: 'long', 
     day: 'numeric'
   }).format(date);
 }

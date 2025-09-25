@@ -7,7 +7,8 @@ import {
   DeliveryDate, 
   getAvailableDeliveryDates, 
   getQuickSelectDates,
-  getNearestAvailableDate 
+  getNearestAvailableDate,
+  formatDateWithDay
 } from '@/lib/delivery-dates';
 
 interface DeliveryDateSelectorProps {
@@ -62,10 +63,10 @@ export function DeliveryDateSelector({
     selectedDates.some(d => d.getTime() === date.getTime());
 
   return (
-    <div className="bg-gray-50 rounded-lg p-6 mb-6">
+    <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
       <div className="flex items-center gap-2 mb-4">
         <Calendar className="w-5 h-5 text-blue-600" />
-        <h3 className="text-lg font-semibold">Kiszállítási dátumok</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Kiszállítási dátumok</h3>
       </div>
 
       {/* Quick Select Buttons */}
@@ -91,6 +92,7 @@ export function DeliveryDateSelector({
         {availableDates.map((deliveryDate, index) => {
           const isSelected = isDateSelected(deliveryDate.date);
           const isDisabled = !deliveryDate.isAvailable;
+          const formattedWithDay = formatDateWithDay(deliveryDate.date);
           
           return (
             <button
@@ -98,9 +100,9 @@ export function DeliveryDateSelector({
               onClick={() => !isDisabled && toggleDate(deliveryDate.date)}
               disabled={isDisabled}
               className={`
-                p-3 rounded-lg border-2 text-left transition-all
+                p-3 rounded-lg border-2 text-center transition-all
                 ${isSelected 
-                  ? 'border-blue-500 bg-blue-50 text-blue-900' 
+                  ? 'border-green-500 bg-green-50 text-green-900' 
                   : 'border-gray-200 bg-white hover:border-gray-300'
                 }
                 ${isDisabled 
@@ -109,10 +111,9 @@ export function DeliveryDateSelector({
                 }
               `}
             >
-              <div className="font-medium text-sm">{deliveryDate.dayName}</div>
-              <div className="text-xs text-gray-600 mt-1">{deliveryDate.formatted}</div>
+              <div className="font-medium text-sm text-black">{formattedWithDay}</div>
               {isDisabled && (
-                <div className="flex items-center gap-1 mt-1">
+                <div className="flex items-center justify-center gap-1 mt-1">
                   <Clock className="w-3 h-3 text-red-500" />
                   <span className="text-xs text-red-500">Lejárt</span>
                 </div>
