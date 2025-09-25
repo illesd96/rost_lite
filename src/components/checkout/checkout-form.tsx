@@ -318,16 +318,16 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
             </div>
           )}
         </div>
-      </div>
 
-      {/* Bank Transfer Payment Section */}
-      <BankTransferPayment
-        amount={finalTotal}
-        orderId={`TEMP-${Date.now()}`}
-        userEmail={userEmail}
-        onOrderConfirm={handleCheckout}
-        isProcessing={isProcessing}
-      />
+        {/* Bank Transfer Payment Section */}
+        <BankTransferPayment
+          amount={finalTotal}
+          orderId={`TEMP-${Date.now()}`}
+          userEmail={userEmail}
+          onOrderConfirm={handleCheckout}
+          isProcessing={isProcessing}
+        />
+      </div>
 
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
