@@ -31,6 +31,22 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching delivery settings:', error);
+    
+    // If table doesn't exist yet, return default settings
+    if (error instanceof Error && (
+      error.message.includes('relation "delivery_settings" does not exist') ||
+      error.message.includes('table') ||
+      error.message.includes('column')
+    )) {
+      console.log('Delivery settings table not found, returning defaults');
+      return NextResponse.json({
+        deliveryDays: ['monday', 'wednesday'],
+        weeksInAdvance: 4,
+        cutoffHours: 24,
+        isActive: true
+      });
+    }
+    
     return NextResponse.json(
       { error: 'Failed to fetch delivery settings' },
       { status: 500 }
