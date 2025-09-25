@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/navigation';
 import { formatPrice } from '@/lib/utils';
-import { CreditCard, ShoppingBag, Receipt } from 'lucide-react';
+import { CreditCard, ShoppingBag, Receipt, Calendar } from 'lucide-react';
 import { DeliverySelection } from './delivery-selection';
 import { BankTransferPayment } from './bank-transfer-payment';
+import { formatDateWithDay } from '@/lib/delivery-dates';
 
 interface CheckoutFormProps {
   userEmail: string;
@@ -19,14 +20,28 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   const [deliveryMethod, setDeliveryMethod] = useState('own-delivery');
   const [deliveryFee, setDeliveryFee] = useState(1500);
   const [deliveryData, setDeliveryData] = useState<any>({});
+  const [selectedDeliveryDates, setSelectedDeliveryDates] = useState<Date[]>([]);
   const { items, cartTotal, emptyCart } = useCart();
   const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
+    
+    // Load selected delivery dates from localStorage
+    try {
+      const storedDates = localStorage.getItem('selectedDeliveryDates');
+      if (storedDates) {
+        const dateStrings = JSON.parse(storedDates);
+        const dates = dateStrings.map((dateStr: string) => new Date(dateStr));
+        setSelectedDeliveryDates(dates);
+      }
+    } catch (error) {
+      console.error('Failed to load delivery dates:', error);
+    }
   }, []);
 
-  const finalTotal = cartTotal + deliveryFee;
+  const singleOrderTotal = cartTotal + deliveryFee;
+  const finalTotal = singleOrderTotal * Math.max(selectedDeliveryDates.length, 1);
 
   if (!isClient) {
     return (
@@ -137,23 +152,52 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
                 <h3 className="font-medium text-gray-900">{item.name}</h3>
                 <p className="text-sm text-gray-600">
                   {item.quantity} × {formatPrice(item.price)}
+                  {selectedDeliveryDates.length > 1 && (
+                    <span className="text-blue-600 ml-2">
+                      × {selectedDeliveryDates.length} delivery dates
+                    </span>
+                  )}
                 </p>
               </div>
               <span className="font-medium text-gray-900">
-                {formatPrice(item.price * (item.quantity || 1))}
+                {formatPrice(item.price * (item.quantity || 1) * Math.max(selectedDeliveryDates.length, 1))}
               </span>
             </div>
           ))}
         </div>
 
+        {/* Delivery Dates Section */}
+        {selectedDeliveryDates.length > 0 && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <div className="flex items-center gap-2 mb-3">
+              <Calendar className="w-4 h-4 text-blue-600" />
+              <h3 className="font-medium text-blue-900">
+                Selected Delivery Dates ({selectedDeliveryDates.length})
+              </h3>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {selectedDeliveryDates.map((date, index) => (
+                <div key={index} className="text-sm text-blue-800 bg-blue-100 rounded px-2 py-1">
+                  {formatDateWithDay(date)}
+                </div>
+              ))}
+            </div>
+            {selectedDeliveryDates.length > 1 && (
+              <p className="text-xs text-blue-700 mt-2">
+                {selectedDeliveryDates.length} separate orders will be created
+              </p>
+            )}
+          </div>
+        )}
+
                   <div className="space-y-3 border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-gray-600">Subtotal</span>
+              <span className="text-gray-600">Subtotal (per order)</span>
               <span className="font-medium">{formatPrice(cartTotal)}</span>
             </div>
             
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Delivery</span>
+              <span className="text-gray-600">Delivery (per order)</span>
               <span className="font-medium">
                 {deliveryFee === 0 ? (
                   <span className="text-green-600">INGYEN</span>
@@ -162,6 +206,13 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
                 )}
               </span>
             </div>
+            
+            {selectedDeliveryDates.length > 1 && (
+              <div className="flex justify-between">
+                <span className="text-gray-600">Number of orders</span>
+                <span className="font-medium">{selectedDeliveryDates.length}</span>
+              </div>
+            )}
             
             {deliveryFee === 0 && (
               <p className="text-sm text-green-600">
@@ -175,6 +226,11 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
             <span>Total</span>
             <span>{formatPrice(finalTotal)}</span>
           </div>
+          {selectedDeliveryDates.length > 1 && (
+            <div className="text-sm text-gray-500 mt-1 text-right">
+              {formatPrice(singleOrderTotal)} × {selectedDeliveryDates.length} orders
+            </div>
+          )}
         </div>
       </div>
 

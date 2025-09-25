@@ -202,12 +202,16 @@ export function CartContent() {
           </div>
 
           {selectedDates.length > 0 ? (
-            <Link
-              href="/checkout"
+            <button
+              onClick={() => {
+                // Store selected dates in localStorage for checkout
+                localStorage.setItem('selectedDeliveryDates', JSON.stringify(selectedDates.map(d => d.toISOString())));
+                window.location.href = '/checkout';
+              }}
               className="w-full flex items-center justify-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200 mb-3"
             >
               Proceed to Checkout
-            </Link>
+            </button>
           ) : (
             <button
               disabled
