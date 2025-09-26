@@ -15,16 +15,16 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50: '#f8f6f3',
+          100: '#f0ede8',
+          200: '#e8c999',
+          300: '#d4a574',
+          400: '#c19660',
+          500: '#8b6f47',
+          600: '#6b5435',
+          700: '#5a4529',
+          800: '#49361d',
+          900: '#382711',
         },
         // Rosti brand colors
         rosti: {
@@ -37,6 +37,12 @@ const config: Config = {
           'brown-dark': '#6b5435',
           'fiber-green': '#004a2c',
           'disease-red': '#780204',
+        },
+        // Additional brand colors
+        brand: {
+          'fiber-green': '#004a2c',
+          'gold-accent': '#d4a574',
+          'cream-bg': '#f8f6f3',
         },
         // Ingredient colors
         ingredient: {
