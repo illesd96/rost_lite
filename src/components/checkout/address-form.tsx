@@ -139,7 +139,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
                 type="text"
                 value={formData.companyName || ''}
                 onChange={(e) => updateField('companyName', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                 placeholder="Vállalat Kft."
               />
               {errors.companyName && (
@@ -155,7 +155,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
                 type="text"
                 value={formData.contactPerson || ''}
                 onChange={(e) => updateField('contactPerson', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                 placeholder="Kovács János"
               />
             </div>
@@ -171,7 +171,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
                   type="text"
                   value={formData.taxNumber || ''}
                   onChange={(e) => updateField('taxNumber', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   placeholder="12345678"
                   maxLength={8}
                 />
@@ -188,7 +188,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
                   type="text"
                   value={formData.vatNumber || ''}
                   onChange={(e) => updateField('vatNumber', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   placeholder="HU12345678"
                   maxLength={10}
                 />
@@ -205,7 +205,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
                   type="text"
                   value={formData.registrationNumber || ''}
                   onChange={(e) => updateField('registrationNumber', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   placeholder="01-09-123456"
                 />
               </div>
@@ -227,7 +227,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="text"
               value={formData.fullName || ''}
               onChange={(e) => updateField('fullName', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="Kovács János"
             />
             {errors.fullName && (
@@ -243,7 +243,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="tel"
               value={formData.phone || ''}
               onChange={(e) => updateField('phone', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="+36 1 234 5678"
             />
             {errors.phone && (
@@ -262,7 +262,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="email"
               value={formData.email || ''}
               onChange={(e) => updateField('email', e.target.value)}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="kovacs.janos@email.com"
             />
           </div>
@@ -285,7 +285,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="text"
               value={formData.postalCode || ''}
               onChange={(e) => updateField('postalCode', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="1234"
               maxLength={4}
             />
@@ -302,7 +302,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="text"
               value={formData.city || ''}
               onChange={(e) => updateField('city', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="Budapest"
             />
             {errors.city && (
@@ -318,7 +318,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="text"
               value={formData.district || ''}
               onChange={(e) => updateField('district', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="V."
             />
           </div>
@@ -333,7 +333,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="text"
               value={formData.streetAddress || ''}
               onChange={(e) => updateField('streetAddress', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="Fő utca"
             />
             {errors.streetAddress && (
@@ -349,7 +349,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
               type="text"
               value={formData.houseNumber || ''}
               onChange={(e) => updateField('houseNumber', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="123"
             />
           </div>
@@ -366,7 +366,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
                 updateField('floor', floor?.trim() || '');
                 updateField('door', door?.trim() || '');
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="2/A"
             />
           </div>
@@ -380,7 +380,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
             value={formData.notes || ''}
             onChange={(e) => updateField('notes', e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
             placeholder="További információk..."
           />
         </div>
