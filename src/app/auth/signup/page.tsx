@@ -47,8 +47,18 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
-      <div className="max-w-md w-full space-y-8">
+    <div 
+      className="min-h-screen flex items-center justify-center px-4 relative"
+      style={{
+        backgroundImage: 'url(/images/bg-new.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Overlay with low opacity */}
+      <div className="absolute inset-0 bg-white bg-opacity-20"></div>
+      <div className="max-w-md w-full space-y-8 relative z-10">
         <div className="bg-white rounded-xl shadow-lg p-8">
           <div className="text-center">
             <Link
