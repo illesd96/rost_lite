@@ -7,21 +7,27 @@ import { hungarianAddressSchema, type HungarianAddress, validateTaxNumber, valid
 interface AddressFormProps {
   type: 'delivery' | 'billing';
   address?: Partial<HungarianAddress>;
+  isCompany: boolean;
   onAddressChange: (address: HungarianAddress) => void;
   onValidChange: (isValid: boolean) => void;
 }
 
-export function AddressForm({ type, address, onAddressChange, onValidChange }: AddressFormProps) {
+export function AddressForm({ type, address, isCompany, onAddressChange, onValidChange }: AddressFormProps) {
   const [formData, setFormData] = useState<Partial<HungarianAddress>>({
     type,
     isDefault: false,
-    isCompany: false,
+    isCompany,
     country: 'Hungary',
     ...address,
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isValidating, setIsValidating] = useState(false);
+
+  // Update formData when isCompany prop changes
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, isCompany }));
+  }, [isCompany]);
 
   const validateForm = async () => {
     setIsValidating(true);
@@ -84,7 +90,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const isCompany = formData.isCompany;
+  const isCompanyMode = formData.isCompany;
   const isBilling = type === 'billing';
 
   return (
@@ -97,36 +103,9 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
         </h3>
       </div>
 
-      {/* Company/Personal Toggle */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <div className="flex items-center space-x-4">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name={`${type}-type`}
-              checked={!isCompany}
-              onChange={() => updateField('isCompany', false)}
-              className="mr-2 text-blue-600"
-            />
-            <User className="w-4 h-4 mr-1" />
-            Magánszemély
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              name={`${type}-type`}
-              checked={isCompany}
-              onChange={() => updateField('isCompany', true)}
-              className="mr-2 text-blue-600"
-            />
-            <Building className="w-4 h-4 mr-1" />
-            Vállalat
-          </label>
-        </div>
-      </div>
 
       {/* Company Information */}
-      {isCompany && (
+      {isCompanyMode && (
         <div className="space-y-4 bg-blue-50 rounded-lg p-4">
           <h4 className="font-medium text-blue-900">Vállalati adatok</h4>
           
@@ -276,7 +255,7 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
       <div className="space-y-4">
         <h4 className="font-medium text-gray-900">Cím adatok</h4>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Irányítószám *
@@ -310,18 +289,6 @@ export function AddressForm({ type, address, onAddressChange, onValidChange }: A
             )}
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Kerület
-            </label>
-            <input
-              type="text"
-              value={formData.district || ''}
-              onChange={(e) => updateField('district', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-              placeholder="V."
-            />
-          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

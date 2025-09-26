@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Building } from 'lucide-react';
+import { Building, User } from 'lucide-react';
 import { AddressForm } from './address-form';
 import { type HungarianAddress } from '@/lib/address-validation';
 
@@ -23,13 +23,45 @@ export function AddressSection({
   onBillingValidChange,
 }: AddressSectionProps) {
   const [useSameAddress, setUseSameAddress] = useState(true);
+  const [isCompany, setIsCompany] = useState(false);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
+      {/* Company/Personal Selection */}
+      <div className="mb-6">
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="address-type"
+                checked={!isCompany}
+                onChange={() => setIsCompany(false)}
+                className="mr-2 text-blue-600"
+              />
+              <User className="w-4 h-4 mr-1 text-gray-600" />
+              <span className="text-gray-900 font-medium">Magánszemély</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="address-type"
+                checked={isCompany}
+                onChange={() => setIsCompany(true)}
+                className="mr-2 text-blue-600"
+              />
+              <Building className="w-4 h-4 mr-1 text-gray-600" />
+              <span className="text-gray-900 font-medium">Vállalat</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
       {/* Delivery Address */}
       <div className="mb-8">
         <AddressForm
           type="delivery"
+          isCompany={isCompany}
           onAddressChange={onDeliveryAddressChange}
           onValidChange={onDeliveryValidChange}
         />
@@ -63,6 +95,7 @@ export function AddressSection({
         <div>
           <AddressForm
             type="billing"
+            isCompany={isCompany}
             onAddressChange={onBillingAddressChange}
             onValidChange={onBillingValidChange}
           />
