@@ -48,7 +48,7 @@ export default async function ShopPage() {
         )}
 
         {/* Delivery Info */}
-        <div className="mt-12 bg-primary-50 rounded-lg p-6">
+        {/* <div className="mt-12 bg-primary-50 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-primary-900 mb-2">
             Delivery Information
           </h3>
@@ -58,7 +58,7 @@ export default async function ShopPage() {
             <p>• Delivery only to Hungary</p>
             <p>• Automatic discounts apply for bulk orders</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
