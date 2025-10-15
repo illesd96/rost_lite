@@ -138,7 +138,7 @@ export default function SignInPage() {
                   href="mailto:info@webshop.com?subject=Fiók létrehozása kérés&body=Kedves Webshop csapat,%0D%0A%0D%0AKérem, hozzanak létre egy fiókot a következő email címmel:%0D%0A%0D%0AEmail: [ide írja be az email címét]%0D%0A%0D%0AKöszönettel"
                   className="font-medium text-primary-600 hover:text-primary-500"
                 >
-                  Írjon nekünk
+                  Írj nekünk
                 </a>
               </p>
             </div>
