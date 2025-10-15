@@ -113,9 +113,7 @@ export function AddressSection({
     const isDataValid = isPersonalValid && isCompanyValid;
     
     if (isDataValid && isDeliveryAddressValid) {
-      const fullDeliveryAddress: any = {
-        id: deliveryAddress?.id,
-        userId: deliveryAddress?.userId,
+      const fullDeliveryAddress = {
         type: 'delivery',
         isDefault: false,
         isCompany,
@@ -123,9 +121,20 @@ export function AddressSection({
         ...personalData,
         ...(isCompany ? companyData : {}),
         ...deliveryAddressData,
-        createdAt: deliveryAddress?.createdAt || new Date(),
+        createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      } as any;
+      
+      // Add optional properties if they exist
+      if (deliveryAddress && 'id' in deliveryAddress && deliveryAddress.id) {
+        fullDeliveryAddress.id = deliveryAddress.id;
+      }
+      if (deliveryAddress && 'userId' in deliveryAddress && deliveryAddress.userId) {
+        fullDeliveryAddress.userId = deliveryAddress.userId;
+      }
+      if (deliveryAddress && 'createdAt' in deliveryAddress && deliveryAddress.createdAt) {
+        fullDeliveryAddress.createdAt = deliveryAddress.createdAt;
+      }
       
       onDeliveryAddressChange(fullDeliveryAddress);
     }
@@ -133,9 +142,7 @@ export function AddressSection({
     onDeliveryValidChange(Boolean(isDataValid && isDeliveryAddressValid));
     
     if (useSameAddress && isDataValid && isDeliveryAddressValid) {
-      const fullBillingAddress: any = {
-        id: billingAddress?.id,
-        userId: billingAddress?.userId,
+      const fullBillingAddress = {
         type: 'billing',
         isDefault: false,
         isCompany,
@@ -143,16 +150,25 @@ export function AddressSection({
         ...personalData,
         ...(isCompany ? companyData : {}),
         ...deliveryAddressData,
-        createdAt: billingAddress?.createdAt || new Date(),
+        createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      } as any;
+      
+      // Add optional properties if they exist
+      if (billingAddress && 'id' in billingAddress && billingAddress.id) {
+        fullBillingAddress.id = billingAddress.id;
+      }
+      if (billingAddress && 'userId' in billingAddress && billingAddress.userId) {
+        fullBillingAddress.userId = billingAddress.userId;
+      }
+      if (billingAddress && 'createdAt' in billingAddress && billingAddress.createdAt) {
+        fullBillingAddress.createdAt = billingAddress.createdAt;
+      }
       
       onBillingAddressChange(fullBillingAddress);
       onBillingValidChange(true);
     } else if (!useSameAddress && isDataValid && isBillingAddressValid) {
-      const fullBillingAddress: any = {
-        id: billingAddress?.id,
-        userId: billingAddress?.userId,
+      const fullBillingAddress = {
         type: 'billing',
         isDefault: false,
         isCompany,
@@ -160,9 +176,20 @@ export function AddressSection({
         ...personalData,
         ...(isCompany ? companyData : {}),
         ...billingAddressData,
-        createdAt: billingAddress?.createdAt || new Date(),
+        createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      } as any;
+      
+      // Add optional properties if they exist
+      if (billingAddress && 'id' in billingAddress && billingAddress.id) {
+        fullBillingAddress.id = billingAddress.id;
+      }
+      if (billingAddress && 'userId' in billingAddress && billingAddress.userId) {
+        fullBillingAddress.userId = billingAddress.userId;
+      }
+      if (billingAddress && 'createdAt' in billingAddress && billingAddress.createdAt) {
+        fullBillingAddress.createdAt = billingAddress.createdAt;
+      }
       
       onBillingAddressChange(fullBillingAddress);
       onBillingValidChange(Boolean(isDataValid && isBillingAddressValid));
