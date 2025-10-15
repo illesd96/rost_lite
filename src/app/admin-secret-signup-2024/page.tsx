@@ -50,7 +50,7 @@ export default function SecretSignUpPage() {
     <div 
       className="min-h-screen flex items-center justify-center px-4 relative"
       style={{
-        backgroundImage: 'url(/images/bg-new.png)',
+        backgroundImage: 'url(/images/login-background.jpeg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
