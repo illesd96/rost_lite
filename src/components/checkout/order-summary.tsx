@@ -78,15 +78,24 @@ export function OrderSummary({
         </div>
       )}
 
+      {/* Delivery Selection - moved higher */}
+      <div className="border-t pt-4 mb-4">
+        <DeliverySelection
+          subtotal={cartTotal}
+          onDeliveryChange={onDeliveryChange}
+          selectedDeliveryId={deliveryMethod}
+        />
+      </div>
+
       <div className="space-y-3 border-t pt-4">
         <div className="flex justify-between">
           <span className="text-gray-900 font-medium">Subtotal (per order)</span>
-          <span className="font-medium">{formatPrice(cartTotal)}</span>
+          <span className="font-medium text-gray-900">{formatPrice(cartTotal)}</span>
         </div>
         
         <div className="flex justify-between items-center">
           <span className="text-gray-900 font-medium">Delivery (per order)</span>
-          <span className="font-medium">
+          <span className="font-medium text-gray-900">
             {deliveryFee === 0 ? (
               <span className="text-green-600">INGYEN</span>
             ) : (
@@ -98,7 +107,7 @@ export function OrderSummary({
         {selectedDeliveryDates.length > 1 && (
           <div className="flex justify-between">
             <span className="text-gray-900 font-medium">Number of orders</span>
-            <span className="font-medium">{selectedDeliveryDates.length}</span>
+            <span className="font-medium text-gray-900">{selectedDeliveryDates.length}</span>
           </div>
         )}
         
@@ -109,19 +118,10 @@ export function OrderSummary({
         )}
       </div>
 
-      {/* Delivery Selection inside Order Summary */}
-      <div className="border-t pt-4 mt-4">
-        <DeliverySelection
-          subtotal={cartTotal}
-          onDeliveryChange={onDeliveryChange}
-          selectedDeliveryId={deliveryMethod}
-        />
-      </div>
-
       <div className="border-t pt-4 mt-4">
         <div className="flex justify-between items-center text-lg font-semibold">
-          <span>Total</span>
-          <span>{formatPrice(finalTotal)}</span>
+          <span className="text-gray-900">Total</span>
+          <span className="text-gray-900">{formatPrice(finalTotal)}</span>
         </div>
         {selectedDeliveryDates.length > 1 && (
           <div className="text-sm text-gray-500 mt-1 text-right">
