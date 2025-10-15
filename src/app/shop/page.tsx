@@ -21,12 +21,12 @@ export default async function ShopPage() {
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome to Rosti
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Kollégáid hálásak lesznek.
           </h1>
-          <p className="text-gray-600">
-            Discover our exclusive collection of premium products
+          <p className="text-lg text-gray-600">
+            Semmi mesterséges adalék. Semmi tartósítószer. Friss és nyers.
           </p>
         </div>
 
