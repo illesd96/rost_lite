@@ -55,7 +55,7 @@ export function Navbar() {
             
             <Link
               href="/cart"
-              className="relative text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
+              className="relative text-gray-700 hover:text-gray-900 p-0 rounded-lg transition-colors"
             >
               <WebshopIcon className="w-5 h-5" />
               {isClient && totalItems > 0 && (
