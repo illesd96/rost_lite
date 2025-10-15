@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiók létrehozása kérés</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        .title {
+            color: #1f2937;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background-color: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2563eb;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛒 Webshop</div>
+            <h1 class="title">Új fiók létrehozása kérés</h1>
+        </div>
+        
+        <div class="content">
+            <p>Kedves Webshop csapat,</p>
+            
+            <p>Egy új felhasználó fiók létrehozását kéri a webshop rendszerben.</p>
+            
+            <div class="info-box">
+                <div class="info-label">Kért email cím:</div>
+                <div class="info-value highlight">{{EMAIL_ADDRESS}}</div>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-label">Kérés időpontja:</div>
+                <div class="info-value">{{REQUEST_DATE}}</div>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-label">IP cím:</div>
+                <div class="info-value">{{IP_ADDRESS}}</div>
+            </div>
+            
+            <p><strong>Teendők:</strong></p>
+            <ol>
+                <li>Ellenőrizze a kért email címet</li>
+                <li>Hozza létre a fiókot az admin felületen: <a href="{{ADMIN_SIGNUP_URL}}" class="button">Admin Fiók Létrehozás</a></li>
+                <li>Értesítse a felhasználót email-ben a fiók létrehozásáról</li>
+            </ol>
+            
+            <p><em>Ez egy automatikusan generált email a webshop rendszerből.</em></p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 Webshop - Belső admin értesítés</p>
+            <p>Ez az email csak a webshop adminisztrátorok számára készült.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+🛒 WEBSHOP - ÚJ FIÓK LÉTREHOZÁSA KÉRÉS
+================================================
+
+Kedves Webshop csapat,
+
+Egy új felhasználó fiók létrehozását kéri a webshop rendszerben.
+
+KÉRÉS RÉSZLETEI:
+---------------
+Email cím: {{EMAIL_ADDRESS}}
+Kérés időpontja: {{REQUEST_DATE}}
+IP cím: {{IP_ADDRESS}}
+
+TEENDŐK:
+--------
+1. Ellenőrizze a kért email címet
+2. Hozza létre a fiókot az admin felületen: {{ADMIN_SIGNUP_URL}}
+3. Értesítse a felhasználót email-ben a fiók létrehozásáról
+
+Ez egy automatikusan generált email a webshop rendszerből.
+
+© 2024 Webshop - Belső admin értesítés
+Ez az email csak a webshop adminisztrátorok számára készült.

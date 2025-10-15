@@ -1,15 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn, getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signInSchema, type SignInInput } from '@/lib/validations';
+import { signUpSchema, type SignUpInput } from '@/lib/validations';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
-export default function SignInPage() {
+export default function SecretSignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -19,26 +18,26 @@ export default function SignInPage() {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<SignInInput>({
-    resolver: zodResolver(signInSchema),
+  } = useForm<SignUpInput>({
+    resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = async (data: SignInInput) => {
+  const onSubmit = async (data: SignUpInput) => {
     setIsLoading(true);
     try {
-      const result = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false,
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
 
-      if (result?.error) {
-        setError('root', { message: 'Érvénytelen email cím vagy jelszó' });
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError('root', { message: result.error || 'A regisztráció sikertelen' });
       } else {
-        // Refresh session and redirect
-        await getSession();
-        router.push('/shop');
-        router.refresh();
+        // Redirect to sign in page with success message
+        router.push('/auth/signin?message=Fiók sikeresen létrehozva');
       }
     } catch (error) {
       setError('root', { message: 'Valami hiba történt. Kérjük, próbálja újra.' });
@@ -69,8 +68,13 @@ export default function SignInPage() {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Vissza a főoldalra
             </Link>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Üdvözöljük újra</h2>
-            <p className="text-gray-600">Jelentkezzen be a fiókjába</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Fiók létrehozása</h2>
+            <p className="text-gray-600">Hozzon létre egy új fiókot</p>
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm text-yellow-800">
+                🔒 Ez egy titkos admin oldal fiók létrehozásához
+              </p>
+            </div>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -98,7 +102,7 @@ export default function SignInPage() {
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
-                  placeholder="Adja meg a jelszavát"
+                  placeholder="Hozzon létre egy jelszót (min. 6 karakter)"
                 />
                 <button
                   type="button"
@@ -128,18 +132,15 @@ export default function SignInPage() {
               disabled={isLoading}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Bejelentkezés...' : 'Bejelentkezés'}
+              {isLoading ? 'Fiók létrehozása...' : 'Fiók létrehozása'}
             </button>
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Nincs még fiókja?{' '}
-                <a 
-                  href="mailto:info@webshop.com?subject=Fiók létrehozása kérés&body=Kedves Webshop csapat,%0D%0A%0D%0AKérem, hozzanak létre egy fiókot a következő email címmel:%0D%0A%0D%0AEmail: [ide írja be az email címét]%0D%0A%0D%0AKöszönettel"
-                  className="font-medium text-primary-600 hover:text-primary-500"
-                >
-                  Írjon nekünk
-                </a>
+                Már van fiókja?{' '}
+                <Link href="/auth/signin" className="font-medium text-primary-600 hover:text-primary-500">
+                  Bejelentkezés
+                </Link>
               </p>
             </div>
           </form>

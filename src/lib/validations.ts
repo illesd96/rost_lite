@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 export const signUpSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email('Érvénytelen email cím'),
+  password: z.string().min(6, 'A jelszónak legalább 6 karakter hosszúnak kell lennie'),
 });
 
 export const signInSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().email('Érvénytelen email cím'),
+  password: z.string().min(1, 'A jelszó megadása kötelező'),
 });
 
 export const productSchema = z.object({
