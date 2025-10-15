@@ -59,19 +59,68 @@ export default function SignInPage() {
     >
       {/* Overlay with low opacity */}
       <div className="absolute inset-0 bg-white bg-opacity-20"></div>
-      <div className="max-w-md w-full space-y-8 relative z-10">
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <div className="text-center">
-            <Link
-              href="/"
-              className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Vissza a főoldalra
-            </Link>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Üdvözöljük újra</h2>
-            <p className="text-gray-600">Jelentkezzen be a fiókjába</p>
+      
+      {/* Container for both boxes */}
+      <div className="max-w-6xl w-full relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
+          
+          {/* Quality First Box - Hidden on mobile, shown on desktop */}
+          <div className="hidden lg:block">
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Minőség elsőként.</h2>
+              <div className="space-y-4 text-gray-700">
+                <p className="text-lg leading-relaxed">
+                  Kézműves, nem tömegtermékekkel dolgozunk. 
+                  A prémium minőség garantálásához a Rosti 
+                  vásárlói közösséget fokozatosan bővítjük.
+                </p>
+                
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
+                  <p className="text-center text-gray-600">
+                    Ha érdekel a Rosti, <span className="text-primary-600 font-semibold">írj nekünk</span>, felvesszük a 
+                    kapcsolatot az első szállítás egyeztetéséhez.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Login Form */}
+          <div className="w-full">
+            {/* Quality First Box - Shown only on mobile */}
+            <div className="lg:hidden mb-6">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Minőség elsőként.</h2>
+                <div className="space-y-3 text-gray-700">
+                  <p className="leading-relaxed">
+                    Kézműves, nem tömegtermékekkel dolgozunk. 
+                    A prémium minőség garantálásához a Rosti 
+                    vásárlói közösséget fokozatosan bővítjük.
+                  </p>
+                  
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+                    <p className="text-center text-gray-600 text-sm">
+                      Ha érdekel a Rosti, <span className="text-primary-600 font-semibold">írj nekünk</span>, felvesszük a 
+                      kapcsolatot az első szállítás egyeztetéséhez.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Login Form Card */}
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <div className="text-center">
+                <Link
+                  href="/"
+                  className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Vissza a főoldalra
+                </Link>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">Rosti rendelési portál</h2>
+                <p className="text-gray-600">Jelentkezz be a következő rendelésed leadásához</p>
+              </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
@@ -143,6 +192,8 @@ export default function SignInPage() {
               </p>
             </div>
           </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
