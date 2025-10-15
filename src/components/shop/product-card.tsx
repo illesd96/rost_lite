@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/db';
 import { formatPrice, calculateDiscount } from '@/lib/utils';
 import { parseProductImages } from '@/lib/image-utils';
-import { Plus, Minus, ShoppingCart } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
+import { WebshopIcon } from '../ui/webshop-icon';
 import Link from 'next/link';
 import { ProductGallery } from './product-gallery';
 
@@ -153,7 +154,7 @@ export function ProductCard({ product }: ProductCardProps) {
           onClick={handleAddToCart}
           className="w-full flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200"
         >
-          <ShoppingCart className="w-4 h-4 mr-2" />
+          <WebshopIcon className="w-4 h-4 mr-2" />
           Add to Cart
         </button>
       </div>

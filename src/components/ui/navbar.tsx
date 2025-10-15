@@ -5,7 +5,8 @@ import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from 'react-use-cart';
-import { ShoppingCart, User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, Settings } from 'lucide-react';
+import { WebshopIcon } from './webshop-icon';
 
 export function Navbar() {
   const [isClient, setIsClient] = useState(false);
@@ -56,7 +57,7 @@ export function Navbar() {
               href="/cart"
               className="relative text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
             >
-              <ShoppingCart className="w-5 h-5" />
+              <WebshopIcon className="w-5 h-5" />
               {isClient && totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
                   {totalItems}

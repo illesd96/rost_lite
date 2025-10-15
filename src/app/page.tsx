@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { ShoppingBag, Shield, Truck, CreditCard, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Shield, Truck, CreditCard, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { UnifiedNavbar } from '@/components/ui/unified-navbar';
 import { trackQRCodeVisit } from '@/lib/analytics';
 

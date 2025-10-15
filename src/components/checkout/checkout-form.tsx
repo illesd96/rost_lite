@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from 'react-use-cart';
 import { useRouter } from 'next/navigation';
 import { formatPrice } from '@/lib/utils';
-import { ShoppingBag } from 'lucide-react';
+import { AlertTriangle, X } from 'lucide-react';
+import { WebshopIcon } from '../ui/webshop-icon';
 import { BankTransferPayment } from './bank-transfer-payment';
 import { AddressSection } from './address-section';
 import { OrderSummary } from './order-summary';
@@ -26,8 +27,12 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   const [billingAddress, setBillingAddress] = useState<HungarianAddress | null>(null);
   const [isDeliveryAddressValid, setIsDeliveryAddressValid] = useState(false);
   const [isBillingAddressValid, setIsBillingAddressValid] = useState(false);
+  const [showValidationPopup, setShowValidationPopup] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [forceValidation, setForceValidation] = useState(false);
   const { items, cartTotal, emptyCart } = useCart();
   const router = useRouter();
+  const addressSectionRef = useRef<{ validateAllFields: () => void } | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -63,34 +68,65 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
     setDeliveryData(data || {});
   };
 
-  const handleCheckout = async () => {
+  const validateForm = () => {
+    const errors: string[] = [];
+
+    // Validate cart
     if (items.length === 0) {
-      setError('Your cart is empty');
-      return;
+      errors.push('A kosár üres');
     }
 
     // Validate delivery dates
     if (selectedDeliveryDates.length === 0) {
-      setError('Please select at least one delivery date');
-      return;
+      errors.push('Kérjük, válasszon legalább egy szállítási dátumot');
     }
 
     // Validate addresses
     if (!deliveryAddress || !isDeliveryAddressValid) {
-      setError('Please provide a valid delivery address');
-      return;
+      errors.push('Kérjük, adjon meg érvényes szállítási címet');
+    }
+
+    if (!billingAddress || !isBillingAddressValid) {
+      errors.push('Kérjük, adjon meg érvényes számlázási címet');
     }
 
     // Validate delivery data
     if (deliveryMethod.includes('home') && !deliveryData.deliveryAddress) {
-      setError('Please provide a delivery address');
-      return;
+      errors.push('Kérjük, adjon meg szállítási címet');
     }
 
     if (deliveryMethod.includes('pickup') && !deliveryData.pickupPointId) {
-      setError('Please select a pickup point');
-      return;
+      errors.push('Kérjük, válasszon átvételi pontot');
     }
+
+    return errors;
+  };
+
+  const handleCheckout = async () => {
+    // Force validation on all fields
+    setForceValidation(true);
+    
+    // Trigger validation in AddressSection
+    if (addressSectionRef.current) {
+      addressSectionRef.current.validateAllFields();
+    }
+
+    // Wait a bit for validation to complete
+    setTimeout(() => {
+      const errors = validateForm();
+      
+      if (errors.length > 0) {
+        setValidationErrors(errors);
+        setShowValidationPopup(true);
+        return;
+      }
+
+      // If validation passes, proceed with checkout
+      proceedWithCheckout();
+    }, 100);
+  };
+
+  const proceedWithCheckout = async () => {
 
     setIsProcessing(true);
     setError(null);
@@ -137,10 +173,15 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
     }
   };
 
+  const closeValidationPopup = () => {
+    setShowValidationPopup(false);
+    setValidationErrors([]);
+  };
+
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
-        <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <WebshopIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
         <p className="text-gray-600 mb-6">Add some products before checking out!</p>
         <button
@@ -159,12 +200,14 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Column 1: Address Forms */}
         <AddressSection
+          ref={addressSectionRef}
           deliveryAddress={deliveryAddress}
           billingAddress={billingAddress}
           onDeliveryAddressChange={setDeliveryAddress}
           onBillingAddressChange={setBillingAddress}
           onDeliveryValidChange={setIsDeliveryAddressValid}
           onBillingValidChange={setIsBillingAddressValid}
+          forceValidation={forceValidation}
         />
 
         {/* Column 2: Order Summary */}
@@ -192,6 +235,52 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
           <p className="text-sm text-red-600">{error}</p>
+        </div>
+      )}
+
+      {/* Validation Popup */}
+      {showValidationPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-6 border-b">
+              <div className="flex items-center">
+                <AlertTriangle className="w-6 h-6 text-red-600 mr-3" />
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Hiányzó adatok
+                </h3>
+              </div>
+              <button
+                onClick={closeValidationPopup}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <p className="text-gray-700 mb-4">
+                A rendelés leadásához kérjük, töltse ki a következő kötelező mezőket:
+              </p>
+              
+              <ul className="space-y-2">
+                {validationErrors.map((error, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="w-2 h-2 bg-red-600 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                    <span className="text-sm text-gray-700">{error}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="flex justify-end gap-3 p-6 border-t bg-gray-50">
+              <button
+                onClick={closeValidationPopup}
+                className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Rendben
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

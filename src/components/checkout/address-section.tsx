@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Building, User, Mail, Phone } from 'lucide-react';
 import { AddressForm } from './address-form';
 import { hungarianAddressSchema, type HungarianAddress, validateTaxNumber, validateVATNumber } from '@/lib/address-validation';
@@ -12,16 +12,22 @@ interface AddressSectionProps {
   onBillingAddressChange: (address: HungarianAddress) => void;
   onDeliveryValidChange: (isValid: boolean) => void;
   onBillingValidChange: (isValid: boolean) => void;
+  forceValidation?: boolean;
 }
 
-export function AddressSection({
+export interface AddressSectionRef {
+  validateAllFields: () => void;
+}
+
+export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>(({
   deliveryAddress,
   billingAddress,
   onDeliveryAddressChange,
   onBillingAddressChange,
   onDeliveryValidChange,
   onBillingValidChange,
-}: AddressSectionProps) {
+  forceValidation = false,
+}, ref) => {
   const [useSameAddress, setUseSameAddress] = useState(true);
   const [isCompany, setIsCompany] = useState(false);
   
@@ -69,6 +75,27 @@ export function AddressSection({
   const handleFieldTouch = (field: string) => {
     setTouchedFields(prev => new Set(Array.from(prev).concat(field)));
   };
+
+  const validateAllFields = () => {
+    // Force validation on all required fields
+    const allRequiredFields = ['fullName'];
+    if (isCompany) {
+      allRequiredFields.push('companyName', 'taxNumber');
+    }
+    
+    setTouchedFields(new Set(allRequiredFields));
+  };
+
+  useImperativeHandle(ref, () => ({
+    validateAllFields,
+  }));
+
+  // Force validation when forceValidation prop changes
+  useEffect(() => {
+    if (forceValidation) {
+      validateAllFields();
+    }
+  }, [forceValidation]);
 
   const validatePersonalData = () => {
     const newErrors: Record<string, string> = {};
@@ -398,6 +425,7 @@ export function AddressSection({
           address={deliveryAddressData}
           onAddressChange={setDeliveryAddressData}
           onValidChange={setIsDeliveryAddressValid}
+          forceValidation={forceValidation}
         />
       </div>
 
@@ -432,6 +460,7 @@ export function AddressSection({
             address={billingAddressData}
             onAddressChange={setBillingAddressData}
             onValidChange={setIsBillingAddressValid}
+            forceValidation={forceValidation}
           />
         </div>
       )}
@@ -452,4 +481,6 @@ export function AddressSection({
       )}
     </div>
   );
-}
+});
+
+AddressSection.displayName = 'AddressSection';

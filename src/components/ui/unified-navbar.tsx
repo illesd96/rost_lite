@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag } from 'lucide-react';
+import { WebshopIcon } from './webshop-icon';
 import { Home } from 'lucide-react';
 
 interface UnifiedNavbarProps {
@@ -31,7 +31,7 @@ export function UnifiedNavbar({
               aria-label="Shop"
               title="Shop"
             >
-              <ShoppingBag className="w-5 h-5" />
+              <WebshopIcon className="w-5 h-5" />
             </Link>
           </div>
 

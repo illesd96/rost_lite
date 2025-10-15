@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from 'react-use-cart';
-import { ArrowLeft, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { ArrowLeft, Plus, Minus } from 'lucide-react';
+import { WebshopIcon } from '@/components/ui/webshop-icon';
 import Link from 'next/link';
 import { Product } from '@/lib/db';
 import { formatPrice, calculateDiscount } from '@/lib/utils';
@@ -257,7 +258,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               onClick={handleAddToCart}
               className="w-full flex items-center justify-center px-6 py-4 bg-primary-600 text-white font-medium text-lg rounded-lg hover:bg-primary-700 transition-colors duration-200"
             >
-              <ShoppingCart className="w-5 h-5 mr-2" />
+              <WebshopIcon className="w-5 h-5 mr-2" />
               Add to Cart
             </button>
 

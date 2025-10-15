@@ -19,9 +19,10 @@ interface AddressFormProps {
   address?: Partial<AddressData>;
   onAddressChange: (address: AddressData) => void;
   onValidChange: (isValid: boolean) => void;
+  forceValidation?: boolean;
 }
 
-export function AddressForm({ title, address, onAddressChange, onValidChange }: AddressFormProps) {
+export function AddressForm({ title, address, onAddressChange, onValidChange, forceValidation = false }: AddressFormProps) {
   const [formData, setFormData] = useState<Partial<AddressData>>({
     postalCode: '',
     city: '',
@@ -81,6 +82,14 @@ export function AddressForm({ title, address, onAddressChange, onValidChange }: 
   const handleFieldTouch = (field: string) => {
     setTouchedFields(prev => new Set(Array.from(prev).concat(field)));
   };
+
+  // Force validation when forceValidation prop changes
+  useEffect(() => {
+    if (forceValidation) {
+      const requiredFields = ['postalCode', 'city', 'streetAddress'];
+      setTouchedFields(new Set(requiredFields));
+    }
+  }, [forceValidation]);
 
   return (
     <div className="space-y-4">

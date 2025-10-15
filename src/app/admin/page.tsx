@@ -4,7 +4,6 @@ import { eq, count, sum, desc } from 'drizzle-orm';
 import { formatPrice } from '@/lib/utils';
 import { 
   Package, 
-  ShoppingCart, 
   Users as UsersIcon, 
   TrendingUp,
   DollarSign,
@@ -49,7 +48,7 @@ export default async function AdminDashboard() {
     {
       name: 'Total Orders',
       value: totalOrders[0].count,
-      icon: ShoppingCart,
+      icon: Package,
       color: 'text-green-600 bg-green-100',
     },
     {

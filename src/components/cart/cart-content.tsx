@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useCart } from 'react-use-cart';
 import { formatPrice, calculateDeliveryFee } from '@/lib/utils';
-import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Minus } from 'lucide-react';
+import { WebshopIcon } from '../ui/webshop-icon';
 import Link from 'next/link';
 import { DeliveryDateSelector } from './delivery-date-selector';
 import { DeliverySettings } from '@/lib/delivery-dates';
@@ -45,7 +46,7 @@ export function CartContent() {
   if (!isClient) {
     return (
       <div className="text-center py-12">
-        <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <WebshopIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading cart...</h2>
       </div>
     );
@@ -54,7 +55,7 @@ export function CartContent() {
   if (isEmpty) {
     return (
       <div className="text-center py-12">
-        <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <WebshopIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
         <p className="text-gray-600 mb-6">Add some products to get started!</p>
         <Link
