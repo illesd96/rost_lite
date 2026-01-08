@@ -47,6 +47,12 @@ export function Navbar() {
               Shop
             </Link>
             <Link
+              href="/modern-shop"
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-emerald-50 text-emerald-700 border border-emerald-200"
+            >
+              Modern Shop
+            </Link>
+            <Link
               href="/orders"
               className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
             >
