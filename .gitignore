@@ -43,6 +43,10 @@ next-env.d.ts
 *.sqlite3
 local.db
 
+# SQL files (migration scripts, dumps, etc.)
+*.sql
+!drizzle/*.sql
+
 # Uploads
 /public/uploads/*
 !/public/uploads/.gitignore

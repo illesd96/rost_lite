@@ -3,6 +3,8 @@ import { Check } from 'lucide-react';
 
 interface ProgressBarProps {
   currentStep: number;
+  onStepClick?: (step: number) => void;
+  canNavigate?: boolean;
 }
 
 const steps = [
@@ -11,7 +13,7 @@ const steps = [
   { id: 3, label: 'Ütemezés' }
 ];
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, onStepClick, canNavigate = true }) => {
   // Calculate width for the colored line
   // If step 2, we need 50%. If step 3, we need 100%.
   const progressPercentage = ((currentStep - 1) / (steps.length - 1)) * 100;
@@ -32,15 +34,20 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
         {steps.map((step) => {
           const isActive = step.id === currentStep;
           const isCompleted = step.id < currentStep;
+          const isClickable = canNavigate && (isCompleted || isActive);
 
           return (
-            <div key={step.id} className="relative z-10 flex flex-col items-center group">
+            <div 
+              key={step.id} 
+              className={`relative z-10 flex flex-col items-center group ${isClickable ? 'cursor-pointer' : ''}`}
+              onClick={() => isClickable && onStepClick?.(step.id)}
+            >
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all duration-500 border-[3px]
                   ${isActive 
                     ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg scale-110 shadow-emerald-200' 
                     : isCompleted
-                        ? 'bg-emerald-600 border-emerald-600 text-white'
+                        ? 'bg-emerald-600 border-emerald-600 text-white hover:scale-105 hover:shadow-emerald-200'
                         : 'bg-white border-gray-100 text-gray-300'
                   }
                 `}
@@ -49,7 +56,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
               </div>
               
               <div className={`absolute top-10 text-[9px] font-black uppercase tracking-widest transition-colors duration-500 whitespace-nowrap
-                ${isActive ? 'text-emerald-800' : isCompleted ? 'text-emerald-600' : 'text-gray-300'}
+                ${isActive ? 'text-emerald-800' : isCompleted ? 'text-emerald-600 group-hover:text-emerald-700' : 'text-gray-300'}
               `}>
                 {step.label}
               </div>

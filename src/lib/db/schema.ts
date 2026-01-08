@@ -9,6 +9,14 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// User billing data for modern shop
+export const userBillingData = pgTable('user_billing_data', {
+  userId: uuid('user_id').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
+  data: text('data').notNull(), // JSON string of billing data
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // User addresses table for delivery and billing
 export const userAddresses = pgTable('user_addresses', {
   id: uuid('id').primaryKey().defaultRandom(),

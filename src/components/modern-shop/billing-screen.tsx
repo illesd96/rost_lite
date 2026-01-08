@@ -12,7 +12,7 @@ interface BillingScreenProps {
 
 const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling, onBack, onNext }) => {
   const { billingData } = orderState;
-  const [isDemoActive, setIsDemoActive] = useState(true);
+  const [isDemoActive, setIsDemoActive] = useState(false);
 
   const updateAddress = (type: 'billingAddress' | 'shippingAddress', field: keyof Address, value: string) => {
     updateBilling({
@@ -61,13 +61,14 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
   };
 
   useEffect(() => {
+    // Only fill demo data if explicitly activated and data is empty
     const isBusinessEmpty = billingData.type === 'business' && !billingData.companyName;
     const isPrivateEmpty = billingData.type === 'private' && !billingData.lastName;
 
     if (isDemoActive && (isBusinessEmpty || isPrivateEmpty)) {
       fillDemoData(billingData.type);
     }
-  }, []);
+  }, [isDemoActive]);
 
   const handleTypeChange = (newType: UserType) => {
     if (isDemoActive) {
@@ -223,7 +224,7 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
         <div className={`w-12 h-6 rounded-full relative flex items-center px-1 border transition-colors ${isDemoActive ? 'bg-emerald-500 border-emerald-500' : 'bg-gray-200 border-gray-200'}`}>
           <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${isDemoActive ? 'translate-x-6' : 'translate-x-0'}`}></div>
         </div>
-        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">előző rendelésben használt adatok betöltése</span>
+        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">demo adatok betöltése teszteléshez</span>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8 text-left text-balance">

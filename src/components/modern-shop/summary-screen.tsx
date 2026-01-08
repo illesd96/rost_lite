@@ -59,30 +59,33 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
       }
   }
 
-  const handleCouponValidate = () => {
+  const handleCouponValidate = async () => {
       const trimmedInput = couponInput.trim();
       
-      // Check for Private Code
-      if (trimmedInput === 'private1234') {
-          if (billingData.type !== 'private') {
-              setCouponMessage({ type: 'error', text: 'Ez a kód csak magánszemélyeknek érvényes.' });
-              return;
-          }
-          if (quantity > 20) {
-              setCouponMessage({ type: 'error', text: 'Ez a kód maximum 20 palack esetén érvényes.' });
-              return;
-          }
-          updateOrder({ appliedCoupon: trimmedInput });
-          setCouponMessage({ type: 'success', text: 'Partnerkód sikeresen érvényesítve!' });
-          return;
-      }
+      if (!trimmedInput) return;
 
-      // Check for Standard Codes
-      if (standardPartnerCodes.includes(trimmedInput)) {
+      try {
+        const response = await fetch('/api/modern-shop/validate-coupon', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            couponCode: trimmedInput,
+            userType: billingData.type,
+            quantity: quantity
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.valid) {
           updateOrder({ appliedCoupon: trimmedInput });
-          setCouponMessage({ type: 'success', text: 'Partnerkód sikeresen érvényesítve!' });
-      } else {
-          setCouponMessage({ type: 'error', text: 'Érvénytelen partnerkód.' });
+          setCouponMessage({ type: 'success', text: result.message });
+        } else {
+          setCouponMessage({ type: 'error', text: result.message });
+        }
+      } catch (error) {
+        console.error('Coupon validation error:', error);
+        setCouponMessage({ type: 'error', text: 'Hiba történt a partnerkód ellenőrzése során.' });
       }
   };
 

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, ChevronLeft, ChevronDown } from 'lucide-react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -10,11 +12,34 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      onLogin();
+    if (!email || !password) return;
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Hibás email cím vagy jelszó');
+      } else {
+        // Successful login
+        onLogin();
+      }
+    } catch (error) {
+      setError('Hiba történt a bejelentkezés során');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,16 +98,23 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
             </header>
     
             <form onSubmit={handleSubmit} className="space-y-5 text-left">
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                  <p className="text-red-700 text-sm font-medium">{error}</p>
+                </div>
+              )}
+              
               <div>
                 <label htmlFor="login-email" className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1 ml-1 text-left">Email cím</label>
                 <input 
                   id="login-email" 
                   type="email" 
                   required 
+                  disabled={isLoading}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="írd be az email címed" 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 text-left"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 text-left disabled:opacity-50"
                 />
               </div>
     
@@ -93,21 +125,31 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
                     id="login-password" 
                     type={showPassword ? 'text' : 'password'}
                     required 
+                    disabled={isLoading}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="írd be a jelszavad" 
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 disabled:opacity-50"
                   />
                   
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-emerald-600 transition-colors focus:outline-none">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowPassword(!showPassword)} 
+                    disabled={isLoading}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-emerald-600 transition-colors focus:outline-none disabled:opacity-50"
+                  >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
     
               <div className="pt-2 text-left">
-                <button type="submit" className="w-full bg-emerald-600 text-white hover:bg-emerald-700 font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-emerald-500/30 transition-all duration-200 text-left text-center">
-                  Belépés
+                <button 
+                  type="submit" 
+                  disabled={isLoading || !email || !password}
+                  className="w-full bg-emerald-600 text-white hover:bg-emerald-700 font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-emerald-500/30 transition-all duration-200 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? 'Bejelentkezés...' : 'Belépés'}
                 </button>
               </div>
             </form>
