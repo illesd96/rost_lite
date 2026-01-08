@@ -6,6 +6,10 @@ import ModernHeader from '../../components/modern-shop/modern-header';
 import PromoBar from '../../components/modern-shop/promo-bar';
 import ProgressBar from '../../components/modern-shop/progress-bar';
 import SelectionScreen from '../../components/modern-shop/selection-screen';
+import BillingScreen from '../../components/modern-shop/billing-screen';
+import SummaryScreen from '../../components/modern-shop/summary-screen';
+import LoginScreen from '../../components/modern-shop/login-screen';
+import SuccessScreen from '../../components/modern-shop/success-screen';
 import { OrderState, ScreenType, BillingData } from '../../types/modern-shop';
 
 const INITIAL_BILLING: BillingData = {
@@ -83,79 +87,41 @@ export default function ModernShopPage() {
         );
       case 'login':
         return (
-          <div className="container mx-auto px-6 py-12 max-w-md text-center">
-            <h2 className="text-2xl font-bold mb-6">Bejelentkezés szükséges</h2>
-            <p className="text-gray-600 mb-8">A rendelés folytatásához kérjük jelentkezz be.</p>
-            <button 
-              onClick={() => {
-                updateOrder({ isLoggedIn: true });
-                navigateTo('billing');
-              }}
-              className="w-full bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors"
-            >
-              Bejelentkezés (Demo)
-            </button>
-            <button 
-              onClick={() => navigateTo('selection')}
-              className="w-full mt-4 text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Vissza
-            </button>
-          </div>
+          <LoginScreen 
+            onLogin={() => {
+              updateOrder({ isLoggedIn: true });
+              navigateTo('billing');
+            }} 
+            onBack={() => navigateTo('selection')} 
+          />
         );
       case 'billing':
         return (
-          <div className="container mx-auto px-6 py-12 max-w-md text-center">
-            <h2 className="text-2xl font-bold mb-6">Számlázási adatok</h2>
-            <p className="text-gray-600 mb-8">Ez a képernyő még fejlesztés alatt áll.</p>
-            <button 
-              onClick={() => navigateTo('summary')}
-              className="w-full bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors"
-            >
-              Tovább (Demo)
-            </button>
-            <button 
-              onClick={() => navigateTo('selection')}
-              className="w-full mt-4 text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Vissza
-            </button>
-          </div>
+          <BillingScreen 
+            orderState={orderState} 
+            updateBilling={updateBilling} 
+            onBack={() => navigateTo('selection')} 
+            onNext={() => navigateTo('summary')} 
+          />
         );
       case 'summary':
         return (
-          <div className="container mx-auto px-6 py-12 max-w-md text-center">
-            <h2 className="text-2xl font-bold mb-6">Összesítés és ütemezés</h2>
-            <p className="text-gray-600 mb-8">Ez a képernyő még fejlesztés alatt áll.</p>
-            <button 
-              onClick={() => navigateTo('success')}
-              className="w-full bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors"
-            >
-              Rendelés leadása (Demo)
-            </button>
-            <button 
-              onClick={() => navigateTo('billing')}
-              className="w-full mt-4 text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Vissza
-            </button>
-          </div>
+          <SummaryScreen 
+            orderState={orderState} 
+            updateOrder={updateOrder} 
+            onBack={() => navigateTo('billing')} 
+            onSubmit={() => navigateTo('success')} 
+          />
         );
       case 'success':
         return (
-          <div className="container mx-auto px-6 py-12 max-w-md text-center">
-            <h2 className="text-2xl font-bold mb-6 text-green-600">Sikeres rendelés!</h2>
-            <p className="text-gray-600 mb-8">Köszönjük a rendelését!</p>
-            <button 
-              onClick={() => {
-                setOrderState(INITIAL_STATE);
-                navigateTo('selection');
-              }}
-              className="w-full bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors"
-            >
-              Új rendelés
-            </button>
-          </div>
+          <SuccessScreen 
+            orderState={orderState} 
+            onReset={() => {
+              setOrderState(INITIAL_STATE);
+              navigateTo('selection');
+            }} 
+          />
         );
       default:
         return null;
