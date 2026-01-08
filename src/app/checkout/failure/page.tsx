@@ -56,7 +56,7 @@ export default async function CheckoutFailurePage() {
               Try Again
             </Link>
             <Link
-              href="/shop"
+              href="/modern-shop"
               className="inline-flex items-center justify-center px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />

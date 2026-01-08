@@ -28,7 +28,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/shop" className="hover:opacity-80 transition-opacity">
+            <Link href="/modern-shop" className="hover:opacity-80 transition-opacity">
               <Image
                 src="/images/logo.png"
                 alt="Rosti"
@@ -41,16 +41,10 @@ export function Navbar() {
 
           <div className="flex items-center space-x-6">
             <Link
-              href="/shop"
+              href="/modern-shop"
               className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               Shop
-            </Link>
-            <Link
-              href="/modern-shop"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-emerald-50 text-emerald-700 border border-emerald-200"
-            >
-              Modern Shop
             </Link>
             <Link
               href="/orders"

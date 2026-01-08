@@ -26,7 +26,7 @@ export function UnifiedNavbar({
           {/* Left side - Cart icon linking to /shop */}
           <div className="flex items-center">
             <Link
-              href="/shop"
+              href="/modern-shop"
               className="text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
               aria-label="Shop"
               title="Shop"

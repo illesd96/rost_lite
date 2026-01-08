@@ -223,7 +223,7 @@ export function CartContent() {
           )}
           
           <Link
-            href="/shop"
+            href="/modern-shop"
             className="w-full flex items-center justify-center px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200"
           >
             Continue Shopping

@@ -54,7 +54,7 @@ export default async function OrdersPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-2">No orders yet</h2>
             <p className="text-gray-600 mb-6">You haven&apos;t placed any orders yet.</p>
             <Link
-              href="/shop"
+              href="/modern-shop"
               className="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200"
             >
               Start Shopping

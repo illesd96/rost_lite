@@ -24,7 +24,7 @@ export function AdminNavbar() {
 
           <div className="flex items-center space-x-4">
             <Link
-              href="/shop"
+              href="/modern-shop"
               className="flex items-center text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
             >
               <Home className="w-4 h-4 mr-1" />

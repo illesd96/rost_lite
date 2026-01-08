@@ -1,64 +1,21 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { db } from '@/lib/db';
-import { products } from '@/lib/db/schema';
-import { Navbar } from '@/components/ui/navbar';
-import { ProductCard } from '@/components/shop/product-card';
+'use client';
 
-export default async function ShopPage() {
-  const session = await getServerSession(authOptions);
-  
-  if (!session) {
-    redirect('/auth/signin');
-  }
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-  // Fetch products
-  const allProducts = await db.select().from(products);
+export default function ShopPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to modern shop
+    router.replace('/modern-shop');
+  }, [router]);
 
   return (
-    <div className="min-h-screen bg-brand-cream-bg">
-      <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Kollégáid hálásak lesznek.
-          </h1>
-          <p className="text-lg text-gray-600">
-            Semmi mesterséges adalék. Semmi tartósítószer. Friss és nyers.
-          </p>
-        </div>
-
-        {allProducts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">
-              No products available at the moment.
-            </p>
-            <p className="text-sm text-gray-400 mt-2">
-              Please check back later or contact support.
-            </p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-
-        {/* Delivery Info */}
-        {/* <div className="mt-12 bg-primary-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-primary-900 mb-2">
-            Delivery Information
-          </h3>
-          <div className="text-sm text-primary-700 space-y-1">
-            <p>• Delivery fee: 1,500 HUF per order</p>
-            <p>• FREE delivery on orders over 15,000 HUF</p>
-            <p>• Delivery only to Hungary</p>
-            <p>• Automatic discounts apply for bulk orders</p>
-          </div>
-        </div> */}
+    <div className="min-h-screen bg-gradient-to-br from-rosti-cream via-white to-rosti-cream-dark flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Átirányítás az új webshopba...</p>
       </div>
     </div>
   );
