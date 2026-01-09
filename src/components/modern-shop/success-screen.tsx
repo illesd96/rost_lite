@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { OrderState, CONSTANTS } from '../../types/modern-shop';
-import { Check, Copy, MessageSquare, CheckCircle2, ChevronDown, ChevronUp, Calendar, Download } from 'lucide-react';
+import { Check, Copy, MessageSquare, CheckCircle2, ChevronDown, ChevronUp, Calendar, Download, Loader2 } from 'lucide-react';
 import { getDateFromIndex } from '../../lib/modern-shop-utils';
 
 interface SuccessScreenProps {
@@ -8,9 +8,50 @@ interface SuccessScreenProps {
   onReset: () => void;
 }
 
+interface OrderCreationResult {
+  success: boolean;
+  order?: {
+    id: string;
+    orderNumber: string;
+    totalAmount: number;
+    paymentGroups: number;
+    deliveryPackages: number;
+    status: string;
+  };
+  message: string;
+}
+
 const SuccessScreen: React.FC<SuccessScreenProps> = ({ orderState, onReset }) => {
   const [copied, setCopied] = useState(false);
   const [showDates, setShowDates] = useState(false);
+  const [orderResult, setOrderResult] = useState<OrderCreationResult | null>(null);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(true);
+
+  // Create order on component mount
+  useEffect(() => {
+    const createOrder = async () => {
+      try {
+        const response = await fetch('/api/modern-shop/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderState }),
+        });
+
+        const result = await response.json();
+        setOrderResult(result);
+      } catch (error) {
+        console.error('Error creating order:', error);
+        setOrderResult({
+          success: false,
+          message: 'Hiba történt a rendelés létrehozása során.'
+        });
+      } finally {
+        setIsCreatingOrder(false);
+      }
+    };
+
+    createOrder();
+  }, [orderState]);
 
   // Helper for thousands separator with non-breaking space
   const formatNumber = (num: number) => {

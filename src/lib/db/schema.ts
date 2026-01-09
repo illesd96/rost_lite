@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, boolean, timestamp, check, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, integer, boolean, timestamp, check, varchar, date, jsonb } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
@@ -155,3 +155,94 @@ export const deliverySettings = pgTable('delivery_settings', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+// Modern Shop Orders
+export const modernShopOrders = pgTable('modern_shop_orders', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  orderNumber: varchar('order_number', { length: 50 }).unique().notNull(),
+  
+  // Order details
+  quantity: integer('quantity').notNull(),
+  unitPrice: integer('unit_price').notNull(), // Price per unit in HUF
+  shippingFee: integer('shipping_fee').notNull().default(0),
+  totalAmount: integer('total_amount').notNull(),
+  
+  // Schedule and delivery
+  deliverySchedule: jsonb('delivery_schedule').notNull(), // Array of delivery date indices
+  deliveryDatesCount: integer('delivery_dates_count').notNull(),
+  
+  // Payment details
+  paymentPlan: varchar('payment_plan', { length: 20 }).notNull(), // 'full', 'monthly', 'delivery'
+  paymentMethod: varchar('payment_method', { length: 20 }).notNull(), // 'transfer', 'cash'
+  appliedCoupon: varchar('applied_coupon', { length: 50 }),
+  discountAmount: integer('discount_amount').default(0),
+  
+  // Billing information (stored as JSON for flexibility)
+  billingData: jsonb('billing_data').notNull(),
+  
+  // Order status
+  status: varchar('status', { length: 20 }).default('pending'), // 'pending', 'confirmed', 'processing', 'delivered', 'cancelled'
+  notes: text('notes'),
+  
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  confirmedAt: timestamp('confirmed_at'),
+  deliveredAt: timestamp('delivered_at')
+});
+
+// Order Payment Groups (for different payment plans)
+export const orderPaymentGroups = pgTable('order_payment_groups', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  orderId: uuid('order_id').references(() => modernShopOrders.id, { onDelete: 'cascade' }).notNull(),
+  groupNumber: integer('group_number').notNull(),
+  amount: integer('amount').notNull(),
+  dueDate: date('due_date').notNull(),
+  status: varchar('status', { length: 20 }).default('pending'), // 'pending', 'paid', 'overdue', 'cancelled'
+  description: text('description'),
+  paidAt: timestamp('paid_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
+});
+
+// Order Delivery Schedule
+export const orderDeliverySchedule = pgTable('order_delivery_schedule', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  orderId: uuid('order_id').references(() => modernShopOrders.id, { onDelete: 'cascade' }).notNull(),
+  deliveryDate: date('delivery_date').notNull(),
+  deliveryIndex: integer('delivery_index').notNull(), // Original schedule index
+  isMonday: boolean('is_monday').notNull().default(true), // true for Monday, false for Tuesday
+  quantity: integer('quantity').notNull(),
+  packageNumber: integer('package_number').notNull(),
+  totalPackages: integer('total_packages').notNull(),
+  status: varchar('status', { length: 20 }).default('scheduled'), // 'scheduled', 'delivered', 'cancelled', 'rescheduled'
+  deliveryNotes: text('delivery_notes'),
+  deliveredAt: timestamp('delivered_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
+});
+
+// Relations for modern shop orders
+export const modernShopOrdersRelations = relations(modernShopOrders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [modernShopOrders.userId],
+    references: [users.id],
+  }),
+  paymentGroups: many(orderPaymentGroups),
+  deliverySchedule: many(orderDeliverySchedule),
+}));
+
+export const orderPaymentGroupsRelations = relations(orderPaymentGroups, ({ one }) => ({
+  order: one(modernShopOrders, {
+    fields: [orderPaymentGroups.orderId],
+    references: [modernShopOrders.id],
+  }),
+}));
+
+export const orderDeliveryScheduleRelations = relations(orderDeliverySchedule, ({ one }) => ({
+  order: one(modernShopOrders, {
+    fields: [orderDeliverySchedule.orderId],
+    references: [modernShopOrders.id],
+  }),
+}));
