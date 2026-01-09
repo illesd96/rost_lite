@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { modernShopOrders, orderPaymentGroups, orderDeliverySchedule } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import { AdminLayout } from '@/components/admin/admin-layout';
 
 export default async function ModernOrdersPage() {
   const session = await getServerSession(authOptions);
@@ -48,14 +47,13 @@ export default async function ModernOrdersPage() {
   };
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Modern Shop Orders</h1>
-        </div>
-        <p className="text-gray-600">
-          Manage orders from the modern webshop with payment groups and delivery schedules
-        </p>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900">Modern Shop Orders</h1>
+      </div>
+      <p className="text-gray-600">
+        Manage orders from the modern webshop with payment groups and delivery schedules
+      </p>
 
         {orders.length === 0 ? (
           <div className="text-center py-12">
@@ -190,7 +188,6 @@ export default async function ModernOrdersPage() {
             })}
           </div>
         )}
-      </div>
-    </AdminLayout>
+    </div>
   );
 }

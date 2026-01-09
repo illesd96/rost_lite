@@ -4,7 +4,6 @@ import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { orderDeliverySchedule, modernShopOrders, users } from '@/lib/db/schema';
 import { eq, gte, asc } from 'drizzle-orm';
-import { AdminLayout } from '@/components/admin/admin-layout';
 import { DeliveryList } from '@/components/admin/delivery-list';
 
 export default async function DeliveriesPage() {
@@ -44,14 +43,12 @@ export default async function DeliveriesPage() {
   }, {} as Record<string, typeof upcomingDeliveries>);
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Upcoming Deliveries</h1>
-        </div>
-
-        <DeliveryList deliveriesByDate={deliveriesByDate} />
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900">Upcoming Deliveries</h1>
       </div>
-    </AdminLayout>
+
+      <DeliveryList deliveriesByDate={deliveriesByDate} />
+    </div>
   );
 }
