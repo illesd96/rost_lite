@@ -188,7 +188,7 @@ export default function ModernShopPage() {
       const response = await fetch('/api/modern-shop/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderState),
+        body: JSON.stringify({ orderState }),
       });
 
       const result = await response.json();
