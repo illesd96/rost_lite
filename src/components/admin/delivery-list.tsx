@@ -48,22 +48,25 @@ export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
       });
 
       if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = `delivery-list-${date}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        const htmlContent = await response.text();
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(htmlContent);
+          printWindow.document.close();
+          
+          // Wait for content to load then trigger print dialog
+          printWindow.onload = () => {
+            setTimeout(() => {
+              printWindow.print();
+            }, 500);
+          };
+        }
       } else {
-        alert('Failed to generate PDF');
+        alert('Failed to generate delivery list');
       }
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF');
+      console.error('Error generating delivery list:', error);
+      alert('Error generating delivery list');
     } finally {
       setIsGeneratingPDF(false);
     }
@@ -136,7 +139,7 @@ export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
                     ) : (
                       <>
                         <Download className="h-4 w-4" />
-                        Download PDF
+                        Print List
                       </>
                     )}
                   </Button>
