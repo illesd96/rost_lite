@@ -2,18 +2,18 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Package, 
-  Users, 
+import {
+  LayoutDashboard,
+  Package,
+  Users,
   BarChart3,
-  Settings
+  Settings,
+  Truck
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Products', href: '/admin/products', icon: Package },
-  { name: 'Orders', href: '/admin/orders', icon: Package },
+  { name: 'Deliveries', href: '/admin/deliveries', icon: Truck },
   { name: 'Modern Orders', href: '/admin/modern-orders', icon: Package },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },

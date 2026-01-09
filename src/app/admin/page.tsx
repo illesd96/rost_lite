@@ -1,53 +1,51 @@
 import { db } from '@/lib/db';
-import { orders, products, users } from '@/lib/db/schema';
-import { eq, count, sum, desc } from 'drizzle-orm';
-import { formatPrice } from '@/lib/utils';
+import { modernShopOrders, orderDeliverySchedule, users } from '@/lib/db/schema';
+import { eq, count, sum, desc, gte } from 'drizzle-orm';
+import { formatCurrency } from '@/lib/modern-shop-utils';
 import { 
   Package, 
   Users as UsersIcon, 
   TrendingUp,
   DollarSign,
+  Truck,
   Clock
 } from 'lucide-react';
 
 export default async function AdminDashboard() {
+  const today = new Date().toISOString().split('T')[0];
+  
   // Fetch dashboard statistics
   const [
-    totalProducts,
-    totalOrders,
+    totalModernOrders,
     totalUsers,
-    paidOrders,
+    totalRevenue,
+    upcomingDeliveries,
     recentOrders,
   ] = await Promise.all([
-    db.select({ count: count() }).from(products),
-    db.select({ count: count() }).from(orders),
+    db.select({ count: count() }).from(modernShopOrders),
     db.select({ count: count() }).from(users),
     db.select({ 
-      count: count(),
-      total: sum(orders.totalHuf)
-    }).from(orders).where(eq(orders.status, 'PAID')),
-    db.select({
-      id: orders.id,
-      createdAt: orders.createdAt,
-      status: orders.status,
-      totalHuf: orders.totalHuf,
-      userEmail: users.email,
-    }).from(orders)
-    .leftJoin(users, eq(orders.userId, users.id))
-    .orderBy(desc(orders.createdAt))
-    .limit(5),
+      total: sum(modernShopOrders.totalAmount)
+    }).from(modernShopOrders),
+    db.select({ count: count() }).from(orderDeliverySchedule)
+      .where(gte(orderDeliverySchedule.deliveryDate, today)),
+    db.query.modernShopOrders.findMany({
+      with: {
+        user: {
+          columns: {
+            email: true,
+          },
+        },
+      },
+      orderBy: [desc(modernShopOrders.createdAt)],
+      limit: 5,
+    })
   ]);
 
   const stats = [
     {
-      name: 'Total Products',
-      value: totalProducts[0].count,
-      icon: Package,
-      color: 'text-blue-600 bg-blue-100',
-    },
-    {
-      name: 'Total Orders',
-      value: totalOrders[0].count,
+      name: 'Modern Orders',
+      value: totalModernOrders[0].count,
       icon: Package,
       color: 'text-green-600 bg-green-100',
     },
@@ -58,14 +56,18 @@ export default async function AdminDashboard() {
       color: 'text-purple-600 bg-purple-100',
     },
     {
-      name: 'Paid Orders',
-      value: paidOrders[0].count,
-      icon: TrendingUp,
+      name: 'Upcoming Deliveries',
+      value: upcomingDeliveries[0].count,
+      icon: Truck,
+      color: 'text-blue-600 bg-blue-100',
+    },
+    {
+      name: 'Total Revenue',
+      value: formatCurrency(Number(totalRevenue[0].total) || 0),
+      icon: DollarSign,
       color: 'text-yellow-600 bg-yellow-100',
     },
   ];
-
-  const totalRevenue = paidOrders[0].total || 0;
 
   return (
     <div className="space-y-6">
@@ -93,19 +95,6 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      {/* Revenue Card */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Total Revenue</h2>
-          <DollarSign className="w-6 h-6 text-green-600" />
-        </div>
-        <p className="text-3xl font-bold text-green-600">
-          {formatPrice(Number(totalRevenue))}
-        </p>
-        <p className="text-sm text-gray-500 mt-1">
-          From {paidOrders[0].count} paid orders
-        </p>
-      </div>
 
       {/* Recent Orders */}
       <div className="bg-white rounded-lg shadow-sm">
@@ -140,27 +129,27 @@ export default async function AdminDashboard() {
               {recentOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    #{order.id.slice(0, 8)}
+                    {order.orderNumber}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.userEmail || 'N/A'}
+                    {order.user?.email || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      order.status === 'PAID' 
+                      order.status === 'confirmed' 
                         ? 'bg-green-100 text-green-800'
-                        : order.status === 'PENDING'
+                        : order.status === 'pending'
                         ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-red-100 text-red-800'
+                        : 'bg-gray-100 text-gray-800'
                     }`}>
                       {order.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatPrice(order.totalHuf)}
+                    {formatCurrency(order.totalAmount)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.createdAt.toLocaleDateString()}
+                    {new Date(order.createdAt).toLocaleDateString('hu-HU')}
                   </td>
                 </tr>
               ))}
