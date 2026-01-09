@@ -1,0 +1,1 @@
+ALTER TABLE "order_delivery_schedule" ADD COLUMN "amount" integer NOT NULL;

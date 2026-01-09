@@ -214,6 +214,7 @@ export const orderDeliverySchedule = pgTable('order_delivery_schedule', {
   deliveryIndex: integer('delivery_index').notNull(), // Original schedule index
   isMonday: boolean('is_monday').notNull().default(true), // true for Monday, false for Tuesday
   quantity: integer('quantity').notNull(),
+  amount: integer('amount').notNull(), // Amount for this specific delivery
   packageNumber: integer('package_number').notNull(),
   totalPackages: integer('total_packages').notNull(),
   status: varchar('status', { length: 20 }).default('scheduled'), // 'scheduled', 'delivered', 'cancelled', 'rescheduled'

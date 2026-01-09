@@ -44,11 +44,30 @@ export default function ModernShopPage() {
   const [screen, setScreen] = useState<ScreenType>('selection');
   const [orderState, setOrderState] = useState<OrderState>(INITIAL_STATE);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOrderCreating, setIsOrderCreating] = useState(false);
+  const [orderCreationError, setOrderCreationError] = useState<string | null>(null);
+  const [createdOrderNumber, setCreatedOrderNumber] = useState<string | null>(null);
 
   // Load state from localStorage and session
   useEffect(() => {
     const loadState = async () => {
       try {
+        // Check if an order was just completed
+        const orderCompleted = localStorage.getItem('modern-shop-order-completed');
+        const completedOrderNumber = localStorage.getItem('modern-shop-completed-order-number');
+        
+        if (orderCompleted === 'true' && completedOrderNumber) {
+          // Show success screen with completed order
+          setCreatedOrderNumber(completedOrderNumber);
+          setScreen('success');
+          setOrderState(INITIAL_STATE);
+          // Clear the completion flags
+          localStorage.removeItem('modern-shop-order-completed');
+          localStorage.removeItem('modern-shop-completed-order-number');
+          setIsLoading(false);
+          return;
+        }
+        
         // Load from localStorage
         const savedState = localStorage.getItem('modern-shop-state');
         const savedScreen = localStorage.getItem('modern-shop-screen');
@@ -157,6 +176,44 @@ export default function ModernShopPage() {
     }
   };
 
+  const handleOrderSubmit = async () => {
+    // Prevent multiple submissions
+    if (isOrderCreating) return;
+    
+    setIsOrderCreating(true);
+    setOrderCreationError(null);
+    setCreatedOrderNumber(null);
+
+    try {
+      const response = await fetch('/api/modern-shop/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderState),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setCreatedOrderNumber(result.orderNumber);
+        // Mark order as completed to prevent resubmission
+        localStorage.setItem('modern-shop-order-completed', 'true');
+        localStorage.setItem('modern-shop-completed-order-number', result.orderNumber);
+        // Clear the order state to prevent resubmission
+        setOrderState(INITIAL_STATE);
+        localStorage.removeItem('modern-shop-state');
+        localStorage.removeItem('modern-shop-screen');
+        navigateTo('success');
+      } else {
+        setOrderCreationError(result.message || 'Hiba történt a rendelés létrehozása során.');
+      }
+    } catch (error) {
+      console.error('Order creation failed:', error);
+      setOrderCreationError('Hiba történt a rendelés létrehozása során.');
+    } finally {
+      setIsOrderCreating(false);
+    }
+  };
+
   // Progress Bar Logic
   let currentStep = 0;
   let showProgressBar = false;
@@ -201,15 +258,19 @@ export default function ModernShopPage() {
             orderState={orderState} 
             updateOrder={updateOrder} 
             onBack={() => navigateTo('billing')} 
-            onSubmit={() => navigateTo('success')} 
+            onSubmit={handleOrderSubmit} 
+            isSubmitting={isOrderCreating}
+            submitError={orderCreationError}
           />
         );
       case 'success':
         return (
           <SuccessScreen 
             orderState={orderState} 
+            orderNumber={createdOrderNumber}
             onReset={() => {
               setOrderState(INITIAL_STATE);
+              setCreatedOrderNumber(null);
               localStorage.removeItem('modern-shop-state');
               localStorage.removeItem('modern-shop-screen');
               navigateTo('selection');

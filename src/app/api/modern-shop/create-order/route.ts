@@ -127,12 +127,17 @@ function createPaymentGroups(orderState: OrderState, orderId: string, totalAmoun
 }
 
 // Helper function to create delivery packages
-function createDeliveryPackages(orderState: OrderState, orderId: string) {
+function createDeliveryPackages(orderState: OrderState, orderId: string, pricing: any) {
   const { quantity, schedule } = orderState;
   const packages: any[] = [];
   
   const bottlesPerDelivery = Math.floor(quantity / schedule.length);
   const extraBottles = quantity % schedule.length;
+  
+  // Calculate amount per delivery (excluding shipping, that's handled separately)
+  const totalProductAmount = pricing.unitPrice * quantity;
+  const amountPerDelivery = Math.floor(totalProductAmount / schedule.length);
+  const lastDeliveryAmount = totalProductAmount - (amountPerDelivery * (schedule.length - 1));
 
   schedule.forEach((deliveryIndex, index) => {
     const startDate = new Date(); // You might want to get this from constants
@@ -142,12 +147,16 @@ function createDeliveryPackages(orderState: OrderState, orderId: string) {
     // Distribute extra bottles among first deliveries
     const packageQuantity = bottlesPerDelivery + (index < extraBottles ? 1 : 0);
     
+    // Calculate amount for this specific delivery
+    const packageAmount = index === schedule.length - 1 ? lastDeliveryAmount : amountPerDelivery;
+    
     packages.push({
       orderId,
       deliveryDate: deliveryDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
       deliveryIndex,
       isMonday,
       quantity: packageQuantity,
+      amount: packageAmount, // Add the missing amount field
       status: 'scheduled' as const,
       packageNumber: index + 1,
       totalPackages: schedule.length
@@ -202,7 +211,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create delivery packages
-    const deliveryPackages = createDeliveryPackages(orderState, newOrder.id);
+    const deliveryPackages = createDeliveryPackages(orderState, newOrder.id, pricing);
     if (deliveryPackages.length > 0) {
       await db.insert(orderDeliverySchedule).values(deliveryPackages);
     }

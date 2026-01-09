@@ -8,9 +8,11 @@ interface SummaryScreenProps {
   updateOrder: (updates: Partial<OrderState>) => void;
   onBack: () => void;
   onSubmit: () => void;
+  isSubmitting?: boolean;
+  submitError?: string | null;
 }
 
-const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, onBack, onSubmit }) => {
+const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, onBack, onSubmit, isSubmitting = false, submitError = null }) => {
   const { quantity, schedule, paymentPlan, paymentMethod, appliedCoupon, billingData } = orderState;
   const [couponInput, setCouponInput] = useState('');
   const [couponMessage, setCouponMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
@@ -421,8 +423,32 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
       </div>
 
       <div>
-        <button onClick={onSubmit} className="w-full bg-emerald-600 text-white hover:bg-emerald-700 font-black py-6 rounded-2xl text-xl shadow-xl transition transform active:scale-[0.98]">
-            Rendelés leadása
+        {submitError && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+            <p className="text-red-700 text-sm font-medium">{submitError}</p>
+          </div>
+        )}
+        <button 
+          onClick={() => {
+            if (!isSubmitting) {
+              onSubmit();
+            }
+          }} 
+          disabled={isSubmitting}
+          className={`w-full font-black py-6 rounded-2xl text-xl shadow-xl transition transform ${
+            isSubmitting 
+              ? 'bg-gray-400 text-white cursor-not-allowed' 
+              : 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]'
+          }`}
+        >
+          {isSubmitting ? (
+            <div className="flex items-center justify-center gap-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              Rendelés feldolgozása...
+            </div>
+          ) : (
+            'Rendelés leadása'
+          )}
         </button>
       </div>
     </main>

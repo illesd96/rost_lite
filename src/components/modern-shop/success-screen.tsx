@@ -5,6 +5,7 @@ import { getDateFromIndex } from '../../lib/modern-shop-utils';
 
 interface SuccessScreenProps {
   orderState: OrderState;
+  orderNumber: string | null;
   onReset: () => void;
 }
 
@@ -21,7 +22,7 @@ interface OrderCreationResult {
   message: string;
 }
 
-const SuccessScreen: React.FC<SuccessScreenProps> = ({ orderState, onReset }) => {
+const SuccessScreen: React.FC<SuccessScreenProps> = ({ orderState, orderNumber, onReset }) => {
   const [copied, setCopied] = useState(false);
   const [showDates, setShowDates] = useState(false);
   const [orderResult, setOrderResult] = useState<OrderCreationResult | null>(null);
@@ -184,7 +185,7 @@ END:VEVENT
                 <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rendelési szám</span>
                     <span className="text-sm font-bold text-gray-900">
-                      {orderResult?.order?.orderNumber ? `#${orderResult.order.orderNumber}` : '#ROSTI-2026-0119'}
+                      {orderNumber ? `#${orderNumber}` : '#ROSTI-2026-0119'}
                     </span>
                 </div>
 
