@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import ModernHeader from '../../components/modern-shop/modern-header';
 import PromoBar from '../../components/modern-shop/promo-bar';
@@ -47,6 +47,7 @@ export default function ModernShopPage() {
   const [isOrderCreating, setIsOrderCreating] = useState(false);
   const [orderCreationError, setOrderCreationError] = useState<string | null>(null);
   const [createdOrderNumber, setCreatedOrderNumber] = useState<string | null>(null);
+  const orderSubmissionRef = useRef(false);
 
   // Load state from localStorage and session
   useEffect(() => {
@@ -55,17 +56,26 @@ export default function ModernShopPage() {
         // Check if an order was just completed
         const orderCompleted = localStorage.getItem('modern-shop-order-completed');
         const completedOrderNumber = localStorage.getItem('modern-shop-completed-order-number');
+        const lastOrderTime = localStorage.getItem('modern-shop-last-order-time');
         
-        if (orderCompleted === 'true' && completedOrderNumber) {
+        // If order was completed recently (within 10 minutes), show success screen
+        const now = Date.now();
+        const tenMinutesAgo = now - (10 * 60 * 1000);
+        
+        if (orderCompleted === 'true' && completedOrderNumber && lastOrderTime && parseInt(lastOrderTime) > tenMinutesAgo) {
           // Show success screen with completed order
           setCreatedOrderNumber(completedOrderNumber);
           setScreen('success');
           setOrderState(INITIAL_STATE);
-          // Clear the completion flags
-          localStorage.removeItem('modern-shop-order-completed');
-          localStorage.removeItem('modern-shop-completed-order-number');
           setIsLoading(false);
           return;
+        }
+        
+        // If order completion flags are old, clear them
+        if (orderCompleted === 'true' && (!lastOrderTime || parseInt(lastOrderTime) <= tenMinutesAgo)) {
+          localStorage.removeItem('modern-shop-order-completed');
+          localStorage.removeItem('modern-shop-completed-order-number');
+          localStorage.removeItem('modern-shop-last-order-time');
         }
         
         // Load from localStorage
@@ -176,13 +186,35 @@ export default function ModernShopPage() {
     }
   };
 
-  const handleOrderSubmit = async () => {
-    // Prevent multiple submissions
-    if (isOrderCreating) return;
+  const handleOrderSubmit = useCallback(async () => {
+    // Prevent multiple submissions using ref (React strict mode protection)
+    if (orderSubmissionRef.current) {
+      console.log('Order submission already in progress (ref check), ignoring duplicate call');
+      return;
+    }
     
+    // Prevent multiple submissions using state
+    if (isOrderCreating) {
+      console.log('Order creation already in progress (state check), ignoring duplicate call');
+      return;
+    }
+    
+    // Check if order was already completed recently
+    const lastOrderTime = localStorage.getItem('modern-shop-last-order-time');
+    const now = Date.now();
+    if (lastOrderTime && (now - parseInt(lastOrderTime)) < 5000) { // 5 second cooldown
+      console.log('Order submitted too recently, ignoring duplicate');
+      return;
+    }
+    
+    // Set both ref and state to prevent duplicates
+    orderSubmissionRef.current = true;
     setIsOrderCreating(true);
     setOrderCreationError(null);
     setCreatedOrderNumber(null);
+    
+    // Record submission time
+    localStorage.setItem('modern-shop-last-order-time', now.toString());
 
     try {
       const response = await fetch('/api/modern-shop/create-order', {
@@ -202,7 +234,10 @@ export default function ModernShopPage() {
         setOrderState(INITIAL_STATE);
         localStorage.removeItem('modern-shop-state');
         localStorage.removeItem('modern-shop-screen');
-        navigateTo('success');
+        
+        // Redirect to dedicated success page to prevent reload issues
+        window.location.href = `/modern-shop/success?orderNumber=${result.orderNumber}`;
+        return;
       } else {
         setOrderCreationError(result.message || 'Hiba történt a rendelés létrehozása során.');
       }
@@ -211,8 +246,9 @@ export default function ModernShopPage() {
       setOrderCreationError('Hiba történt a rendelés létrehozása során.');
     } finally {
       setIsOrderCreating(false);
+      orderSubmissionRef.current = false;
     }
-  };
+  }, [isOrderCreating, orderState]);
 
   // Progress Bar Logic
   let currentStep = 0;
