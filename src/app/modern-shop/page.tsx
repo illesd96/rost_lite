@@ -39,6 +39,15 @@ const INITIAL_STATE: OrderState = {
   appliedCoupon: undefined
 };
 
+// Utility function to clear all modern shop localStorage data
+const clearAllModernShopStorage = () => {
+  localStorage.removeItem('modern-shop-state');
+  localStorage.removeItem('modern-shop-screen');
+  localStorage.removeItem('modern-shop-order-completed');
+  localStorage.removeItem('modern-shop-completed-order-number');
+  localStorage.removeItem('modern-shop-last-order-time');
+};
+
 export default function ModernShopPage() {
   const { data: session, status } = useSession();
   const [screen, setScreen] = useState<ScreenType>('selection');
@@ -58,21 +67,36 @@ export default function ModernShopPage() {
         const completedOrderNumber = localStorage.getItem('modern-shop-completed-order-number');
         const lastOrderTime = localStorage.getItem('modern-shop-last-order-time');
         
-        // If order was completed recently (within 10 minutes), show success screen
+        // If order was completed recently (within 2 minutes), show success screen
         const now = Date.now();
-        const tenMinutesAgo = now - (10 * 60 * 1000);
+        const twoMinutesAgo = now - (2 * 60 * 1000);
         
-        if (orderCompleted === 'true' && completedOrderNumber && lastOrderTime && parseInt(lastOrderTime) > tenMinutesAgo) {
+        console.log('Checking order completion:', {
+          orderCompleted,
+          completedOrderNumber,
+          lastOrderTime,
+          now,
+          twoMinutesAgo,
+          isRecent: lastOrderTime && parseInt(lastOrderTime) > twoMinutesAgo
+        });
+        
+        if (orderCompleted === 'true' && completedOrderNumber && lastOrderTime && parseInt(lastOrderTime) > twoMinutesAgo) {
+          console.log('Showing success screen for recent order:', completedOrderNumber);
           // Show success screen with completed order
           setCreatedOrderNumber(completedOrderNumber);
           setScreen('success');
           setOrderState(INITIAL_STATE);
+          // Clear the flags immediately to prevent loops
+          localStorage.removeItem('modern-shop-order-completed');
+          localStorage.removeItem('modern-shop-completed-order-number');
+          localStorage.removeItem('modern-shop-last-order-time');
           setIsLoading(false);
           return;
         }
         
-        // If order completion flags are old, clear them
-        if (orderCompleted === 'true' && (!lastOrderTime || parseInt(lastOrderTime) <= tenMinutesAgo)) {
+        // If order completion flags exist but are old, clear them
+        if (orderCompleted === 'true') {
+          console.log('Clearing old order completion flags');
           localStorage.removeItem('modern-shop-order-completed');
           localStorage.removeItem('modern-shop-completed-order-number');
           localStorage.removeItem('modern-shop-last-order-time');
@@ -227,13 +251,11 @@ export default function ModernShopPage() {
 
       if (response.ok) {
         setCreatedOrderNumber(result.orderNumber);
-        // Mark order as completed to prevent resubmission
-        localStorage.setItem('modern-shop-order-completed', 'true');
-        localStorage.setItem('modern-shop-completed-order-number', result.orderNumber);
+        // Clear ALL localStorage data immediately to prevent any loops
+        clearAllModernShopStorage();
+        
         // Clear the order state to prevent resubmission
         setOrderState(INITIAL_STATE);
-        localStorage.removeItem('modern-shop-state');
-        localStorage.removeItem('modern-shop-screen');
         
         // Redirect to dedicated success page to prevent reload issues
         window.location.href = `/modern-shop/success?orderNumber=${result.orderNumber}`;
@@ -307,8 +329,7 @@ export default function ModernShopPage() {
             onReset={() => {
               setOrderState(INITIAL_STATE);
               setCreatedOrderNumber(null);
-              localStorage.removeItem('modern-shop-state');
-              localStorage.removeItem('modern-shop-screen');
+              clearAllModernShopStorage();
               navigateTo('selection');
             }} 
           />

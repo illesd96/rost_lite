@@ -9,50 +9,13 @@ interface SuccessScreenProps {
   onReset: () => void;
 }
 
-interface OrderCreationResult {
-  success: boolean;
-  order?: {
-    id: string;
-    orderNumber: string;
-    totalAmount: number;
-    paymentGroups: number;
-    deliveryPackages: number;
-    status: string;
-  };
-  message: string;
-}
+// Order creation result interface removed - orders are now created in summary screen
 
 const SuccessScreen: React.FC<SuccessScreenProps> = ({ orderState, orderNumber, onReset }) => {
   const [copied, setCopied] = useState(false);
   const [showDates, setShowDates] = useState(false);
-  const [orderResult, setOrderResult] = useState<OrderCreationResult | null>(null);
-  const [isCreatingOrder, setIsCreatingOrder] = useState(true);
-
-  // Create order on component mount
-  useEffect(() => {
-    const createOrder = async () => {
-      try {
-        const response = await fetch('/api/modern-shop/create-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderState }),
-        });
-
-        const result = await response.json();
-        setOrderResult(result);
-      } catch (error) {
-        console.error('Error creating order:', error);
-        setOrderResult({
-          success: false,
-          message: 'Hiba történt a rendelés létrehozása során.'
-        });
-      } finally {
-        setIsCreatingOrder(false);
-      }
-    };
-
-    createOrder();
-  }, [orderState]);
+  // Order creation is now handled in the summary screen, not here
+  // This component just displays the success message with the provided order number
 
   // Helper for thousands separator with non-breaking space
   const formatNumber = (num: number) => {

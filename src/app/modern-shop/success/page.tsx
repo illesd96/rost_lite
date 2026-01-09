@@ -62,13 +62,18 @@ function SuccessPageContent() {
     }
   }, [searchParams, router]);
 
-  const handleReset = () => {
-    // Clear all localStorage data
+  // Utility function to clear all modern shop localStorage data
+  const clearAllModernShopStorage = () => {
     localStorage.removeItem('modern-shop-state');
     localStorage.removeItem('modern-shop-screen');
     localStorage.removeItem('modern-shop-order-completed');
     localStorage.removeItem('modern-shop-completed-order-number');
     localStorage.removeItem('modern-shop-last-order-time');
+  };
+
+  const handleReset = () => {
+    // Clear all localStorage data
+    clearAllModernShopStorage();
     
     // Redirect to shop
     router.push('/modern-shop');
