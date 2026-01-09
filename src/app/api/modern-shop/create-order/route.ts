@@ -26,13 +26,13 @@ function calculatePricing(orderState: OrderState) {
     FREE_SHIPPING_THRESHOLD: 50
   };
 
-  const { quantity, appliedCoupon, billingData } = orderState;
+  const { quantity, schedule, appliedCoupon, billingData } = orderState;
   
   let unitPrice = CONSTANTS.UNIT_PRICE;
   let shippingFee = 0;
   let discountAmount = 0;
 
-  // Calculate base shipping fee
+  // Calculate base shipping fee (per delivery)
   if (quantity <= 25) {
     shippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
   } else if (quantity < CONSTANTS.FREE_SHIPPING_THRESHOLD) {
@@ -55,14 +55,17 @@ function calculatePricing(orderState: OrderState) {
     }
   }
 
-  const subtotal = unitPrice * quantity;
-  const totalAmount = subtotal + shippingFee;
+  // Calculate totals - multiply by number of delivery dates
+  const subtotalPerDelivery = unitPrice * quantity;
+  const subtotal = subtotalPerDelivery * schedule.length;
+  const totalShippingFee = shippingFee * schedule.length;
+  const totalAmount = subtotal + totalShippingFee;
 
   return {
     unitPrice,
     subtotal,
-    shippingFee,
-    discountAmount,
+    shippingFee: totalShippingFee,
+    discountAmount: discountAmount * schedule.length,
     totalAmount
   };
 }
@@ -71,6 +74,11 @@ function calculatePricing(orderState: OrderState) {
 function createPaymentGroups(orderState: OrderState, orderId: string, totalAmount: number) {
   const { paymentPlan, schedule } = orderState;
   const groups: any[] = [];
+  
+  // Constants for date calculations
+  const CONSTANTS = {
+    START_DATE: new Date()
+  };
 
   if (paymentPlan === 'full') {
     // Single payment for full amount
@@ -86,6 +94,7 @@ function createPaymentGroups(orderState: OrderState, orderId: string, totalAmoun
   } else if (paymentPlan === 'monthly') {
     // Group deliveries by calendar month
     const deliverysByMonth = new Map<string, { deliveries: number[], totalAmount: number }>();
+    const amountPerDelivery = Math.round(totalAmount / schedule.length);
     
     schedule.forEach((deliveryIndex, index) => {
       const deliveryDate = getDateFromIndex(CONSTANTS.START_DATE, deliveryIndex);
@@ -97,8 +106,8 @@ function createPaymentGroups(orderState: OrderState, orderId: string, totalAmoun
       
       const monthData = deliverysByMonth.get(monthKey)!;
       monthData.deliveries.push(index);
-      // Calculate amount proportional to deliveries in this month
-      monthData.totalAmount += Math.round(totalAmount / schedule.length);
+      // Each delivery in this month adds its full amount
+      monthData.totalAmount += amountPerDelivery;
     });
 
     // Create payment groups by month
@@ -146,32 +155,24 @@ function createDeliveryPackages(orderState: OrderState, orderId: string, pricing
   const { quantity, schedule } = orderState;
   const packages: any[] = [];
   
-  const bottlesPerDelivery = Math.floor(quantity / schedule.length);
-  const extraBottles = quantity % schedule.length;
+  // Each delivery gets the FULL quantity (not split)
+  const bottlesPerDelivery = quantity;
   
-  // Calculate amount per delivery (excluding shipping, that's handled separately)
-  const totalProductAmount = pricing.unitPrice * quantity;
-  const amountPerDelivery = Math.floor(totalProductAmount / schedule.length);
-  const lastDeliveryAmount = totalProductAmount - (amountPerDelivery * (schedule.length - 1));
+  // Calculate amount per delivery - each delivery gets the full product amount
+  const amountPerDelivery = pricing.unitPrice * quantity;
 
   schedule.forEach((deliveryIndex, index) => {
     const startDate = new Date(); // You might want to get this from constants
     const deliveryDate = getDateFromIndex(startDate, deliveryIndex);
     const isMonday = deliveryDate.getDay() === 1;
     
-    // Distribute extra bottles among first deliveries
-    const packageQuantity = bottlesPerDelivery + (index < extraBottles ? 1 : 0);
-    
-    // Calculate amount for this specific delivery
-    const packageAmount = index === schedule.length - 1 ? lastDeliveryAmount : amountPerDelivery;
-    
     packages.push({
       orderId,
       deliveryDate: deliveryDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
       deliveryIndex,
       isMonday,
-      quantity: packageQuantity,
-      amount: packageAmount, // Add the missing amount field
+      quantity: bottlesPerDelivery, // Full quantity for each delivery
+      amount: amountPerDelivery, // Full amount for each delivery
       status: 'scheduled' as const,
       packageNumber: index + 1,
       totalPackages: schedule.length
