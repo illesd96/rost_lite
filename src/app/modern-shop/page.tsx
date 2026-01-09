@@ -56,6 +56,7 @@ export default function ModernShopPage() {
   const [isOrderCreating, setIsOrderCreating] = useState(false);
   const [orderCreationError, setOrderCreationError] = useState<string | null>(null);
   const [createdOrderNumber, setCreatedOrderNumber] = useState<string | null>(null);
+  const [completedOrderState, setCompletedOrderState] = useState<OrderState | null>(null);
   const orderSubmissionRef = useRef(false);
 
   // Load state from localStorage and session
@@ -251,6 +252,9 @@ export default function ModernShopPage() {
 
       if (response.ok) {
         setCreatedOrderNumber(result.orderNumber);
+        // Store the completed order state in sessionStorage for the success page
+        sessionStorage.setItem('completed-order-state', JSON.stringify(orderState));
+        setCompletedOrderState(orderState);
         // Clear ALL localStorage data immediately to prevent any loops
         clearAllModernShopStorage();
         
@@ -324,11 +328,12 @@ export default function ModernShopPage() {
       case 'success':
         return (
           <SuccessScreen 
-            orderState={orderState} 
+            orderState={completedOrderState || orderState} 
             orderNumber={createdOrderNumber}
             onReset={() => {
               setOrderState(INITIAL_STATE);
               setCreatedOrderNumber(null);
+              setCompletedOrderState(null);
               clearAllModernShopStorage();
               navigateTo('selection');
             }} 

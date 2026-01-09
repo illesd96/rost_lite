@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { modernShopOrders, orderDeliverySchedule, orderPaymentGroups } from '@/lib/db/schema';
-import { OrderState } from '@/types/modern-shop';
+import { OrderState, CONSTANTS } from '@/types/modern-shop';
 import { formatCurrency, getDateFromIndex, getMondayDate } from '@/lib/modern-shop-utils';
 
 // Helper function to generate order number
@@ -84,21 +84,36 @@ function createPaymentGroups(orderState: OrderState, orderId: string, totalAmoun
       description: 'Teljes összeg egyszeri fizetése'
     });
   } else if (paymentPlan === 'monthly') {
-    // Monthly payments
-    const monthlyAmount = Math.round(totalAmount / schedule.length);
-    const lastMonthAmount = totalAmount - (monthlyAmount * (schedule.length - 1));
+    // Group deliveries by calendar month
+    const deliverysByMonth = new Map<string, { deliveries: number[], totalAmount: number }>();
+    
+    schedule.forEach((deliveryIndex, index) => {
+      const deliveryDate = getDateFromIndex(CONSTANTS.START_DATE, deliveryIndex);
+      const monthKey = `${deliveryDate.getFullYear()}-${String(deliveryDate.getMonth() + 1).padStart(2, '0')}`;
+      
+      if (!deliverysByMonth.has(monthKey)) {
+        deliverysByMonth.set(monthKey, { deliveries: [], totalAmount: 0 });
+      }
+      
+      const monthData = deliverysByMonth.get(monthKey)!;
+      monthData.deliveries.push(index);
+      // Calculate amount proportional to deliveries in this month
+      monthData.totalAmount += Math.round(totalAmount / schedule.length);
+    });
 
-    schedule.forEach((_, index) => {
-      const dueDate = new Date();
-      dueDate.setMonth(dueDate.getMonth() + index);
+    // Create payment groups by month
+    let groupNumber = 1;
+    Array.from(deliverysByMonth.entries()).forEach(([monthKey, monthData]) => {
+      const [year, month] = monthKey.split('-');
+      const dueDate = new Date(parseInt(year), parseInt(month) - 1, 1);
       
       groups.push({
         orderId,
-        groupNumber: index + 1,
-        amount: index === schedule.length - 1 ? lastMonthAmount : monthlyAmount,
-        dueDate: dueDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
+        groupNumber: groupNumber++,
+        amount: monthData.totalAmount,
+        dueDate: dueDate.toISOString().split('T')[0],
         status: 'pending' as const,
-        description: `${index + 1}. havi részlet (${schedule.length} részletből)`
+        description: `${year}. ${month}. havi fizetés (${monthData.deliveries.length} szállítás)`
       });
     });
   } else if (paymentPlan === 'delivery') {

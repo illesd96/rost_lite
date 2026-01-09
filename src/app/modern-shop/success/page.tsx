@@ -45,6 +45,7 @@ function SuccessPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [orderState, setOrderState] = useState<OrderState>(INITIAL_STATE);
 
   useEffect(() => {
     // Get order number from URL params or localStorage
@@ -60,6 +61,17 @@ function SuccessPageContent() {
       router.push('/modern-shop');
       return;
     }
+
+    // Load completed order state from sessionStorage
+    const completedOrderState = sessionStorage.getItem('completed-order-state');
+    if (completedOrderState) {
+      try {
+        const parsedOrderState = JSON.parse(completedOrderState);
+        setOrderState(parsedOrderState);
+      } catch (error) {
+        console.error('Failed to parse completed order state:', error);
+      }
+    }
   }, [searchParams, router]);
 
   // Utility function to clear all modern shop localStorage data
@@ -74,6 +86,8 @@ function SuccessPageContent() {
   const handleReset = () => {
     // Clear all localStorage data
     clearAllModernShopStorage();
+    // Clear sessionStorage data
+    sessionStorage.removeItem('completed-order-state');
     
     // Redirect to shop
     router.push('/modern-shop');
@@ -90,7 +104,7 @@ function SuccessPageContent() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <SuccessScreen 
-        orderState={INITIAL_STATE} 
+        orderState={orderState} 
         orderNumber={orderNumber}
         onReset={handleReset}
       />
