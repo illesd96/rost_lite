@@ -183,7 +183,9 @@ END:VEVENT
                 {/* Order ID */}
                 <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rendelési szám</span>
-                    <span className="text-sm font-bold text-gray-900">#ROSTI-2026-0119</span>
+                    <span className="text-sm font-bold text-gray-900">
+                      {orderResult?.order?.orderNumber ? `#${orderResult.order.orderNumber}` : '#ROSTI-2026-0119'}
+                    </span>
                 </div>
 
                 {/* Delivery Count with Dropdown */}

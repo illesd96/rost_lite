@@ -74,11 +74,12 @@ function createPaymentGroups(orderState: OrderState, orderId: string, totalAmoun
 
   if (paymentPlan === 'full') {
     // Single payment for full amount
+    const today = new Date();
     groups.push({
       orderId,
       groupNumber: 1,
       amount: totalAmount,
-      dueDate: new Date(), // Immediate payment
+      dueDate: today.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
       status: 'pending' as const,
       description: 'Teljes összeg egyszeri fizetése'
     });
@@ -95,7 +96,7 @@ function createPaymentGroups(orderState: OrderState, orderId: string, totalAmoun
         orderId,
         groupNumber: index + 1,
         amount: index === schedule.length - 1 ? lastMonthAmount : monthlyAmount,
-        dueDate,
+        dueDate: dueDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
         status: 'pending' as const,
         description: `${index + 1}. havi részlet (${schedule.length} részletből)`
       });
@@ -115,7 +116,7 @@ function createPaymentGroups(orderState: OrderState, orderId: string, totalAmoun
         orderId,
         groupNumber: index + 1,
         amount: index === schedule.length - 1 ? lastDeliveryAmount : deliveryAmount,
-        dueDate,
+        dueDate: dueDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
         status: 'pending' as const,
         description: `${index + 1}. szállítás fizetése (${deliveryDate.toLocaleDateString('hu-HU')})`
       });
@@ -143,7 +144,7 @@ function createDeliveryPackages(orderState: OrderState, orderId: string) {
     
     packages.push({
       orderId,
-      deliveryDate,
+      deliveryDate: deliveryDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD string
       deliveryIndex,
       isMonday,
       quantity: packageQuantity,
