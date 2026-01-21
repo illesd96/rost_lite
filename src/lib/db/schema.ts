@@ -202,6 +202,13 @@ export const orderPaymentGroups = pgTable('order_payment_groups', {
   status: varchar('status', { length: 20 }).default('pending'), // 'pending', 'paid', 'overdue', 'cancelled'
   description: text('description'),
   paidAt: timestamp('paid_at'),
+  // Billing tracking fields
+  billCreated: boolean('bill_created').default(false).notNull(),
+  billCreatedAt: timestamp('bill_created_at'),
+  billSent: boolean('bill_sent').default(false).notNull(),
+  billSentAt: timestamp('bill_sent_at'),
+  billNumber: varchar('bill_number', { length: 50 }), // Invoice/bill reference number
+  billNotes: text('bill_notes'), // Notes about the bill
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });

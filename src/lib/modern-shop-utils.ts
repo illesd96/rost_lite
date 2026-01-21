@@ -48,3 +48,5 @@ export const formatPhone = (value: string): string => {
   const clean = value.substring(3).replace(/[^0-9]/g, '');
   return `+36${clean.substring(0, 9)}`;
 };
+
+
