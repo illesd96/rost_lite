@@ -393,6 +393,12 @@ export function BillingList({ paymentGroupsByDate }: BillingListProps) {
                                     className="px-3 py-1.5 text-sm border border-gray-200 rounded-md w-48"
                                     value={billNumbers[pg.id] || ''}
                                     onChange={(e) => setBillNumbers(prev => ({ ...prev, [pg.id]: e.target.value }))}
+                                    onClick={(e) => e.stopPropagation()}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                   />
                                   <input
                                     type="text"
@@ -400,6 +406,12 @@ export function BillingList({ paymentGroupsByDate }: BillingListProps) {
                                     className="px-3 py-1.5 text-sm border border-gray-200 rounded-md flex-1"
                                     value={billNotes[pg.id] || ''}
                                     onChange={(e) => setBillNotes(prev => ({ ...prev, [pg.id]: e.target.value }))}
+                                    onClick={(e) => e.stopPropagation()}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                   />
                                 </div>
                               )}
@@ -419,13 +431,18 @@ export function BillingList({ paymentGroupsByDate }: BillingListProps) {
                             </div>
                             
                             {/* Right side - Action Buttons */}
-                            <div className="flex flex-col gap-2 min-w-[160px]">
+                            <div className="flex flex-col gap-4 min-w-[180px] pl-4 border-l border-gray-200">
                               {!pg.billCreated && (
                                 <Button
-                                  size="sm"
-                                  onClick={() => updateBillingStatus(pg.id, 'create_bill')}
+                                  type="button"
+                                  size="default"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    updateBillingStatus(pg.id, 'create_bill');
+                                  }}
                                   disabled={isPending}
-                                  className="w-full bg-orange-600 hover:bg-orange-700"
+                                  className="w-full bg-orange-600 hover:bg-orange-700 py-3"
                                 >
                                   <FileText className="h-4 w-4 mr-2" />
                                   Számla létrehozva
@@ -434,10 +451,15 @@ export function BillingList({ paymentGroupsByDate }: BillingListProps) {
                               
                               {pg.billCreated && !pg.billSent && (
                                 <Button
-                                  size="sm"
-                                  onClick={() => updateBillingStatus(pg.id, 'send_bill')}
+                                  type="button"
+                                  size="default"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    updateBillingStatus(pg.id, 'send_bill');
+                                  }}
                                   disabled={isPending}
-                                  className="w-full bg-blue-600 hover:bg-blue-700"
+                                  className="w-full bg-blue-600 hover:bg-blue-700 py-3"
                                 >
                                   <Send className="h-4 w-4 mr-2" />
                                   Számla elküldve
@@ -446,10 +468,15 @@ export function BillingList({ paymentGroupsByDate }: BillingListProps) {
                               
                               {pg.billSent && pg.status !== 'paid' && (
                                 <Button
-                                  size="sm"
-                                  onClick={() => updateBillingStatus(pg.id, 'mark_paid')}
+                                  type="button"
+                                  size="default"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    updateBillingStatus(pg.id, 'mark_paid');
+                                  }}
                                   disabled={isPending}
-                                  className="w-full bg-green-600 hover:bg-green-700"
+                                  className="w-full bg-green-600 hover:bg-green-700 py-3"
                                 >
                                   <CheckCircle2 className="h-4 w-4 mr-2" />
                                   Fizetve jelölés
@@ -457,14 +484,14 @@ export function BillingList({ paymentGroupsByDate }: BillingListProps) {
                               )}
                               
                               {pg.status === 'paid' && (
-                                <div className="flex items-center justify-center gap-2 text-green-600 py-2">
+                                <div className="flex items-center justify-center gap-2 text-green-600 py-3 bg-green-50 rounded-lg">
                                   <CheckCircle2 className="h-5 w-5" />
                                   <span className="font-medium">Fizetve</span>
                                 </div>
                               )}
                               
                               {pg.status !== 'paid' && pg.billSent && (
-                                <div className="flex items-center justify-center gap-1 text-amber-600 py-1">
+                                <div className="flex items-center justify-center gap-2 text-amber-600 py-2 bg-amber-50 rounded-lg">
                                   <Clock className="h-4 w-4" />
                                   <span className="text-sm">Várakozás fizetésre</span>
                                 </div>
