@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, Package, MapPin, Phone, Mail } from 'lucide-react';
+import { FileText, Download, Package, MapPin, Phone, Mail, Search, X, Filter, Calendar } from 'lucide-react';
 import { formatCurrency } from '@/lib/modern-shop-utils';
 
 interface DeliveryItem {
@@ -34,6 +34,13 @@ interface DeliveryListProps {
 export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [generatingDate, setGeneratingDate] = useState<string | null>(null);
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [dayFilter, setDayFilter] = useState<string>('all');
+  const [dateFromFilter, setDateFromFilter] = useState<string>('');
+  const [dateToFilter, setDateToFilter] = useState<string>('');
 
   const generateDeliveryPDF = async (e: React.MouseEvent, date: string, deliveries: DeliveryItem[]) => {
     e.preventDefault();
@@ -100,21 +107,184 @@ export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
     };
   };
 
-  const sortedDates = Object.keys(deliveriesByDate).sort();
+  // Filter deliveries
+  const filteredDeliveriesByDate = useMemo(() => {
+    const result: Record<string, DeliveryItem[]> = {};
+    
+    Object.entries(deliveriesByDate).forEach(([date, deliveries]) => {
+      // Date range filter
+      if (dateFromFilter && date < dateFromFilter) return;
+      if (dateToFilter && date > dateToFilter) return;
+      
+      const filteredDeliveries = deliveries.filter(delivery => {
+        // Search filter
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          const contact = getContactInfo(delivery.order.billingData);
+          const name = contact.name.toLowerCase();
+          const email = delivery.order.user.email.toLowerCase();
+          const orderNumber = delivery.order.orderNumber.toLowerCase();
+          
+          if (!name.includes(query) && !email.includes(query) && !orderNumber.includes(query)) {
+            return false;
+          }
+        }
+        
+        // Status filter
+        if (statusFilter !== 'all' && (delivery.status || 'scheduled') !== statusFilter) {
+          return false;
+        }
+        
+        // Day filter (Monday/Tuesday)
+        if (dayFilter !== 'all') {
+          if (dayFilter === 'monday' && !delivery.isMonday) return false;
+          if (dayFilter === 'tuesday' && delivery.isMonday) return false;
+        }
+        
+        return true;
+      });
+      
+      if (filteredDeliveries.length > 0) {
+        result[date] = filteredDeliveries;
+      }
+    });
+    
+    return result;
+  }, [deliveriesByDate, searchQuery, statusFilter, dayFilter, dateFromFilter, dateToFilter]);
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+    setDayFilter('all');
+    setDateFromFilter('');
+    setDateToFilter('');
+  };
+
+  const hasActiveFilters = searchQuery || statusFilter !== 'all' || dayFilter !== 'all' || dateFromFilter || dateToFilter;
+
+  const sortedDates = Object.keys(filteredDeliveriesByDate).sort();
+  const allDates = Object.keys(deliveriesByDate).sort();
+  
+  // Count totals
+  const totalDeliveries = Object.values(deliveriesByDate).flat().length;
+  const filteredDeliveries = Object.values(filteredDeliveriesByDate).flat().length;
 
   return (
     <div className="space-y-6">
-      {sortedDates.length === 0 ? (
+      {/* Filters */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Filter className="w-4 h-4 text-gray-500" />
+          <span className="text-sm font-medium text-gray-700">Szűrők</span>
+          {hasActiveFilters && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="ml-auto text-xs h-7"
+            >
+              <X className="w-3 h-3 mr-1" />
+              Szűrők törlése
+            </Button>
+          )}
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          {/* Search */}
+          <div className="relative lg:col-span-2">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Keresés (név, email, rendelésszám)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            />
+          </div>
+          
+          {/* Status filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+          >
+            <option value="all">Minden státusz</option>
+            <option value="scheduled">Ütemezett</option>
+            <option value="delivered">Kiszállítva</option>
+            <option value="cancelled">Törölve</option>
+            <option value="rescheduled">Átütemezve</option>
+          </select>
+          
+          {/* Day filter */}
+          <select
+            value={dayFilter}
+            onChange={(e) => setDayFilter(e.target.value)}
+            className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+          >
+            <option value="all">Minden nap</option>
+            <option value="monday">Hétfő</option>
+            <option value="tuesday">Kedd</option>
+          </select>
+          
+          {/* Date from */}
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <input
+              type="date"
+              value={dateFromFilter}
+              onChange={(e) => setDateFromFilter(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              placeholder="Dátumtól"
+            />
+          </div>
+          
+          {/* Date to */}
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <input
+              type="date"
+              value={dateToFilter}
+              onChange={(e) => setDateToFilter(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              placeholder="Dátumig"
+            />
+          </div>
+        </div>
+        
+        {/* Results count */}
+        <div className="mt-3 text-xs text-gray-500">
+          {filteredDeliveries} / {totalDeliveries} kiszállítás • {sortedDates.length} / {allDates.length} nap
+        </div>
+      </div>
+
+      {/* No results */}
+      {allDates.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
             <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming deliveries</h3>
-            <p className="text-gray-500">There are no scheduled deliveries at this time.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Nincsenek közelgő kiszállítások</h3>
+            <p className="text-gray-500">Jelenleg nincs ütemezett kiszállítás.</p>
+          </CardContent>
+        </Card>
+      ) : sortedDates.length === 0 && hasActiveFilters ? (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <Search className="mx-auto h-10 w-10 text-gray-300 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Nincs találat</h3>
+            <p className="text-gray-500 mb-4">A megadott szűrőkkel nem található kiszállítás.</p>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={clearFilters}
+            >
+              Szűrők törlése
+            </Button>
           </CardContent>
         </Card>
       ) : (
         sortedDates.map((date) => {
-          const deliveries = deliveriesByDate[date];
+          const deliveries = filteredDeliveriesByDate[date];
           const totalPackages = deliveries.reduce((sum, d) => sum + d.quantity, 0);
           
           return (

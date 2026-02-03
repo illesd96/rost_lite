@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Package, Calendar, CreditCard, Truck, User } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ChevronDown, ChevronUp, Package, Calendar, CreditCard, Truck, User, Search, X, Filter } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface PaymentGroup {
   id: string;
@@ -46,10 +47,18 @@ interface ModernOrder {
 
 interface ModernOrdersListProps {
   orders: ModernOrder[];
+  showFilters?: boolean;
 }
 
-export function ModernOrdersList({ orders }: ModernOrdersListProps) {
+export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersListProps) {
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [paymentPlanFilter, setPaymentPlanFilter] = useState<string>('all');
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<string>('all');
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState<string>('all');
 
   const toggleOrder = (orderId: string) => {
     setExpandedOrders(prev => {
@@ -62,6 +71,75 @@ export function ModernOrdersList({ orders }: ModernOrdersListProps) {
       return newSet;
     });
   };
+
+  const getCustomerName = (billingData: any) => {
+    if (billingData?.type === 'business' || billingData?.isCompany) {
+      return billingData?.companyName || 'Cég';
+    }
+    const firstName = billingData?.firstName || '';
+    const lastName = billingData?.lastName || '';
+    return `${lastName} ${firstName}`.trim() || 'N/A';
+  };
+
+  const getOrderPaymentStatus = (paymentGroups: PaymentGroup[]) => {
+    if (paymentGroups.length === 0) return 'none';
+    const paid = paymentGroups.filter(pg => pg.status === 'paid').length;
+    if (paid === paymentGroups.length) return 'paid';
+    if (paid > 0) return 'partial';
+    return 'pending';
+  };
+
+  // Filter orders
+  const filteredOrders = useMemo(() => {
+    return orders.filter(order => {
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const customerName = getCustomerName(order.billingData).toLowerCase();
+        const email = order.user?.email?.toLowerCase() || '';
+        const orderNumber = order.orderNumber.toLowerCase();
+        
+        if (!customerName.includes(query) && !email.includes(query) && !orderNumber.includes(query)) {
+          return false;
+        }
+      }
+      
+      // Status filter
+      if (statusFilter !== 'all' && (order.status || 'pending') !== statusFilter) {
+        return false;
+      }
+      
+      // Payment plan filter
+      if (paymentPlanFilter !== 'all' && order.paymentPlan !== paymentPlanFilter) {
+        return false;
+      }
+      
+      // Payment method filter
+      if (paymentMethodFilter !== 'all' && order.paymentMethod !== paymentMethodFilter) {
+        return false;
+      }
+      
+      // Payment status filter
+      if (paymentStatusFilter !== 'all') {
+        const paymentStatus = getOrderPaymentStatus(order.paymentGroups);
+        if (paymentStatus !== paymentStatusFilter) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+  }, [orders, searchQuery, statusFilter, paymentPlanFilter, paymentMethodFilter, paymentStatusFilter]);
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+    setPaymentPlanFilter('all');
+    setPaymentMethodFilter('all');
+    setPaymentStatusFilter('all');
+  };
+
+  const hasActiveFilters = searchQuery || statusFilter !== 'all' || paymentPlanFilter !== 'all' || paymentMethodFilter !== 'all' || paymentStatusFilter !== 'all';
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('hu-HU', {
@@ -113,15 +191,6 @@ export function ModernOrdersList({ orders }: ModernOrdersListProps) {
     return upcoming[0] || null;
   };
 
-  const getCustomerName = (billingData: any) => {
-    if (billingData?.type === 'business' || billingData?.isCompany) {
-      return billingData?.companyName || 'Cég';
-    }
-    const firstName = billingData?.firstName || '';
-    const lastName = billingData?.lastName || '';
-    return `${lastName} ${firstName}`.trim() || 'N/A';
-  };
-
   const getPaymentPlanLabel = (plan: string) => {
     const labels: Record<string, string> = {
       full: 'Egyszeri',
@@ -152,8 +221,116 @@ export function ModernOrdersList({ orders }: ModernOrdersListProps) {
   }
 
   return (
-    <div className="space-y-3">
-      {orders.map((order) => {
+    <div className="space-y-4">
+      {/* Filters */}
+      {showFilters && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Filter className="w-4 h-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Szűrők</span>
+            {hasActiveFilters && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="ml-auto text-xs h-7"
+              >
+                <X className="w-3 h-3 mr-1" />
+                Szűrők törlése
+              </Button>
+            )}
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {/* Search */}
+            <div className="relative lg:col-span-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Keresés..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              />
+            </div>
+            
+            {/* Status filter */}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+            >
+              <option value="all">Minden státusz</option>
+              <option value="pending">Függőben</option>
+              <option value="confirmed">Megerősítve</option>
+              <option value="processing">Feldolgozás</option>
+              <option value="delivered">Kiszállítva</option>
+              <option value="cancelled">Törölve</option>
+            </select>
+            
+            {/* Payment plan filter */}
+            <select
+              value={paymentPlanFilter}
+              onChange={(e) => setPaymentPlanFilter(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+            >
+              <option value="all">Minden fizetési terv</option>
+              <option value="full">Egyszeri</option>
+              <option value="monthly">Havi</option>
+              <option value="delivery">Szállításonként</option>
+            </select>
+            
+            {/* Payment method filter */}
+            <select
+              value={paymentMethodFilter}
+              onChange={(e) => setPaymentMethodFilter(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+            >
+              <option value="all">Minden fizetési mód</option>
+              <option value="transfer">Átutalás</option>
+              <option value="cash">Készpénz</option>
+            </select>
+            
+            {/* Payment status filter */}
+            <select
+              value={paymentStatusFilter}
+              onChange={(e) => setPaymentStatusFilter(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+            >
+              <option value="all">Minden fizetési állapot</option>
+              <option value="paid">Fizetve</option>
+              <option value="partial">Részben fizetve</option>
+              <option value="pending">Fizetésre vár</option>
+            </select>
+          </div>
+          
+          {/* Results count */}
+          <div className="mt-3 text-xs text-gray-500">
+            {filteredOrders.length} / {orders.length} rendelés
+          </div>
+        </div>
+      )}
+
+      {/* No results message */}
+      {filteredOrders.length === 0 && hasActiveFilters && (
+        <div className="text-center py-8 bg-white rounded-lg shadow-sm border border-gray-200">
+          <Search className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-500">Nincs találat a megadott szűrőkkel.</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={clearFilters}
+            className="mt-3"
+          >
+            Szűrők törlése
+          </Button>
+        </div>
+      )}
+
+      {/* Orders list */}
+      {filteredOrders.map((order) => {
         const isExpanded = expandedOrders.has(order.id);
         const paymentStatus = getPaymentStatusSummary(order.paymentGroups);
         const nextDelivery = getNextDelivery(order.deliverySchedule);

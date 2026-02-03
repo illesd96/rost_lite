@@ -14,7 +14,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
   const [expandDates, setExpandDates] = useState(false);
   const schedulerRef = useRef<HTMLDivElement>(null);
   
-  const PRESETS = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100];
+  const PRESETS = [20, 30, 40, 50, 100, ];
   const WEEKS = Array.from({ length: 12 }, (_, i) => i);
 
   const totalPrice = orderState.quantity * CONSTANTS.UNIT_PRICE;
@@ -225,7 +225,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
               <p className="text-sm text-gray-400 font-bold uppercase tracking-widest mt-2">friss és nyers <span className="text-green-700 font-black">Rosti</span></p>
             </div>
             <div className="text-right self-end sm:self-auto">
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Csomagár</div>
+              {/* <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Csomagár</div> */}
               {isCustomError ? (
                  <div className="text-4xl font-black text-gray-300 text-nowrap">-</div>
               ) : (
@@ -284,7 +284,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 text-left">
               <div>
                 <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight">Mikor érkezzen <span className="text-green-600">a frissesség?</span></h3>
-                <p className="text-sm text-gray-500 whitespace-nowrap">Válassz szállítási napokat. Hamarosan keddenként is!</p>
+                <p className="text-sm text-gray-500 whitespace-nowrap">Válassz szállítási napokat. Hamarosan szerdánként is!</p>
               </div>
               <div className="flex flex-row gap-2 w-full md:w-auto">
                 <button 

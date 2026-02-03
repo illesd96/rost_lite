@@ -116,7 +116,7 @@ export default async function AdminDashboard() {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <ModernOrdersList orders={recentOrders} />
+        <ModernOrdersList orders={recentOrders} showFilters={false} />
       </div>
     </div>
   );
