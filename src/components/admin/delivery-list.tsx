@@ -33,10 +33,13 @@ interface DeliveryListProps {
 
 export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [generatingDate, setGeneratingDate] = useState<string | null>(null);
 
-  const generateDeliveryPDF = async (date: string, deliveries: DeliveryItem[]) => {
-    setIsGeneratingPDF(true);
+  const generateDeliveryPDF = async (e: React.MouseEvent, date: string, deliveries: DeliveryItem[]) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setGeneratingDate(date);
     
     try {
       const response = await fetch('/api/admin/generate-delivery-pdf', {
@@ -68,7 +71,7 @@ export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
       console.error('Error generating delivery list:', error);
       alert('Error generating delivery list');
     } finally {
-      setIsGeneratingPDF(false);
+      setGeneratingDate(null);
     }
   };
 
@@ -127,11 +130,12 @@ export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
                     </p>
                   </div>
                   <Button
-                    onClick={() => generateDeliveryPDF(date, deliveries)}
-                    disabled={isGeneratingPDF}
+                    type="button"
+                    onClick={(e) => generateDeliveryPDF(e, date, deliveries)}
+                    disabled={generatingDate !== null}
                     className="flex items-center gap-2"
                   >
-                    {isGeneratingPDF ? (
+                    {generatingDate === date ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                         Generating...

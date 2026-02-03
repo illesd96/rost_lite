@@ -8,8 +8,11 @@ import {
   TrendingUp,
   DollarSign,
   Truck,
-  Clock
+  Clock,
+  ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
+import { ModernOrdersList } from '@/components/admin/modern-orders-list';
 
 export default async function AdminDashboard() {
   const today = new Date().toISOString().split('T')[0];
@@ -36,6 +39,8 @@ export default async function AdminDashboard() {
             email: true,
           },
         },
+        paymentGroups: true,
+        deliverySchedule: true,
       },
       orderBy: [desc(modernShopOrders.createdAt)],
       limit: 5,
@@ -97,65 +102,21 @@ export default async function AdminDashboard() {
 
 
       {/* Recent Orders */}
-      <div className="bg-white rounded-lg shadow-sm">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-gray-900">Legutóbbi rendelések</h2>
             <Clock className="w-5 h-5 text-gray-400" />
           </div>
+          <Link 
+            href="/admin/modern-orders"
+            className="flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+          >
+            Összes rendelés
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Order ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {order.orderNumber}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.user?.email || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      order.status === 'confirmed' 
-                        ? 'bg-green-100 text-green-800'
-                        : order.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatCurrency(order.totalAmount)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString('hu-HU')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ModernOrdersList orders={recentOrders} />
       </div>
     </div>
   );
