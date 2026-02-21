@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { stripe } from '@/lib/stripe';
+import { db } from '@/lib/db';
+import { modernShopOrders, orderPaymentGroups, orderDeliverySchedule } from '@/lib/db/schema';
 import { OrderState, CONSTANTS } from '@/types/modern-shop';
 import { getDateFromIndex } from '@/lib/modern-shop-utils';
 
@@ -36,6 +38,15 @@ function calculatePricing(orderState: OrderState) {
   return { unitPrice, subtotalPerDelivery, shippingFee, totalShippingFee, subtotal, totalAmount };
 }
 
+function generateOrderNumber(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const timestamp = now.getTime().toString().slice(-4);
+  return `ROSTI-${year}${month}${day}-${timestamp}`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -50,7 +61,57 @@ export async function POST(req: NextRequest) {
     }
 
     const pricing = calculatePricing(orderState);
+    const orderNumber = generateOrderNumber();
 
+    // Create the order with pending_payment status
+    const [newOrder] = await db.insert(modernShopOrders).values({
+      userId: session.user.id,
+      orderNumber,
+      quantity: orderState.quantity,
+      unitPrice: pricing.unitPrice,
+      shippingFee: pricing.totalShippingFee,
+      totalAmount: pricing.totalAmount,
+      deliverySchedule: orderState.schedule,
+      deliveryDatesCount: orderState.schedule.length,
+      paymentPlan: 'full',
+      paymentMethod: 'card',
+      appliedCoupon: orderState.appliedCoupon || null,
+      discountAmount: 0,
+      billingData: orderState.billingData,
+      status: 'pending_payment',
+    }).returning();
+
+    // Create payment group
+    await db.insert(orderPaymentGroups).values({
+      orderId: newOrder.id,
+      groupNumber: 1,
+      amount: pricing.totalAmount,
+      dueDate: new Date().toISOString().split('T')[0],
+      status: 'pending',
+      description: 'Teljes összeg kártyás fizetése (Stripe)',
+    });
+
+    // Create delivery packages
+    const packages = orderState.schedule.map((deliveryIndex: number, index: number) => {
+      const deliveryDate = getDateFromIndex(CONSTANTS.START_DATE, deliveryIndex);
+      return {
+        orderId: newOrder.id,
+        deliveryDate: deliveryDate.toISOString().split('T')[0],
+        deliveryIndex,
+        isMonday: deliveryDate.getDay() === 1,
+        quantity: orderState.quantity,
+        amount: pricing.unitPrice * orderState.quantity,
+        status: 'scheduled' as const,
+        packageNumber: index + 1,
+        totalPackages: orderState.schedule.length,
+      };
+    });
+
+    if (packages.length > 0) {
+      await db.insert(orderDeliverySchedule).values(packages);
+    }
+
+    // Build Stripe line items
     const deliveryDates = orderState.schedule
       .map(idx => getDateFromIndex(CONSTANTS.START_DATE, idx))
       .sort((a, b) => a.getTime() - b.getTime());
@@ -86,7 +147,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const origin = req.headers.get('origin') || 'http://localhost:3000';
+    const origin = req.headers.get('origin') || 'https://www.rosti.hu';
 
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -96,8 +157,8 @@ export async function POST(req: NextRequest) {
       cancel_url: `${origin}/modern-shop?screen=summary`,
       customer_email: session.user.email || undefined,
       metadata: {
-        userId: session.user.id,
-        orderStateJson: JSON.stringify(orderState),
+        orderId: newOrder.id,
+        orderNumber,
       },
       locale: 'hu',
     });
