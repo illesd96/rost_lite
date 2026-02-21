@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { OrderState, CONSTANTS } from '../../types/modern-shop';
-import { ChevronLeft, ChevronDown, ChevronUp, Truck, Info, Snowflake, CreditCard, Banknote, CheckCircle2, Check, X, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronDown, ChevronUp, Truck, Info, Snowflake, CheckCircle2, Check, X, Plus, Lock } from 'lucide-react';
 import { formatCurrency, getDateFromIndex } from '../../lib/modern-shop-utils';
 
 interface SummaryScreenProps {
@@ -13,11 +13,12 @@ interface SummaryScreenProps {
 }
 
 const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, onBack, onSubmit, isSubmitting = false, submitError = null }) => {
-  const { quantity, schedule, paymentPlan, paymentMethod, appliedCoupon, billingData } = orderState;
+  const { quantity, schedule, appliedCoupon, billingData } = orderState;
   const [couponInput, setCouponInput] = useState('');
   const [couponMessage, setCouponMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
   const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
   const [isPartnerCodeOpen, setIsPartnerCodeOpen] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   
   // Calculate shipping fee based on tiers
   let baseShippingFee = 0;
@@ -132,13 +133,6 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
     return grouped;
   }, [deliveryDates]);
 
-  // Simple count for payment plan display
-  const months: Record<string, number> = {};
-  deliveryDates.forEach(d => {
-    const key = d.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long' });
-    months[key] = (months[key] || 0) + 1;
-  });
-
   const toggleMonth = (monthKey: string) => {
     setExpandedMonths(prev => {
       const newSet = new Set(prev);
@@ -158,7 +152,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
         Vissza a számlázáshoz
       </button>
 
-      <h2 className="text-3xl font-black text-gray-900 tracking-tight uppercase mb-10 text-left">Összesítés és fizetés ütemezése</h2>
+      <h2 className="text-3xl font-black text-gray-900 tracking-tight uppercase mb-10 text-left">Összesítés és fizetés</h2>
 
       <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-200 shadow-sm mb-10 text-left relative overflow-visible">
         <div className="flex justify-between items-center mb-6">
@@ -284,7 +278,6 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
       {/* PARTNER CODE SECTION - COLLAPSIBLE */}
       <div className="mb-10">
          {appliedCoupon ? (
-             // Applied coupon view
              <div className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-2xl shadow-sm">
                  <div className="flex items-center gap-3">
                      <CheckCircle2 size={24} className="text-emerald-600" />
@@ -312,7 +305,6 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                  </button>
              </div>
          ) : isPartnerCodeOpen ? (
-             // Expanded input view
              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                <div className="flex items-center justify-between mb-4">
                  <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em]">Partnerkód megadása</h3>
@@ -357,7 +349,6 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                )}
              </div>
          ) : (
-             // Collapsed button view
              <button
                type="button"
                onClick={() => setIsPartnerCodeOpen(true)}
@@ -371,139 +362,48 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
          )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 text-left">
-        {[
-          { id: 'full', label: 'Egyben előre', desc: 'Egyetlen számla készül.\nA teljes megrendelt időszak teljesítése előre, egy fizetéssel.', letter: 'A', color: 'emerald' },
-          { id: 'monthly', label: 'Havonta előre', desc: 'Havonta egy számla készül.\nAz adott havi adagok pénzügyi teljesítése minden hónap elején, előre.', letter: 'B', color: 'blue' },
-          { id: 'delivery', label: 'Szállításonként', desc: 'Minden alkalommal külön számla készül.\nMinden szállítás pénzügyi rendezése alkalmanként, előre.', letter: 'C', color: 'purple' }
-        ].map(plan => (
-          <div 
-            key={plan.id}
-            onClick={() => updateOrder({ paymentPlan: plan.id as any })}
-            className={`cursor-pointer transition-all border-2 p-6 rounded-[2rem] text-left relative
-                ${paymentPlan === plan.id ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 bg-white hover:border-gray-300'}
-            `}
-          >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 text-left font-bold text-xs transition-colors
-                ${plan.id === 'full' ? 'bg-emerald-100 text-emerald-600' : plan.id === 'monthly' ? 'bg-blue-100 text-blue-600' : 'bg-purple-100 text-purple-600'}
-            `}>
-                {plan.letter}
+      {/* COST SUMMARY */}
+      <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-200 shadow-sm mb-10">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-3">
+              <span className="font-black text-gray-900 uppercase text-sm">Rostik</span>
+              <span className="text-sm text-gray-500">
+                {deliveryDates.length} × {formatCurrency(itemTotal)}
+              </span>
             </div>
-            <h4 className="font-black text-gray-900 uppercase text-xs mb-2 text-left">{plan.label}</h4>
-            <p className="text-[10px] text-gray-500 leading-relaxed text-left whitespace-pre-line">{plan.desc}</p>
           </div>
-        ))}
-      </div>
-
-      <div className="bg-gray-50 p-8 md:p-10 rounded-[2.5rem] border border-gray-100 text-balance text-left animate-fade-in mb-10">
-         {paymentPlan === 'full' && (
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="w-full md:w-auto text-left">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Fizetési ütemezés: Egyben előre</span>
-                    <div className="text-xl font-bold text-gray-800 leading-tight">
-                        {deliveryDates.length} szállítás {deliveryDates.length} hétre<br />
-                        <span className="font-medium opacity-0 select-none">placeholder</span>
-                    </div>
-                </div>
-                <div className="w-full md:w-auto text-center md:text-right">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Mindösszesen fizetendő</span>
-                    <div className="text-4xl font-black text-green-700">{formatCurrency(totalCost)}</div>
-                </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-3">
+              <span className="font-black text-gray-900 uppercase text-sm">Szállítás</span>
+              <span className="text-sm text-gray-500">
+                {shippingFee > 0 ? (
+                  <>
+                    {deliveryDates.length} × {formatCurrency(shippingFee)}
+                  </>
+                ) : (
+                  <span className="text-emerald-600 font-bold">Ingyenes</span>
+                )}
+              </span>
             </div>
-         )}
-         {paymentPlan === 'monthly' && (
-             <div className="space-y-8">
-                {Object.keys(months).map(m => (
-                    <div key={m} className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-200 pb-8 last:border-0 last:pb-0">
-                        <div className="w-full md:w-auto text-left">
-                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{m}</span>
-                            <div className="text-xl font-bold text-gray-800 leading-tight">
-                                {months[m]} szállítás {months[m]} hétre<br />
-                                <span className="font-medium">alkalmanként {formatCurrency(deliveryTotal)}</span>
-                            </div>
-                        </div>
-                        <div className="w-full md:w-auto text-center md:text-right">
-                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Havi fizetendő</span>
-                            <div className="text-4xl font-black text-green-700">{formatCurrency(months[m] * deliveryTotal)}</div>
-                        </div>
-                    </div>
-                ))}
-             </div>
-         )}
-         {paymentPlan === 'delivery' && (
-             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="w-full md:w-auto text-left">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Fizetési ütemezés: Szállításonként</span>
-                    <div className="text-xl font-bold text-gray-800 leading-tight">
-                        {deliveryDates.length} szállítás {deliveryDates.length} hétre<br />
-                        <span className="font-medium">mindösszesen {formatCurrency(totalCost)}</span>
-                    </div>
-                </div>
-                <div className="w-full md:w-auto text-center md:text-right">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Alkalmanként fizetendő</span>
-                    <div className="text-4xl font-black text-green-700">{formatCurrency(deliveryTotal)}</div>
-                </div>
-             </div>
-         )}
-      </div>
+          </div>
 
-      {/* Payment Method Selector */}
-      <div className="mb-10">
-        <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] text-left mb-4">Fizetési mód</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            
-            {/* Transfer Option */}
-            <div 
-                onClick={() => updateOrder({ paymentMethod: 'transfer' })}
-                className={`cursor-pointer relative p-5 rounded-2xl border-2 transition-all flex items-center gap-4
-                    ${paymentMethod === 'transfer' 
-                        ? 'border-emerald-500 bg-emerald-50/50' 
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }
-                `}
-            >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors
-                    ${paymentMethod === 'transfer' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}
-                `}>
-                    <CreditCard size={24} strokeWidth={2} />
-                </div>
-                <div>
-                    <div className={`font-black uppercase text-xs mb-1 ${paymentMethod === 'transfer' ? 'text-gray-900' : 'text-gray-700'}`}>
-                        Átutalás
-                    </div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                        Szállítást megelőzően
-                    </div>
-                </div>
+          {priceDiscountApplied && (
+            <div className="flex items-center justify-between text-emerald-700">
+              <span className="font-bold text-sm">Kedvezmény</span>
+              <span className="font-bold text-sm">-{formatCurrency(totalSavings)}</span>
             </div>
+          )}
 
-            {/* Cash Option */}
-            <div 
-                onClick={() => updateOrder({ paymentMethod: 'cash' })}
-                className={`cursor-pointer relative p-5 rounded-2xl border-2 transition-all flex items-center gap-4
-                    ${paymentMethod === 'cash' 
-                        ? 'border-emerald-500 bg-emerald-50/50' 
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }
-                `}
-            >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors
-                    ${paymentMethod === 'cash' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}
-                `}>
-                    <Banknote size={24} strokeWidth={2} />
-                </div>
-                <div>
-                    <div className={`font-black uppercase text-xs mb-1 ${paymentMethod === 'cash' ? 'text-gray-900' : 'text-gray-700'}`}>
-                        Készpénz
-                    </div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                        Fizetés a futárnál
-                    </div>
-                </div>
-            </div>
+          <div className="border-t border-gray-100 pt-4 flex items-center justify-between">
+            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Fizetendő</span>
+            <span className="text-4xl font-black text-green-700">{formatCurrency(totalCost)}</span>
+          </div>
         </div>
       </div>
 
+      {/* STRIPE PAYMENT BUTTON */}
       <div>
         {submitError && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -511,27 +411,50 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
           </div>
         )}
         <button 
-          onClick={() => {
-            if (!isSubmitting) {
-              onSubmit();
+          onClick={async () => {
+            if (isRedirecting || isSubmitting) return;
+            setIsRedirecting(true);
+            try {
+              const response = await fetch('/api/modern-shop/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderState }),
+              });
+              const data = await response.json();
+              if (data.url) {
+                window.location.href = data.url;
+              } else {
+                setIsRedirecting(false);
+                alert('Hiba történt a fizetési munkamenet létrehozása során.');
+              }
+            } catch {
+              setIsRedirecting(false);
+              alert('Hiba történt a fizetési munkamenet létrehozása során.');
             }
-          }} 
-          disabled={isSubmitting}
-          className={`w-full font-black py-6 rounded-2xl text-xl shadow-xl transition transform ${
-            isSubmitting 
+          }}
+          disabled={isRedirecting || isSubmitting}
+          className={`w-full font-black py-6 rounded-2xl text-xl shadow-xl transition transform flex items-center justify-center gap-3 ${
+            isRedirecting 
               ? 'bg-gray-400 text-white cursor-not-allowed' 
               : 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]'
           }`}
         >
-          {isSubmitting ? (
-            <div className="flex items-center justify-center gap-3">
+          {isRedirecting ? (
+            <>
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-              Rendelés feldolgozása...
-            </div>
+              Átirányítás a fizetéshez...
+            </>
           ) : (
-            'Rendelés leadása'
+            <>
+              <Lock size={20} strokeWidth={2.5} />
+              Fizetés kártyával
+            </>
           )}
         </button>
+        <div className="flex items-center justify-center gap-2 mt-4 text-gray-400">
+          <Lock size={12} />
+          <span className="text-[10px] font-bold uppercase tracking-wider">Biztonságos fizetés a Stripe-on keresztül</span>
+        </div>
       </div>
     </main>
   );

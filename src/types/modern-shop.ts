@@ -47,8 +47,9 @@ export interface OrderState {
   isLoggedIn: boolean;
   billingData: BillingData;
   paymentPlan: 'full' | 'monthly' | 'delivery';
-  paymentMethod: 'transfer' | 'cash';
+  paymentMethod: 'transfer' | 'cash' | 'card';
   appliedCoupon?: string;
+  stripeSessionId?: string;
 }
 
 export const CONSTANTS = {

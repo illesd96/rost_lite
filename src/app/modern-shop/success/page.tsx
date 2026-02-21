@@ -37,8 +37,8 @@ const INITIAL_STATE: OrderState = {
     useSecondaryContact: false,
     notifyMinutes: null
   },
-  paymentPlan: 'monthly',
-  paymentMethod: 'transfer'
+  paymentPlan: 'full',
+  paymentMethod: 'card'
 };
 
 function SuccessPageContent() {

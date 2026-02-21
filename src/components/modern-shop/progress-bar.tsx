@@ -10,7 +10,7 @@ interface ProgressBarProps {
 const steps = [
   { id: 1, label: 'Kosár' },
   { id: 2, label: 'Számlázás' },
-  { id: 3, label: 'Ütemezés' }
+  { id: 3, label: 'Fizetés' }
 ];
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, onStepClick, canNavigate = true }) => {

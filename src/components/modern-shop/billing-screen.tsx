@@ -394,7 +394,7 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
 
         <div className="space-y-4">
             <button type="submit" className="w-full bg-emerald-600 text-white hover:bg-emerald-700 font-black py-6 rounded-2xl text-xl shadow-xl transition transform active:scale-[0.98]">
-                Tovább az összesítéshez
+                Tovább a fizetéshez
             </button>
             <div className="bg-gray-50 rounded-[2.5rem] p-8 flex flex-col sm:flex-row justify-between items-center gap-6 border border-gray-100 text-balance text-left">
                 <div className="text-left">

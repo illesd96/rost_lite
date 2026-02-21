@@ -34,8 +34,8 @@ const INITIAL_STATE: OrderState = {
   schedule: [],
   isLoggedIn: false,
   billingData: INITIAL_BILLING,
-  paymentPlan: 'monthly',
-  paymentMethod: 'transfer',
+  paymentPlan: 'full',
+  paymentMethod: 'card',
   appliedCoupon: undefined
 };
 
