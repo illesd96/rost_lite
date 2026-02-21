@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { OrderState, CONSTANTS } from '../../types/modern-shop';
-import { ChevronLeft, Truck, Info, Snowflake, CreditCard, Banknote, CheckCircle2, Check, X } from 'lucide-react';
+import { ChevronLeft, ChevronDown, ChevronUp, Truck, Info, Snowflake, CreditCard, Banknote, CheckCircle2, Check, X, Plus } from 'lucide-react';
 import { formatCurrency, getDateFromIndex } from '../../lib/modern-shop-utils';
 
 interface SummaryScreenProps {
@@ -16,6 +16,8 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
   const { quantity, schedule, paymentPlan, paymentMethod, appliedCoupon, billingData } = orderState;
   const [couponInput, setCouponInput] = useState('');
   const [couponMessage, setCouponMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+  const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
+  const [isPartnerCodeOpen, setIsPartnerCodeOpen] = useState(false);
   
   // Calculate shipping fee based on tiers
   let baseShippingFee = 0;
@@ -111,12 +113,43 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
   const originalTotalCost = originalOneTimeTotal * deliveryDates.length;
   const totalSavings = originalTotalCost - totalCost;
 
-  // Monthly grouping
+  // Monthly grouping with dates
+  const groupedDeliveriesByMonth = useMemo(() => {
+    const grouped: Record<string, { dates: Date[], count: number, year: number, month: string }> = {};
+    
+    deliveryDates.forEach(d => {
+      const monthName = d.toLocaleDateString('hu-HU', { month: 'long' });
+      const year = d.getFullYear();
+      const key = `${monthName}-${year}`;
+      
+      if (!grouped[key]) {
+        grouped[key] = { dates: [], count: 0, year, month: monthName };
+      }
+      grouped[key].dates.push(d);
+      grouped[key].count++;
+    });
+    
+    return grouped;
+  }, [deliveryDates]);
+
+  // Simple count for payment plan display
   const months: Record<string, number> = {};
   deliveryDates.forEach(d => {
     const key = d.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long' });
     months[key] = (months[key] || 0) + 1;
   });
+
+  const toggleMonth = (monthKey: string) => {
+    setExpandedMonths(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(monthKey)) {
+        newSet.delete(monthKey);
+      } else {
+        newSet.add(monthKey);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <main className="container mx-auto px-6 py-12 max-w-4xl text-left animate-fade-in flex-grow text-balance">
@@ -127,7 +160,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
 
       <h2 className="text-3xl font-black text-gray-900 tracking-tight uppercase mb-10 text-left">Összesítés és fizetés ütemezése</h2>
 
-      <div className="bg-white p-8 rounded-[2.5rem] border border-gray-200 shadow-sm mb-10 text-left relative overflow-visible">
+      <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-200 shadow-sm mb-10 text-left relative overflow-visible">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] text-left">Választott szállítási napok</h3>
           
@@ -159,102 +192,99 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-          {deliveryDates.map((d, i) => (
-            <div key={i} className="grid grid-cols-3 p-5 bg-gray-50 rounded-2xl border border-gray-100 h-full">
-              {/* Left Column: Date */}
-              <div className="flex flex-col text-left">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-2 h-2 bg-green-500 rounded-full shrink-0"></div>
-                  <span className="text-sm font-bold text-gray-900">
-                    {d.toLocaleDateString('hu-HU', { month: 'long' })} {d.getDate()}.
-                  </span>
-                </div>
-                <div className="text-xs font-medium text-gray-400 pl-[18px] mt-0.5 lowercase">
-                    {d.toLocaleDateString('hu-HU', { weekday: 'long' })}
-                </div>
-              </div>
-
-              {/* Center Column: Quantity (Top Row) */}
-              <div className="flex justify-center pt-0.5">
-                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{quantity} PALACK</span>
-              </div>
-
-              {/* Right Column: Price & Shipping */}
-              <div className="text-right flex flex-col items-end gap-0.5">
-                <div className="flex flex-col items-end">
-                    {priceDiscountApplied && (
-                         <span className="text-[10px] font-medium line-through decoration-red-500 decoration-[1px] text-gray-400 leading-none mb-0.5">
-                             {formatCurrency(originalItemTotal)}
-                         </span>
-                    )}
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-sm font-black text-green-700 leading-tight">{formatCurrency(itemTotal)}</span>
-                    </div>
-                </div>
-                
-                <div className="flex flex-col items-end gap-0.5">
-                  {shippingFee > 0 ? (
-                    discountApplied ? (
-                      <>
-                        <div className="flex items-center justify-end gap-1 text-gray-400">
-                          <span className="text-[10px] font-medium line-through decoration-red-500 decoration-[1px]">+ {formatCurrency(baseShippingFee)}</span>
-                          <Truck size={11} strokeWidth={2.5} />
-                          <Snowflake size={11} strokeWidth={2.5} className="text-blue-500" />
-                        </div>
-                        <div className="text-[10px] font-bold text-emerald-600 leading-none">
-                            partner ár: {formatCurrency(shippingFee)}
-                        </div>
-                      </>
+        {/* Collapsible Months */}
+        <div className="space-y-3">
+          {Object.entries(groupedDeliveriesByMonth).map(([monthKey, monthData]) => {
+            const isExpanded = expandedMonths.has(monthKey);
+            
+            return (
+              <div key={monthKey} className="border border-gray-100 rounded-2xl overflow-hidden">
+                {/* Month Header - Always visible */}
+                <button
+                  type="button"
+                  onClick={() => toggleMonth(monthKey)}
+                  className="w-full flex items-center justify-between p-5 bg-gray-50 hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-gray-900">{monthData.month}</span>
+                    <span className="px-2 py-0.5 bg-white border border-gray-200 rounded-md text-xs font-bold text-gray-500">
+                      {monthData.year}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-black text-gray-400 uppercase tracking-wider">
+                      {monthData.count} ALKALOM
+                    </span>
+                    {isExpanded ? (
+                      <ChevronUp size={18} className="text-gray-400" />
                     ) : (
-                      <div className="flex items-center justify-end gap-1 text-gray-400">
-                        <span className="text-[10px] font-medium">+ {formatCurrency(shippingFee)}</span>
-                        <Truck size={11} strokeWidth={2.5} />
-                        <Snowflake size={11} strokeWidth={2.5} className="text-blue-500" />
+                      <ChevronDown size={18} className="text-gray-400" />
+                    )}
+                  </div>
+                </button>
+                
+                {/* Expanded Content - Delivery Dates */}
+                {isExpanded && (
+                  <div className="p-4 bg-white border-t border-gray-100 space-y-3 animate-fade-in">
+                    {monthData.dates.map((d, i) => (
+                      <div key={i} className="grid grid-cols-3 p-4 bg-gray-50 rounded-xl">
+                        {/* Left Column: Date */}
+                        <div className="flex flex-col text-left">
+                          <div className="flex items-center gap-2.5">
+                            <span className="text-base font-black text-gray-900">
+                              {d.getDate()}.
+                            </span>
+                            <span className="text-sm font-medium text-gray-500 uppercase">
+                              {d.toLocaleDateString('hu-HU', { weekday: 'long' })}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Center Column: Quantity */}
+                        <div className="flex justify-center items-center">
+                          <span className="text-xs font-bold text-gray-500">
+                            {quantity} <span className="text-emerald-700">PALACK</span> <span className="font-black text-emerald-700">ROSTI</span>
+                          </span>
+                        </div>
+
+                        {/* Right Column: Price & Shipping */}
+                        <div className="text-right flex flex-col items-end justify-center">
+                          <div className="flex items-baseline gap-1">
+                            {priceDiscountApplied && (
+                              <span className="text-xs font-medium line-through decoration-red-500 text-gray-400">
+                                {formatCurrency(originalItemTotal)}
+                              </span>
+                            )}
+                            <span className="text-sm font-black text-gray-900">{formatCurrency(itemTotal)}</span>
+                          </div>
+                          
+                          {shippingFee > 0 ? (
+                            discountApplied ? (
+                              <div className="text-[10px] text-gray-400">
+                                <span className="line-through">+ {formatCurrency(baseShippingFee)}</span>
+                                <span className="text-emerald-600 font-bold ml-1">+ {formatCurrency(shippingFee)} szállítás</span>
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-gray-400">+ {formatCurrency(shippingFee)} szállítás</span>
+                            )
+                          ) : (
+                            <span className="text-[10px] font-bold text-emerald-600">INGYENES SZÁLLÍTÁS</span>
+                          )}
+                        </div>
                       </div>
-                    )
-                  ) : (
-                    <div className="text-green-600 flex items-center justify-end gap-1">
-                      <span className="text-[10px] font-black uppercase tracking-wider">INGYENES SZÁLLÍTÁS</span>
-                    </div>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      {/* PARTNER CODE SECTION - COMPACT */}
+      {/* PARTNER CODE SECTION - COLLAPSIBLE */}
       <div className="mb-10">
-         <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] text-left mb-4">Partnerkód megadása</h3>
-
-         {!appliedCoupon ? (
-             <div className="flex flex-col sm:flex-row gap-4">
-                <input 
-                    type="text" 
-                    placeholder="Írd be a partnerkódot"
-                    value={couponInput}
-                    onChange={(e) => {
-                        setCouponInput(e.target.value);
-                        setCouponMessage(null);
-                    }}
-                    className="flex-grow p-4 bg-white border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-100 transition-all text-gray-700 placeholder:text-gray-400 shadow-sm"
-                />
-                <button 
-                    onClick={handleCouponValidate}
-                    disabled={!couponInput}
-                    className={`px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm
-                        ${couponInput 
-                            ? 'bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 active:scale-95' 
-                            : 'bg-white border border-gray-200 text-gray-300 cursor-not-allowed'
-                        }
-                    `}
-                >
-                    Érvényesítés
-                </button>
-             </div>
-         ) : (
+         {appliedCoupon ? (
+             // Applied coupon view
              <div className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-2xl shadow-sm">
                  <div className="flex items-center gap-3">
                      <CheckCircle2 size={24} className="text-emerald-600" />
@@ -269,23 +299,75 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                      </div>
                  </div>
                  <button 
+                    type="button"
                     onClick={() => {
                         updateOrder({ appliedCoupon: undefined });
                         setCouponInput('');
                         setCouponMessage(null);
+                        setIsPartnerCodeOpen(false);
                     }}
                     className="text-emerald-700 hover:text-emerald-900 transition-colors p-2"
                  >
                      <X size={20} />
                  </button>
              </div>
-         )}
-         
-         {couponMessage && !appliedCoupon && (
-             <div className={`mt-3 text-xs font-bold flex items-center gap-2 ${couponMessage.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
-                 {couponMessage.type === 'success' ? <Check size={14} /> : <X size={14} />}
-                 {couponMessage.text}
+         ) : isPartnerCodeOpen ? (
+             // Expanded input view
+             <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+               <div className="flex items-center justify-between mb-4">
+                 <h3 className="text-xs font-black text-gray-500 uppercase tracking-[0.2em]">Partnerkód megadása</h3>
+                 <button
+                   type="button"
+                   onClick={() => setIsPartnerCodeOpen(false)}
+                   className="text-gray-400 hover:text-gray-600 transition-colors"
+                 >
+                   <X size={18} />
+                 </button>
+               </div>
+               <div className="flex flex-col sm:flex-row gap-3">
+                  <input 
+                      type="text" 
+                      placeholder="Írd be a partnerkódot"
+                      value={couponInput}
+                      onChange={(e) => {
+                          setCouponInput(e.target.value);
+                          setCouponMessage(null);
+                      }}
+                      className="flex-grow p-4 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-100 transition-all text-gray-700 placeholder:text-gray-400"
+                  />
+                  <button 
+                      type="button"
+                      onClick={handleCouponValidate}
+                      disabled={!couponInput}
+                      className={`px-6 py-4 rounded-xl font-black uppercase text-xs tracking-widest transition-all whitespace-nowrap
+                          ${couponInput 
+                              ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' 
+                              : 'bg-white border border-gray-200 text-gray-300 cursor-not-allowed'
+                          }
+                      `}
+                  >
+                      Érvényesítés
+                  </button>
+               </div>
+               {couponMessage && (
+                   <div className={`mt-3 text-xs font-bold flex items-center gap-2 ${couponMessage.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
+                       {couponMessage.type === 'success' ? <Check size={14} /> : <X size={14} />}
+                       {couponMessage.text}
+                   </div>
+               )}
              </div>
+         ) : (
+             // Collapsed button view
+             <button
+               type="button"
+               onClick={() => setIsPartnerCodeOpen(true)}
+               className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl transition-all text-emerald-700 font-bold text-sm uppercase tracking-wider hover:bg-emerald-50 group"
+             >
+               <div className="w-6 h-6 rounded-full border-2 border-emerald-700 flex items-center justify-center group-hover:bg-emerald-700 group-hover:text-white transition-colors">
+                 <Plus size={14} strokeWidth={3} />
+               </div>
+               Van partnerkódod?
+             </button>
          )}
       </div>
 

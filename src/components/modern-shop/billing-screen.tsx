@@ -13,6 +13,25 @@ interface BillingScreenProps {
 const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling, onBack, onNext }) => {
   const { billingData } = orderState;
   const [isDemoActive, setIsDemoActive] = useState(false);
+  const [allowPrivateBilling, setAllowPrivateBilling] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/shop-settings/public')
+      .then(res => res.json())
+      .then(settings => {
+        const allowed = settings.allow_private_billing === 'true';
+        setAllowPrivateBilling(allowed);
+        if (!allowed && billingData.type === 'private') {
+          updateBilling({ type: 'business' });
+        }
+      })
+      .catch(() => {
+        setAllowPrivateBilling(false);
+        if (billingData.type === 'private') {
+          updateBilling({ type: 'business' });
+        }
+      });
+  }, []);
 
   const updateAddress = (type: 'billingAddress' | 'shippingAddress', field: keyof Address, value: string) => {
     updateBilling({
@@ -211,10 +230,16 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 text-balance text-left">
         <h2 className="text-3xl font-black text-gray-900 tracking-tight uppercase text-left">Számlázási adatok</h2>
         
-        <div className="flex bg-gray-100 p-1 rounded-xl border border-gray-200 w-full md:w-auto text-balance text-left">
-          <button onClick={() => handleTypeChange('business')} className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-balance transition-all ${billingData.type === 'business' ? 'bg-emerald-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}>Céges</button>
-          <button onClick={() => handleTypeChange('private')} className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-balance transition-all ${billingData.type === 'private' ? 'bg-emerald-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}>Magánszemély</button>
-        </div>
+        {allowPrivateBilling ? (
+          <div className="flex bg-gray-100 p-1 rounded-xl border border-gray-200 w-full md:w-auto text-balance text-left">
+            <button onClick={() => handleTypeChange('business')} className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-balance transition-all ${billingData.type === 'business' ? 'bg-emerald-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}>Céges</button>
+            <button onClick={() => handleTypeChange('private')} className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-balance transition-all ${billingData.type === 'private' ? 'bg-emerald-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}>Magánszemély</button>
+          </div>
+        ) : (
+          <div className="px-6 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-md">
+            Céges
+          </div>
+        )}
       </div>
 
       <div 

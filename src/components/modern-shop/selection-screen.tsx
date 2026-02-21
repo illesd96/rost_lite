@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { OrderState, CONSTANTS } from '../../types/modern-shop';
-import { formatCurrency, getMondayDate, getDateFromIndex, isSameDay } from '../../lib/modern-shop-utils';
-import { ChevronUp, ChevronDown, Clock, Snowflake, ArrowDown } from 'lucide-react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { OrderState, CONSTANTS, isHungarianHoliday } from '../../types/modern-shop';
+import { formatCurrency, getDateFromIndex } from '../../lib/modern-shop-utils';
+import { ChevronUp, ChevronDown, Clock, Snowflake, ArrowDown, X } from 'lucide-react';
 
 interface SelectionScreenProps {
   orderState: OrderState;
@@ -11,11 +11,9 @@ interface SelectionScreenProps {
 
 const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrder, onNext }) => {
   const [showScheduler, setShowScheduler] = useState(false);
-  const [expandDates, setExpandDates] = useState(false);
   const schedulerRef = useRef<HTMLDivElement>(null);
   
   const PRESETS = [20, 30, 40, 50, 100, ];
-  const WEEKS = Array.from({ length: 12 }, (_, i) => i);
 
   const totalPrice = orderState.quantity * CONSTANTS.UNIT_PRICE;
   const isFreeShipping = orderState.quantity >= CONSTANTS.FREE_SHIPPING_THRESHOLD;
@@ -23,33 +21,99 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
   // Validation logic
   const isCustomError = orderState.isCustomQuantity && (orderState.quantity < 20 || orderState.quantity > 300);
 
-  // Helper to calculate currently visible valid indices (Mondays + Tuesdays) excluding holidays
-  const getVisibleValidIndices = () => {
-    const limit = expandDates ? 12 : 6;
-    const indices: number[] = [];
+  // Generate calendar data for 3 months starting from current month (weekdays only)
+  const calendarMonths = useMemo(() => {
+    const months: { year: number; month: number; name: string; weeks: (Date | null)[][] }[] = [];
+    const today = new Date();
     
-    for (let i = 0; i < limit; i++) {
-        // Monday index
-        indices.push(i);
-        // Tuesday index
-        indices.push(i + 100);
+    for (let m = 0; m < 3; m++) {
+      const firstOfMonth = new Date(today.getFullYear(), today.getMonth() + m, 1);
+      const year = firstOfMonth.getFullYear();
+      const month = firstOfMonth.getMonth();
+      const monthName = firstOfMonth.toLocaleDateString('hu-HU', { month: 'long' });
+      const capitalizedName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+      
+      // Build weeks array with only weekdays (Mon-Fri)
+      const weeks: (Date | null)[][] = [];
+      let currentWeek: (Date | null)[] = [];
+      
+      // Get first weekday of month
+      const firstDayOfWeek = firstOfMonth.getDay();
+      // Calculate offset for Monday-Friday grid (Mon=0, Tue=1, Wed=2, Thu=3, Fri=4)
+      let startOffset = 0;
+      if (firstDayOfWeek === 0) startOffset = 0; // Sunday -> start Monday (no offset needed, skip to first weekday)
+      else if (firstDayOfWeek === 6) startOffset = 0; // Saturday -> start Monday
+      else startOffset = firstDayOfWeek - 1; // Mon=0, Tue=1, etc.
+      
+      // Add empty cells for alignment at start of first week
+      for (let i = 0; i < startOffset; i++) {
+        currentWeek.push(null);
+      }
+      
+      // Get number of days in month
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(year, month, d);
+        const dayOfWeek = date.getDay();
+        
+        // Skip Saturday (6) and Sunday (0)
+        if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+        
+        currentWeek.push(date);
+        
+        // If Friday (5), start new week
+        if (dayOfWeek === 5) {
+          weeks.push(currentWeek);
+          currentWeek = [];
+        }
+      }
+      
+      // Don't forget the last partial week
+      if (currentWeek.length > 0) {
+        while (currentWeek.length < 5) {
+          currentWeek.push(null);
+        }
+        weeks.push(currentWeek);
+      }
+      
+      months.push({ year, month, name: capitalizedName, weeks });
     }
+    
+    return months;
+  }, []);
 
-    // Filter out holidays
+  // Build a map of dates to their delivery indices
+  const dateToIndexMap = useMemo(() => {
+    const map = new Map<string, number>();
+    // Generate indices for 12 weeks of Mondays and Tuesdays
+    for (let i = 0; i < 12; i++) {
+      const mondayDate = getDateFromIndex(CONSTANTS.START_DATE, i);
+      const tuesdayDate = getDateFromIndex(CONSTANTS.START_DATE, i + 100);
+      map.set(mondayDate.toDateString(), i);
+      map.set(tuesdayDate.toDateString(), i + 100);
+    }
+    return map;
+  }, []);
+
+  // Get all valid delivery indices (excluding holidays)
+  const getAllValidIndices = useMemo(() => {
+    const indices: number[] = [];
+    for (let i = 0; i < 12; i++) {
+      indices.push(i);
+      indices.push(i + 100);
+    }
     return indices.filter(idx => {
-        const date = getDateFromIndex(CONSTANTS.START_DATE, idx);
-        return !isSameDay(date, CONSTANTS.HOLIDAY_DATE);
+      const date = getDateFromIndex(CONSTANTS.START_DATE, idx);
+      return !isHungarianHoliday(date);
     });
-  };
+  }, []);
 
-  const visibleValidIndices = getVisibleValidIndices();
-
-  // Check if "Recurring" is selected based on visible indices
-  // It is selected if the order schedule has items, and exactly matches the visible valid indices
+  // Check if "Recurring" is selected
   const isRecurringSelected = 
     orderState.schedule.length > 0 &&
-    orderState.schedule.length === visibleValidIndices.length &&
-    visibleValidIndices.every(i => orderState.schedule.includes(i));
+    orderState.schedule.length === getAllValidIndices.length &&
+    getAllValidIndices.every(i => orderState.schedule.includes(i));
 
   const isOneTimeSelected = orderState.schedule.length === 1 && orderState.schedule[0] === 0;
 
@@ -92,46 +156,48 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     updateOrder({ schedule: newSchedule });
   };
 
+  const toggleDateByDate = (date: Date) => {
+    const index = dateToIndexMap.get(date.toDateString());
+    if (index !== undefined) {
+      toggleDateIndex(index);
+    }
+  };
+
   const setSchedule = (type: 'once' | 'recurring') => {
     if (type === 'once') {
       updateOrder({ schedule: [0] }); // Select first Monday
     } else {
-      // Select all currently visible valid dates (Mondays & Tuesdays)
-      updateOrder({ schedule: visibleValidIndices });
+      // Select all valid dates
+      updateOrder({ schedule: getAllValidIndices });
     }
   };
 
-  const renderDateCard = (weekIndex: number, isTuesday: boolean) => {
-    // Tuesday indices are shifted by 100
-    const actualIndex = isTuesday ? weekIndex + 100 : weekIndex;
-    const date = getDateFromIndex(CONSTANTS.START_DATE, actualIndex);
-    const isHoliday = isSameDay(date, CONSTANTS.HOLIDAY_DATE);
-    const isSelected = orderState.schedule.includes(actualIndex);
-    const dayName = isTuesday ? 'Kedd' : 'Hétfő';
+  const isDeliveryDay = (date: Date) => {
+    const day = date.getDay();
+    return day === 1 || day === 2; // Monday (1) or Tuesday (2)
+  };
 
-    return (
-      <div
-        key={actualIndex}
-        onClick={() => !isHoliday && toggleDateIndex(actualIndex)}
-        className={`relative p-3 sm:p-4 rounded-xl text-center font-bold text-xs border-2 transition-all cursor-pointer select-none flex flex-col items-center justify-center min-h-[80px]
-          ${isHoliday 
-            ? 'bg-red-50 border-red-200 text-red-400 cursor-not-allowed pattern-diagonal-lines' 
-            : isSelected 
-                ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm transform scale-[1.02]' 
-                : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-          }
-        `}
-      >
-         {isHoliday && (
-            <span className="absolute top-1 right-1.5 text-[7px] font-black text-red-400 uppercase tracking-wider">Ünnep</span>
-         )}
-         {!isHoliday && !isSelected && (
-            <span className="absolute top-1 right-1.5 text-[7px] font-black text-gray-300 uppercase tracking-wider">Kihagyva</span>
-         )}
-         <div className="text-[10px] sm:text-xs mb-1 text-nowrap">{date.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}</div>
-         <div className={`text-[8px] uppercase font-black tracking-wider ${isTuesday ? 'text-indigo-400' : 'text-emerald-600/60'}`}>{dayName}</div>
-      </div>
-    );
+  const isPastDate = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
+  const isDateSelected = (date: Date) => {
+    const index = dateToIndexMap.get(date.toDateString());
+    return index !== undefined && orderState.schedule.includes(index);
+  };
+
+  const isDateHoliday = (date: Date) => {
+    return isHungarianHoliday(date);
+  };
+
+  const clearAllSelections = () => {
+    updateOrder({ schedule: [] });
+  };
+
+  const isDateSelectable = (date: Date) => {
+    return isDeliveryDay(date) && !isPastDate(date) && !isDateHoliday(date) && dateToIndexMap.has(date.toDateString());
   };
 
   return (
@@ -286,24 +352,24 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                 <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight">Mikor érkezzen <span className="text-green-600">a frissesség?</span></h3>
                 <p className="text-sm text-gray-500 whitespace-nowrap">Válassz szállítási napokat. Hamarosan szerdánként is!</p>
               </div>
-              <div className="flex flex-row gap-2 w-full md:w-auto">
+              <div className="flex flex-row items-center gap-3 w-full md:w-auto">
+                {orderState.schedule.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={clearAllSelections}
+                    className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-700 transition uppercase tracking-wider"
+                  >
+                    Törlés
+                    <X size={14} strokeWidth={2.5} />
+                  </button>
+                )}
                 <button 
-                    onClick={() => setSchedule('once')} 
-                    className={`flex-1 md:flex-none text-[8px] sm:text-[10px] font-black px-2 sm:px-5 py-2.5 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
-                        ${isOneTimeSelected
-                            ? 'bg-emerald-50 border-emerald-600 text-emerald-600'
-                            : 'bg-white border-emerald-600 text-emerald-600 hover:bg-emerald-50'
-                        }
-                    `}
-                >
-                    Egyszeri szállítás
-                </button>
-                <button 
+                    type="button"
                     onClick={() => setSchedule('recurring')} 
-                    className={`flex-1 md:flex-none text-[8px] sm:text-[10px] font-black px-2 sm:px-5 py-2.5 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
+                    className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
                         ${isRecurringSelected
-                            ? 'bg-purple-50 border-purple-800 text-purple-800'
-                            : 'bg-white border-purple-800 text-purple-800 hover:bg-purple-50'
+                            ? 'bg-emerald-50 border-emerald-700 text-emerald-700'
+                            : 'bg-white border-emerald-700 text-emerald-700 hover:bg-emerald-50'
                         }
                     `}
                 >
@@ -312,50 +378,76 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
               </div>
             </div>
 
-            {/* Calendar Grid Section */}
-            <div className="space-y-8 mb-8 text-left">
-                {/* First 6 Weeks */}
-                <div className="space-y-2">
-                    {/* Mondays Row */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                        {WEEKS.slice(0, 6).map(i => renderDateCard(i, false))}
-                    </div>
-                    {/* Tuesdays Row */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                        {WEEKS.slice(0, 6).map(i => renderDateCard(i, true))}
-                    </div>
+            {/* Calendar Month View - 3 Months */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+              {calendarMonths.map((monthData) => (
+                <div key={`${monthData.year}-${monthData.month}`} className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
+                  {/* Month Header */}
+                  <h4 className="text-center font-bold text-gray-900 mb-5 text-lg">
+                    {monthData.name}
+                  </h4>
+                  
+                  {/* Day Headers - Weekdays only */}
+                  <div className="grid grid-cols-5 gap-2 mb-3">
+                    {['H', 'K', 'Sz', 'Cs', 'P'].map((day, i) => (
+                      <div 
+                        key={day + i} 
+                        className={`text-center text-xs font-bold py-1 ${
+                          i === 0 || i === 1 ? 'text-emerald-700' : 'text-gray-400'
+                        }`}
+                      >
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Calendar Weeks */}
+                  <div className="space-y-2">
+                    {monthData.weeks.map((week, weekIdx) => (
+                      <div key={weekIdx} className="grid grid-cols-5 gap-2">
+                        {week.map((date, dayIdx) => {
+                          if (!date) {
+                            return <div key={`empty-${weekIdx}-${dayIdx}`} className="aspect-square" />;
+                          }
+                          
+                          const dayOfWeek = date.getDay();
+                          const isMonday = dayOfWeek === 1;
+                          const isTuesday = dayOfWeek === 2;
+                          const isDelivery = isMonday || isTuesday;
+                          const isPast = isPastDate(date);
+                          const isHoliday = isDateHoliday(date);
+                          const isSelectable = isDateSelectable(date);
+                          const isSelected = isDateSelected(date);
+                          
+                          return (
+                            <button
+                              key={date.toISOString()}
+                              type="button"
+                              onClick={() => isSelectable && toggleDateByDate(date)}
+                              disabled={!isSelectable}
+                              className={`
+                                aspect-square rounded-full flex items-center justify-center text-sm font-semibold transition-all
+                                ${isHoliday 
+                                  ? 'bg-red-50 text-red-300 cursor-not-allowed' 
+                                  : isSelected
+                                    ? 'bg-emerald-700 text-white shadow-sm'
+                                    : isSelectable
+                                      ? 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 cursor-pointer'
+                                      : isPast && isDelivery
+                                        ? 'text-gray-300 cursor-not-allowed'
+                                        : 'text-gray-400 cursor-default'
+                                }
+                              `}
+                            >
+                              {date.getDate()}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-
-                {/* Elegant Expander */}
-                <div className="relative h-6 flex items-center justify-center">
-                    <div className="absolute inset-x-0 top-1/2 border-t border-gray-100"></div>
-                    <button 
-                        onClick={() => setExpandDates(!expandDates)}
-                        className="relative z-10 bg-white border border-gray-200 text-gray-400 hover:text-emerald-600 hover:border-emerald-200 shadow-sm rounded-full px-4 py-1 flex items-center gap-2 transition-all hover:shadow-md group"
-                    >
-                         <span className="text-[9px] font-black uppercase tracking-widest">
-                             {expandDates ? 'Kevesebb időpont' : 'További időpontok mutatása'}
-                         </span>
-                         {expandDates 
-                            ? <ChevronUp size={12} strokeWidth={3} className="group-hover:-translate-y-0.5 transition-transform" /> 
-                            : <ChevronDown size={12} strokeWidth={3} className="group-hover:translate-y-0.5 transition-transform" />
-                         }
-                    </button>
-                </div>
-
-                {/* Next 6 Weeks (Conditional) */}
-                {expandDates && (
-                    <div className="space-y-2 animate-fade-in">
-                        {/* Mondays Row */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                            {WEEKS.slice(6, 12).map(i => renderDateCard(i, false))}
-                        </div>
-                        {/* Tuesdays Row */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                            {WEEKS.slice(6, 12).map(i => renderDateCard(i, true))}
-                        </div>
-                    </div>
-                )}
+              ))}
             </div>
 
             <div className="flex items-center gap-4 p-5 bg-blue-50 rounded-2xl border border-blue-100 mb-8 text-balance">

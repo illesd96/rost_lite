@@ -145,6 +145,17 @@ export const qrCodeVisits = pgTable('qr_code_visits', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Shop Settings table (feature toggles for the storefront)
+export const shopSettings = pgTable('shop_settings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  key: varchar('key', { length: 100 }).unique().notNull(),
+  value: text('value').notNull(),
+  label: text('label'),
+  description: text('description'),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // Delivery Settings table
 export const deliverySettings = pgTable('delivery_settings', {
   id: uuid('id').defaultRandom().primaryKey(),

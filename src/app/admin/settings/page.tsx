@@ -1,4 +1,5 @@
 import { DeliverySettings } from '@/components/admin/delivery-settings';
+import { ShopSettings } from '@/components/admin/shop-settings';
 import { Settings } from 'lucide-react';
 
 export default function AdminSettingsPage() {
@@ -10,6 +11,19 @@ export default function AdminSettingsPage() {
       </div>
 
       <div className="grid gap-6">
+        <div className="bg-white rounded-lg shadow-sm">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Webshop beállítások
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Funkciók be- és kikapcsolása a webshopban
+            </p>
+          </div>
+          
+          <ShopSettings />
+        </div>
+
         <div className="bg-white rounded-lg shadow-sm">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">
