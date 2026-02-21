@@ -3,7 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { stripe } from '@/lib/stripe';
 import { db } from '@/lib/db';
-import { modernShopOrders } from '@/lib/db/schema';
+import { modernShopOrders, orderPaymentGroups, orderDeliverySchedule } from '@/lib/db/schema';
+import { CONSTANTS, OrderState } from '@/types/modern-shop';
+import { getDateFromIndex } from '@/lib/modern-shop-utils';
 import { eq } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
@@ -23,15 +25,12 @@ export async function GET(req: NextRequest) {
     const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (checkoutSession.payment_status === 'paid') {
-      // Check if order was already created by webhook
       const existingOrders = await db
         .select()
         .from(modernShopOrders)
         .where(eq(modernShopOrders.userId, session.user.id))
         .limit(1);
 
-      // Try to find the most recent order for this user (webhook might have created it)
-      // The webhook stores the session ID in notes
       const recentOrder = existingOrders.find(o =>
         o.notes?.includes(sessionId)
       );
@@ -44,25 +43,17 @@ export async function GET(req: NextRequest) {
         });
       }
 
-      // If webhook hasn't processed yet, create the order here as fallback
-      // Import and run the same logic as the webhook
-      const { OrderState, CONSTANTS } = await import('@/types/modern-shop');
-      const { getDateFromIndex } = await import('@/lib/modern-shop-utils');
-      const { orderPaymentGroups, orderDeliverySchedule } = await import('@/lib/db/schema');
-
       const metadata = checkoutSession.metadata;
       if (!metadata?.orderStateJson) {
         return NextResponse.json({ success: false, message: 'Missing order data' }, { status: 400 });
       }
 
-      const orderState = JSON.parse(metadata.orderStateJson);
-      const CONSTS = (await import('@/types/modern-shop')).CONSTANTS;
+      const orderState: OrderState = JSON.parse(metadata.orderStateJson);
 
-      // Calculate pricing
-      let unitPrice = CONSTS.UNIT_PRICE;
+      let unitPrice = CONSTANTS.UNIT_PRICE;
       let shippingFee = 0;
-      if (orderState.quantity <= 25) shippingFee = CONSTS.SHIPPING_FEE_HIGH;
-      else if (orderState.quantity < CONSTS.FREE_SHIPPING_THRESHOLD) shippingFee = CONSTS.SHIPPING_FEE_LOW;
+      if (orderState.quantity <= 25) shippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
+      else if (orderState.quantity < CONSTANTS.FREE_SHIPPING_THRESHOLD) shippingFee = CONSTANTS.SHIPPING_FEE_LOW;
 
       if (orderState.appliedCoupon === 'private1234' && orderState.billingData?.type === 'private' && orderState.quantity <= 20) {
         unitPrice = 1250;
@@ -105,7 +96,7 @@ export async function GET(req: NextRequest) {
       });
 
       const packages = orderState.schedule.map((deliveryIndex: number, index: number) => {
-        const deliveryDate = getDateFromIndex(CONSTS.START_DATE, deliveryIndex);
+        const deliveryDate = getDateFromIndex(CONSTANTS.START_DATE, deliveryIndex);
         return {
           orderId: newOrder.id,
           deliveryDate: deliveryDate.toISOString().split('T')[0],
