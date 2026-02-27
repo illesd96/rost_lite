@@ -21,72 +21,43 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
   // Validation logic
   const isCustomError = orderState.isCustomQuantity && (orderState.quantity < 20 || orderState.quantity > 300);
 
-  // Generate calendar data for 3 months starting from current month (weekdays only)
-  const calendarMonths = useMemo(() => {
-    const months: { year: number; month: number; name: string; weeks: (Date | null)[][] }[] = [];
-    const today = new Date();
-    
-    for (let m = 0; m < 3; m++) {
-      const firstOfMonth = new Date(today.getFullYear(), today.getMonth() + m, 1);
-      const year = firstOfMonth.getFullYear();
-      const month = firstOfMonth.getMonth();
-      const monthName = firstOfMonth.toLocaleDateString('hu-HU', { month: 'long' });
-      const capitalizedName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-      
-      // Build weeks array with only weekdays (Mon-Fri)
-      const weeks: (Date | null)[][] = [];
-      let currentWeek: (Date | null)[] = [];
-      
-      // Get first weekday of month
-      const firstDayOfWeek = firstOfMonth.getDay();
-      // Calculate offset for Monday-Friday grid (Mon=0, Tue=1, Wed=2, Thu=3, Fri=4)
-      let startOffset = 0;
-      if (firstDayOfWeek === 0) startOffset = 0; // Sunday -> start Monday (no offset needed, skip to first weekday)
-      else if (firstDayOfWeek === 6) startOffset = 0; // Saturday -> start Monday
-      else startOffset = firstDayOfWeek - 1; // Mon=0, Tue=1, etc.
-      
-      // Add empty cells for alignment at start of first week
-      for (let i = 0; i < startOffset; i++) {
-        currentWeek.push(null);
-      }
-      
-      // Get number of days in month
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      
-      for (let d = 1; d <= daysInMonth; d++) {
-        const date = new Date(year, month, d);
-        const dayOfWeek = date.getDay();
-        
-        // Skip Saturday (6) and Sunday (0)
-        if (dayOfWeek === 0 || dayOfWeek === 6) continue;
-        
-        currentWeek.push(date);
-        
-        // If Friday (5), start new week
-        if (dayOfWeek === 5) {
-          weeks.push(currentWeek);
-          currentWeek = [];
-        }
-      }
-      
-      // Don't forget the last partial week
-      if (currentWeek.length > 0) {
-        while (currentWeek.length < 5) {
-          currentWeek.push(null);
-        }
+  // Helper: build calendar data for a given year/month
+  const buildMonth = (year: number, month: number) => {
+    const firstOfMonth = new Date(year, month, 1);
+    const monthName = firstOfMonth.toLocaleDateString('hu-HU', { month: 'long' });
+    const capitalizedName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+
+    const weeks: (Date | null)[][] = [];
+    let currentWeek: (Date | null)[] = [];
+
+    const firstDayOfWeek = firstOfMonth.getDay();
+    let startOffset = 0;
+    if (firstDayOfWeek !== 0 && firstDayOfWeek !== 6) startOffset = firstDayOfWeek - 1;
+
+    for (let i = 0; i < startOffset; i++) currentWeek.push(null);
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const dayOfWeek = date.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+      currentWeek.push(date);
+      if (dayOfWeek === 5) {
         weeks.push(currentWeek);
+        currentWeek = [];
       }
-      
-      months.push({ year, month, name: capitalizedName, weeks });
     }
-    
-    return months;
-  }, []);
+    if (currentWeek.length > 0) {
+      while (currentWeek.length < 5) currentWeek.push(null);
+      weeks.push(currentWeek);
+    }
+
+    return { year, month, name: capitalizedName, weeks };
+  };
 
   // Build a map of dates to their delivery indices
   const dateToIndexMap = useMemo(() => {
     const map = new Map<string, number>();
-    // Generate indices for 12 weeks of Mondays and Tuesdays
     for (let i = 0; i < 12; i++) {
       const mondayDate = getDateFromIndex(CONSTANTS.START_DATE, i);
       const tuesdayDate = getDateFromIndex(CONSTANTS.START_DATE, i + 100);
@@ -96,26 +67,65 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     return map;
   }, []);
 
-  // Get all valid delivery indices (excluding holidays)
-  const getAllValidIndices = useMemo(() => {
-    const indices: number[] = [];
-    for (let i = 0; i < 12; i++) {
-      indices.push(i);
-      indices.push(i + 100);
+  // Generate calendar data for 3 months, skipping months with no selectable dates
+  const calendarMonths = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const months: { year: number; month: number; name: string; weeks: (Date | null)[][] }[] = [];
+    let offset = 0;
+
+    while (months.length < 3 && offset < 12) {
+      const candidate = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+      const monthData = buildMonth(candidate.getFullYear(), candidate.getMonth());
+
+      const hasSelectable = monthData.weeks.some(week =>
+        week.some(date => {
+          if (!date) return false;
+          const day = date.getDay();
+          const isDelivery = day === 1 || day === 2;
+          return isDelivery && date >= today && !isHungarianHoliday(date) && dateToIndexMap.has(date.toDateString());
+        })
+      );
+
+      if (hasSelectable) months.push(monthData);
+      offset++;
     }
+
+    return months;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateToIndexMap]);
+
+  // Get valid Monday indices (excluding holidays and past dates)
+  const allValidMondayIndices = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const indices: number[] = [];
+    for (let i = 0; i < 12; i++) indices.push(i);
     return indices.filter(idx => {
       const date = getDateFromIndex(CONSTANTS.START_DATE, idx);
-      return !isHungarianHoliday(date);
+      return !isHungarianHoliday(date) && date >= today;
     });
   }, []);
 
-  // Check if "Recurring" is selected
-  const isRecurringSelected = 
-    orderState.schedule.length > 0 &&
-    orderState.schedule.length === getAllValidIndices.length &&
-    getAllValidIndices.every(i => orderState.schedule.includes(i));
+  // Get valid Tuesday indices (excluding holidays and past dates)
+  const allValidTuesdayIndices = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const indices: number[] = [];
+    for (let i = 0; i < 12; i++) indices.push(i + 100);
+    return indices.filter(idx => {
+      const date = getDateFromIndex(CONSTANTS.START_DATE, idx);
+      return !isHungarianHoliday(date) && date >= today;
+    });
+  }, []);
 
-  const isOneTimeSelected = orderState.schedule.length === 1 && orderState.schedule[0] === 0;
+  const isAllMondaysSelected =
+    allValidMondayIndices.length > 0 &&
+    allValidMondayIndices.every(i => orderState.schedule.includes(i));
+
+  const isAllTuesdaysSelected =
+    allValidTuesdayIndices.length > 0 &&
+    allValidTuesdayIndices.every(i => orderState.schedule.includes(i));
 
   const handleQtySelect = (q: number) => {
     updateOrder({ quantity: q, isCustomQuantity: false });
@@ -163,12 +173,15 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     }
   };
 
-  const setSchedule = (type: 'once' | 'recurring') => {
-    if (type === 'once') {
-      updateOrder({ schedule: [0] }); // Select first Monday
+  const toggleAllDay = (type: 'mondays' | 'tuesdays') => {
+    const targetIndices = type === 'mondays' ? allValidMondayIndices : allValidTuesdayIndices;
+    const allSelected = type === 'mondays' ? isAllMondaysSelected : isAllTuesdaysSelected;
+
+    if (allSelected) {
+      updateOrder({ schedule: orderState.schedule.filter(i => !targetIndices.includes(i)) });
     } else {
-      // Select all valid dates
-      updateOrder({ schedule: getAllValidIndices });
+      const merged = new Set([...orderState.schedule, ...targetIndices]);
+      updateOrder({ schedule: Array.from(merged) });
     }
   };
 
@@ -365,15 +378,33 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                 )}
                 <button 
                     type="button"
-                    onClick={() => setSchedule('recurring')} 
+                    onClick={() => toggleAllDay('mondays')} 
+                    disabled={allValidMondayIndices.length === 0}
                     className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
-                        ${isRecurringSelected
-                            ? 'bg-emerald-50 border-emerald-700 text-emerald-700'
-                            : 'bg-white border-emerald-700 text-emerald-700 hover:bg-emerald-50'
+                        ${allValidMondayIndices.length === 0
+                            ? 'bg-gray-50 border-gray-200 text-gray-300 cursor-not-allowed'
+                            : isAllMondaysSelected
+                              ? 'bg-emerald-50 border-emerald-700 text-emerald-700'
+                              : 'bg-white border-emerald-700 text-emerald-700 hover:bg-emerald-50'
                         }
                     `}
                 >
-                    Ismétlődő szállítás
+                    Minden hétfő
+                </button>
+                <button 
+                    type="button"
+                    onClick={() => toggleAllDay('tuesdays')} 
+                    disabled={allValidTuesdayIndices.length === 0}
+                    className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
+                        ${allValidTuesdayIndices.length === 0
+                            ? 'bg-gray-50 border-gray-200 text-gray-300 cursor-not-allowed'
+                            : isAllTuesdaysSelected
+                              ? 'bg-emerald-50 border-emerald-700 text-emerald-700'
+                              : 'bg-white border-emerald-700 text-emerald-700 hover:bg-emerald-50'
+                        }
+                    `}
+                >
+                    Minden kedd
                 </button>
               </div>
             </div>

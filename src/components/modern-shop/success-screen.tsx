@@ -144,14 +144,6 @@ END:VEVENT
             <p className="text-gray-500 text-lg mb-10 text-center">A friss Rostik a választott napokon érkeznek hozzátok.</p>
             
             <div className="bg-gray-50 rounded-3xl p-8 mb-8 text-left border border-gray-100 text-balance">
-                {/* Order ID */}
-                <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rendelési szám</span>
-                    <span className="text-sm font-bold text-gray-900">
-                      {orderNumber ? `#${orderNumber}` : '#ROSTI-2026-0119'}
-                    </span>
-                </div>
-
                 {/* Delivery Count with Dropdown */}
                 <div className="border-b border-gray-200 mb-4 pb-4 transition-all">
                     <button 
@@ -170,15 +162,45 @@ END:VEVENT
                     </button>
                     
                     {showDates && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 animate-fade-in pt-2">
-                            {sortedSchedule.map(idx => {
-                                const d = getDateFromIndex(CONSTANTS.START_DATE, idx);
+                        <div className="grid grid-cols-2 gap-6 mt-4 animate-fade-in pt-2">
+                            {(() => {
+                                const mondays = sortedSchedule.filter(idx => idx < 100);
+                                const tuesdays = sortedSchedule.filter(idx => idx >= 100);
                                 return (
-                                    <div key={idx} className="bg-white border border-gray-200 rounded-lg py-2 px-3 text-xs font-bold text-gray-600 text-center shadow-sm">
-                                        {d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}
-                                    </div>
+                                    <>
+                                        {mondays.length > 0 && (
+                                            <div>
+                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Hétfők</span>
+                                                <div className="flex flex-col gap-1.5">
+                                                    {mondays.map(idx => {
+                                                        const d = getDateFromIndex(CONSTANTS.START_DATE, idx);
+                                                        return (
+                                                            <div key={idx} className="bg-white border border-gray-200 rounded-lg py-2 px-3 text-xs font-bold text-gray-600 text-center shadow-sm">
+                                                                {d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {tuesdays.length > 0 && (
+                                            <div>
+                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Keddek</span>
+                                                <div className="flex flex-col gap-1.5">
+                                                    {tuesdays.map(idx => {
+                                                        const d = getDateFromIndex(CONSTANTS.START_DATE, idx);
+                                                        return (
+                                                            <div key={idx} className="bg-white border border-gray-200 rounded-lg py-2 px-3 text-xs font-bold text-gray-600 text-center shadow-sm">
+                                                                {d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
                                 );
-                            })}
+                            })()}
                         </div>
                     )}
                 </div>
@@ -186,25 +208,31 @@ END:VEVENT
                 {/* Total Quantity */}
                 <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Összesített mennyiség</span>
-                    <span className="text-green-700 font-black text-2xl">{formatNumber(orderState.quantity * orderState.schedule.length)} palack</span>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-sm text-gray-500 font-bold">{orderState.schedule.length} x</span>
+                        <span className="text-2xl font-black text-gray-900">{orderState.quantity}</span>
+                        <span className="text-sm font-black text-green-700 uppercase">Rosti</span>
+                    </div>
                 </div>
 
-                {/* Financial Fulfillment */}
+                {/* Order ID */}
                 <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pénzügyi teljesítés</span>
-                    <span className="text-sm font-bold text-gray-900">számla alapján</span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rendelési szám</span>
+                    <span className="text-sm font-bold text-gray-900">
+                      {orderNumber ? `#${orderNumber}` : '#ROSTI-2026-0119'}
+                    </span>
                 </div>
 
                 {/* Emails Section */}
                 <div>
                     <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 leading-relaxed">
-                        Visszaigazolás és számla az alábbi címekre kerül elektronikusan megküldésre
+                        Visszaigazolás és számla 24 órán belül megküldésre kerül
                     </p>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-wrap gap-x-6 gap-y-1.5">
                         {emails.map((email, index) => (
-                            <div key={index} className="text-sm font-bold text-gray-900">
+                            <span key={index} className="text-sm font-bold text-gray-900">
                                 {email}
-                            </div>
+                            </span>
                         ))}
                     </div>
                 </div>
