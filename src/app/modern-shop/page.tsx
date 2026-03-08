@@ -8,7 +8,7 @@ import ProgressBar from '../../components/modern-shop/progress-bar';
 import SelectionScreen from '../../components/modern-shop/selection-screen';
 import BillingScreen from '../../components/modern-shop/billing-screen';
 import SummaryScreen from '../../components/modern-shop/summary-screen';
-import LoginScreen from '../../components/modern-shop/login-screen';
+import { useRouter } from 'next/navigation';
 import SuccessScreen from '../../components/modern-shop/success-screen';
 import { OrderState, ScreenType, BillingData } from '../../types/modern-shop';
 
@@ -50,6 +50,7 @@ const clearAllModernShopStorage = () => {
 
 export default function ModernShopPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [screen, setScreen] = useState<ScreenType>('selection');
   const [orderState, setOrderState] = useState<OrderState>(INITIAL_STATE);
   const [isLoading, setIsLoading] = useState(true);
@@ -190,7 +191,7 @@ export default function ModernShopPage() {
     if (targetScreen) {
       // Only allow navigation if user is logged in for billing/summary
       if ((targetScreen === 'billing' || targetScreen === 'summary') && !orderState.isLoggedIn) {
-        navigateTo('login');
+        router.push('/auth/signin');
       } else {
         navigateTo(targetScreen);
       }
@@ -295,14 +296,13 @@ export default function ModernShopPage() {
           <SelectionScreen 
             orderState={orderState} 
             updateOrder={updateOrder} 
-            onNext={() => navigateTo(orderState.isLoggedIn ? 'billing' : 'login')} 
-          />
-        );
-      case 'login':
-        return (
-          <LoginScreen 
-            onLogin={() => navigateTo('billing')} 
-            onBack={() => navigateTo('selection')} 
+            onNext={() => {
+              if (orderState.isLoggedIn) {
+                navigateTo('billing');
+              } else {
+                router.push('/auth/signin');
+              }
+            }}
           />
         );
       case 'billing':
@@ -354,7 +354,7 @@ export default function ModernShopPage() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      {screen !== 'login' && <PromoBar />}
+      <PromoBar />
       <ModernHeader 
         onLogoClick={() => navigateTo('selection')} 
         isLoggedIn={!!session?.user}

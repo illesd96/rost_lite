@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ScreenType } from '../../types/modern-shop';
 import { signOut } from 'next-auth/react';
 import { User, LogOut, ChevronDown } from 'lucide-react';
@@ -14,8 +15,7 @@ interface ModernHeaderProps {
 
 const ModernHeader: React.FC<ModernHeaderProps> = ({ onLogoClick, isLoggedIn, onToggleAuth, currentScreen, session }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
-  
-  if (currentScreen === 'login') return null;
+  const router = useRouter();
 
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' });
@@ -61,8 +61,8 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({ onLogoClick, isLoggedIn, on
             )}
           </div>
         ) : (
-          <div 
-            onClick={onToggleAuth}
+          <div
+            onClick={() => router.push('/auth/signin')}
             className="flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-bold uppercase tracking-widest select-none cursor-pointer transition-all shadow-sm bg-gray-100 border-gray-200 text-gray-900 hover:bg-gray-200 hover:border-gray-300"
           >
             <span className="w-2.5 h-2.5 rounded-full shadow-sm bg-red-500"></span>

@@ -485,7 +485,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                  : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-emerald-600/20'
               }`}
             >
-              Tovább a számlázáshoz
+              {orderState.isLoggedIn ? 'Tovább a számlázáshoz' : 'Jelentkezz be és tovább a számlázáshoz'}
             </button>
 
             <div className="mt-6 flex justify-center">

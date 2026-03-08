@@ -1,4 +1,4 @@
-export type ScreenType = 'selection' | 'login' | 'billing' | 'summary' | 'success';
+export type ScreenType = 'selection' | 'billing' | 'summary' | 'success';
 
 export type UserType = 'business' | 'private';
 
