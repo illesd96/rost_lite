@@ -117,12 +117,21 @@ export default function ModernShopPage() {
           setScreen(savedScreen as ScreenType);
         }
 
+        // Check if returning from login
+        const pendingLogin = localStorage.getItem('modern-shop-pending-login');
+
         // Update login status based on session
         if (status !== 'loading') {
-          setOrderState(prev => ({ 
-            ...prev, 
-            isLoggedIn: !!session?.user 
+          setOrderState(prev => ({
+            ...prev,
+            isLoggedIn: !!session?.user
           }));
+
+          // If user just logged in and was redirected from selection, go to billing
+          if (pendingLogin === 'true' && session?.user) {
+            localStorage.removeItem('modern-shop-pending-login');
+            setScreen('billing');
+          }
 
           // Load user billing data if logged in
           if (session?.user) {
@@ -191,6 +200,9 @@ export default function ModernShopPage() {
     if (targetScreen) {
       // Only allow navigation if user is logged in for billing/summary
       if ((targetScreen === 'billing' || targetScreen === 'summary') && !orderState.isLoggedIn) {
+        localStorage.setItem('modern-shop-state', JSON.stringify(orderState));
+        localStorage.setItem('modern-shop-screen', 'selection');
+        localStorage.setItem('modern-shop-pending-login', 'true');
         router.push('/auth/signin');
       } else {
         navigateTo(targetScreen);
@@ -300,6 +312,10 @@ export default function ModernShopPage() {
               if (orderState.isLoggedIn) {
                 navigateTo('billing');
               } else {
+                // Save current state and set flag to go to billing after login
+                localStorage.setItem('modern-shop-state', JSON.stringify(orderState));
+                localStorage.setItem('modern-shop-screen', 'selection');
+                localStorage.setItem('modern-shop-pending-login', 'true');
                 router.push('/auth/signin');
               }
             }}
