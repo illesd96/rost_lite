@@ -5,10 +5,12 @@ interface WebshopIconProps {
   size?: number;
 }
 
-export function WebshopIcon({ className = "w-5 h-5", size }: WebshopIconProps) {
-  // Extract size from className if not provided explicitly
+// Default: 1.25rem on small screens, 3rem on md and up (PC)
+const DEFAULT_CLASS = "w-5 h-5 md:w-12 md:h-12";
+
+export function WebshopIcon({ className = DEFAULT_CLASS, size }: WebshopIconProps) {
   const sizeMatch = className.match(/w-(\d+)/);
-  const defaultSize = sizeMatch ? parseInt(sizeMatch[1]) * 4 : 20; // Convert Tailwind size to pixels
+  const defaultSize = sizeMatch ? parseInt(sizeMatch[1]) * 4 : 20;
   const iconSize = size || defaultSize;
 
   return (
