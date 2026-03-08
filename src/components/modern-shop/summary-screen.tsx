@@ -422,6 +422,8 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
               });
               const data = await response.json();
               if (data.url) {
+                // Save order state before Stripe redirect so payment-success page can display it
+                sessionStorage.setItem('completed-order-state', JSON.stringify(orderState));
                 window.location.href = data.url;
               } else {
                 setIsRedirecting(false);
