@@ -67,57 +67,42 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     return map;
   }, []);
 
-  // Generate calendar data for 3 months, skipping months with no selectable dates
+  // Always show 3 months starting from current month
   const calendarMonths = useMemo(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const months: { year: number; month: number; name: string; weeks: (Date | null)[][] }[] = [];
-    let offset = 0;
+    for (let m = 0; m < 3; m++) {
+      const candidate = new Date(today.getFullYear(), today.getMonth() + m, 1);
+      months.push(buildMonth(candidate.getFullYear(), candidate.getMonth()));
+    }
+    return months;
+  }, []);
 
-    while (months.length < 3 && offset < 12) {
-      const candidate = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-      const monthData = buildMonth(candidate.getFullYear(), candidate.getMonth());
+  // Valid Monday/Tuesday indices within the visible 3 months only (not past, not holiday)
+  const { allValidMondayIndices, allValidTuesdayIndices } = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const mondayIndices: number[] = [];
+    const tuesdayIndices: number[] = [];
 
-      const hasSelectable = monthData.weeks.some(week =>
-        week.some(date => {
-          if (!date) return false;
+    for (const monthData of calendarMonths) {
+      for (const week of monthData.weeks) {
+        for (const date of week) {
+          if (!date) continue;
           const day = date.getDay();
-          const isDelivery = day === 1 || day === 2;
-          return isDelivery && date >= today && !isHungarianHoliday(date) && dateToIndexMap.has(date.toDateString());
-        })
-      );
-
-      if (hasSelectable) months.push(monthData);
-      offset++;
+          if (day !== 1 && day !== 2) continue;
+          if (date < today) continue;
+          if (isHungarianHoliday(date)) continue;
+          const index = dateToIndexMap.get(date.toDateString());
+          if (index === undefined) continue;
+          if (day === 1) mondayIndices.push(index);
+          else tuesdayIndices.push(index);
+        }
+      }
     }
 
-    return months;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateToIndexMap]);
-
-  // Get valid Monday indices (excluding holidays and past dates)
-  const allValidMondayIndices = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const indices: number[] = [];
-    for (let i = 0; i < 12; i++) indices.push(i);
-    return indices.filter(idx => {
-      const date = getDateFromIndex(CONSTANTS.START_DATE, idx);
-      return !isHungarianHoliday(date) && date >= today;
-    });
-  }, []);
-
-  // Get valid Tuesday indices (excluding holidays and past dates)
-  const allValidTuesdayIndices = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const indices: number[] = [];
-    for (let i = 0; i < 12; i++) indices.push(i + 100);
-    return indices.filter(idx => {
-      const date = getDateFromIndex(CONSTANTS.START_DATE, idx);
-      return !isHungarianHoliday(date) && date >= today;
-    });
-  }, []);
+    return { allValidMondayIndices: mondayIndices, allValidTuesdayIndices: tuesdayIndices };
+  }, [calendarMonths, dateToIndexMap]);
 
   const isAllMondaysSelected =
     allValidMondayIndices.length > 0 &&
