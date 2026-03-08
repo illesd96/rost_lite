@@ -31,7 +31,7 @@ export function UnifiedNavbar({
               aria-label="Shop"
               title="Shop"
             >
-              <WebshopIcon className="w-5 h-5" />
+              <WebshopIcon className="w-5 h-5 md:w-12 md:h-12" />
             </Link>
           </div>
 
