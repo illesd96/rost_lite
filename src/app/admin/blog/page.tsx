@@ -228,7 +228,7 @@ export default function AdminBlogPage() {
                   setEditingPost(prev => prev ? {
                     ...prev,
                     month: e.target.value,
-                    monthLabel: selectedMonth && 'monthLabel' in selectedMonth ? selectedMonth.monthLabel : '',
+                    monthLabel: (selectedMonth && 'monthLabel' in selectedMonth ? selectedMonth.monthLabel : '') || '',
                   } : null);
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
