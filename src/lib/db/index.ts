@@ -44,3 +44,5 @@ export type Order = typeof schema.orders.$inferSelect;
 export type NewOrder = typeof schema.orders.$inferInsert;
 export type OrderItem = typeof schema.orderItems.$inferSelect;
 export type NewOrderItem = typeof schema.orderItems.$inferInsert;
+export type BlogPost = typeof schema.blogPosts.$inferSelect;
+export type NewBlogPost = typeof schema.blogPosts.$inferInsert;

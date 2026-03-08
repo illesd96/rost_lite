@@ -260,6 +260,24 @@ export const waitlistApplications = pgTable('waitlist_applications', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// Blog Posts
+export const blogPosts = pgTable('blog_posts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: varchar('slug', { length: 200 }).unique().notNull(),
+  title: text('title').notNull(),
+  excerpt: text('excerpt'), // Short summary for listing cards
+  content: text('content').notNull(), // HTML content
+  coverImage: text('cover_image'), // URL for cover/hero image
+  month: varchar('month', { length: 20 }), // e.g. 'mar', 'jan' - for month-based navigation
+  monthLabel: varchar('month_label', { length: 50 }), // e.g. 'Március', 'Január'
+  readingTime: varchar('reading_time', { length: 20 }), // e.g. '2,5 perc olvasás'
+  published: boolean('published').notNull().default(false),
+  publishedAt: timestamp('published_at'),
+  authorName: varchar('author_name', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Relations for modern shop orders
 export const modernShopOrdersRelations = relations(modernShopOrders, ({ one, many }) => ({
   user: one(users, {

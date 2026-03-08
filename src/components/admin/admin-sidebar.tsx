@@ -9,7 +9,8 @@ import {
   BarChart3,
   Settings,
   Truck,
-  FileText
+  FileText,
+  BookOpen
 } from 'lucide-react';
 
 const navigation = [
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'Deliveries', href: '/admin/deliveries', icon: Truck },
   { name: 'Billing', href: '/admin/billing', icon: FileText },
   { name: 'Modern Orders', href: '/admin/modern-orders', icon: Package },
+  { name: 'Blog', href: '/admin/blog', icon: BookOpen },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'Settings', href: '/admin/settings', icon: Settings },

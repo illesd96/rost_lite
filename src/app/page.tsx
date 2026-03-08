@@ -434,7 +434,7 @@ export default function HomePage() {
 
             <div className="mt-16 flex justify-center">
               <Link
-                href="/osszetevok"
+                href="/blog"
                 className="group relative flex items-center gap-4 sm:gap-8 px-8 sm:px-12 py-5 bg-white border border-gray-200 rounded-2xl text-gray-600 hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-xl hover:-translate-y-1"
               >
                 {/* Left Icon */}

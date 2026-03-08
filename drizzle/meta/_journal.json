@@ -43,6 +43,13 @@
       "when": 1773004382967,
       "tag": "0005_young_shooting_star",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1773008486840,
+      "tag": "0006_bright_crusher_hogan",
+      "breakpoints": true
     }
   ]
 }
