@@ -50,16 +50,6 @@ function PaymentSuccessContent() {
   const [orderState, setOrderState] = useState<OrderState>(INITIAL_STATE);
 
   useEffect(() => {
-    // Load order state from sessionStorage (survives Stripe redirect since same tab)
-    const completedOrderState = sessionStorage.getItem('completed-order-state');
-    if (completedOrderState) {
-      try {
-        setOrderState(JSON.parse(completedOrderState));
-      } catch (error) {
-        console.error('Failed to parse completed order state:', error);
-      }
-    }
-
     const sessionId = searchParams.get('session_id');
     if (!sessionId) {
       router.push('/modern-shop');
@@ -73,6 +63,20 @@ function PaymentSuccessContent() {
 
         if (data.success) {
           setOrderNumber(data.orderNumber);
+
+          // Reconstruct order state from server data (sessionStorage may not survive Stripe redirect)
+          if (data.orderData) {
+            setOrderState(prev => ({
+              ...prev,
+              quantity: data.orderData.quantity,
+              schedule: Array.isArray(data.orderData.schedule) ? data.orderData.schedule : [],
+              billingData: data.orderData.billingData ?? prev.billingData,
+              paymentPlan: data.orderData.paymentPlan ?? prev.paymentPlan,
+              paymentMethod: data.orderData.paymentMethod ?? prev.paymentMethod,
+              appliedCoupon: data.orderData.appliedCoupon ?? undefined,
+            }));
+          }
+
           setStatus('success');
 
           localStorage.removeItem('modern-shop-state');
@@ -80,6 +84,7 @@ function PaymentSuccessContent() {
           localStorage.removeItem('modern-shop-order-completed');
           localStorage.removeItem('modern-shop-completed-order-number');
           localStorage.removeItem('modern-shop-last-order-time');
+          sessionStorage.removeItem('completed-order-state');
         } else {
           setStatus('error');
         }
