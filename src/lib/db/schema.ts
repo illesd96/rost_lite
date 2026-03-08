@@ -242,6 +242,24 @@ export const orderDeliverySchedule = pgTable('order_delivery_schedule', {
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
+// Waitlist applications (for new partners who want to join)
+export const waitlistApplications = pgTable('waitlist_applications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  companyName: text('company_name').notNull(),
+  contactName: text('contact_name').notNull(),
+  email: text('email').notNull(),
+  phone: text('phone'),
+  deliveryAddress: text('delivery_address'),
+  officeHeadcount: integer('office_headcount'),
+  quantityMin: integer('quantity_min'),
+  quantityMax: integer('quantity_max'),
+  acceptedTerms: boolean('accepted_terms').notNull().default(false),
+  status: varchar('status', { length: 20 }).default('pending'), // 'pending', 'contacted', 'approved', 'rejected'
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Relations for modern shop orders
 export const modernShopOrdersRelations = relations(modernShopOrders, ({ one, many }) => ({
   user: one(users, {

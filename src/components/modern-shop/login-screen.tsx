@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, ChevronLeft, ChevronDown } from 'lucide-react';
+import { Eye, EyeOff, ChevronLeft, ChevronDown, Users } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import WaitlistModal from './waitlist-modal';
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -14,6 +15,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showWaitlist, setShowWaitlist] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,13 +76,29 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
                       Kézműves, nem tömegtermékkel dolgozunk. <br className="hidden sm:inline" />
                       <span className="text-green-600 font-bold">A prémium minőség garantálásához <br className="hidden sm:inline" />a Rosti vásárlói közösséget fokozatosan bővítjük.</span>
                   </p>
-                  
-                  <div className="border-t border-gray-100 my-5"></div>
-                  
-                  <p>
-                      Ha érdekel a Rosti, <a href="mailto:rendeles@rosti.hu" className="font-bold text-green-600 hover:text-green-700 transition-colors no-underline">írj nekünk</a>, <br className="block sm:hidden" />felvesszük a kapcsolatot az első szállítás egyeztetéséhez.
-                  </p>
               </div>
+
+              <div className="border-t border-gray-100 my-5"></div>
+
+              <p className="text-sm text-gray-500 mb-3">Még nincs fiókod?</p>
+
+              <button
+                type="button"
+                onClick={() => setShowWaitlist(true)}
+                className="flex items-center gap-4 border border-gray-200 rounded-2xl p-4 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all cursor-pointer group w-full text-left"
+              >
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                  <Users className="w-6 h-6 text-gray-500 group-hover:text-emerald-600 transition-colors" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Új partnereknek</p>
+                  <p className="text-sm font-semibold text-gray-900">Várólistára jelentkezem</p>
+                </div>
+              </button>
+
+              <p className="text-sm text-gray-500 mt-4">
+                vagy <a href="mailto:rendeles@rosti.hu" className="font-bold text-green-600 hover:text-green-700 transition-colors no-underline">írj nekünk emailt</a>
+              </p>
             </div>
           </div>
 
@@ -154,15 +172,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
               </div>
             </form>
     
-            <footer className="mt-10 text-center border-t border-gray-100 pt-8 text-left">
-              <p className="text-sm text-gray-500 text-left text-center">
-                Nincs még Rosti fiókod? 
-                <a href="mailto:rendeles@rosti.hu" className="font-bold text-emerald-700 hover:text-emerald-800 transition-colors ml-1">
+            <footer className="mt-10 text-center border-t border-gray-100 pt-8">
+              <p className="text-sm text-gray-500">
+                Probléma a belépéssel?{' '}
+                <a href="mailto:rendeles@rosti.hu" className="font-bold text-gray-900 hover:text-emerald-700 transition-colors underline underline-offset-2">
                   Írj nekünk
                 </a>
               </p>
 
-              <div 
+              <div
                 onClick={handleScrollDown}
                 className="mt-8 flex flex-col items-center justify-center text-gray-400 lg:hidden animate-bounce cursor-pointer hover:text-emerald-600 transition-colors"
               >
@@ -173,6 +191,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
           </div>
         </div>
       </main>
+
+      <WaitlistModal isOpen={showWaitlist} onClose={() => setShowWaitlist(false)} />
     </div>
   );
 };
