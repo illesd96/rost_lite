@@ -13,9 +13,9 @@ export function WebshopIcon({ className = "w-5 h-5", size }: WebshopIconProps) {
 
   return (
     <Image
-      src="/images/webshop_icon.png"
+      src="/ROSTI WEBSHOP_S.svg"
       alt="Webshop"
-      width={iconSize}
+      width={iconSize * 3}
       height={iconSize}
       className={className}
     />
