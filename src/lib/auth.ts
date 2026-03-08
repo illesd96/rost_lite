@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: '/auth/signin',
+    signIn: '/modern-shop',
   },
   callbacks: {
     async jwt({ token, user }) {
