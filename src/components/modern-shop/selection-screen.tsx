@@ -55,19 +55,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     return { year, month, name: capitalizedName, weeks };
   };
 
-  // Build a map of dates to their delivery indices
-  const dateToIndexMap = useMemo(() => {
-    const map = new Map<string, number>();
-    for (let i = 0; i < 12; i++) {
-      const mondayDate = getDateFromIndex(CONSTANTS.START_DATE, i);
-      const tuesdayDate = getDateFromIndex(CONSTANTS.START_DATE, i + 100);
-      map.set(mondayDate.toDateString(), i);
-      map.set(tuesdayDate.toDateString(), i + 100);
-    }
-    return map;
-  }, []);
-
-  // Always show 3 months starting from current month
+  // Always show 3 months starting from current month (e.g. March, April, May when in March)
   const calendarMonths = useMemo(() => {
     const today = new Date();
     const months: { year: number; month: number; name: string; weeks: (Date | null)[][] }[] = [];
@@ -76,6 +64,20 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
       months.push(buildMonth(candidate.getFullYear(), candidate.getMonth()));
     }
     return months;
+  }, []);
+
+  // Build date-to-index map through the end of the 3rd visible month (e.g. through May 31 when showing Mar/Apr/May)
+  const dateToIndexMap = useMemo(() => {
+    const today = new Date();
+    const lastDayOfThirdMonth = new Date(today.getFullYear(), today.getMonth() + 3, 0);
+    const map = new Map<string, number>();
+    for (let i = 0; i < 52; i++) {
+      const mondayDate = getDateFromIndex(CONSTANTS.START_DATE, i);
+      const tuesdayDate = getDateFromIndex(CONSTANTS.START_DATE, i + 100);
+      if (mondayDate <= lastDayOfThirdMonth) map.set(mondayDate.toDateString(), i);
+      if (tuesdayDate <= lastDayOfThirdMonth) map.set(tuesdayDate.toDateString(), i + 100);
+    }
+    return map;
   }, []);
 
   // Valid Monday/Tuesday indices within the visible 3 months only (not past, not holiday)
