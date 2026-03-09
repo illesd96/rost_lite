@@ -371,7 +371,7 @@ export default function ModernShopPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <PromoBar />
-      <SiteNavbar relative hasPromoBar />
+      <SiteNavbar relative hasPromoBar hideOrderCta />
       
       {showProgressBar && (
         <ProgressBar 

@@ -5,18 +5,18 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { ArrowRight, User, LogOut, ChevronDown } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 interface SiteNavbarProps {
   /** If true, navbar is not fixed/sticky (for pages that manage their own scroll) */
   relative?: boolean;
   /** If true, adds top offset for promo bar */
   hasPromoBar?: boolean;
+  /** If true, hides the RENDELEK button and veggie icon (e.g. when already in the shop) */
+  hideOrderCta?: boolean;
 }
 
-export function SiteNavbar({ relative = false, hasPromoBar = false }: SiteNavbarProps) {
+export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta = false }: SiteNavbarProps) {
   const { data: session } = useSession();
-  const router = useRouter();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const isLoggedIn = !!session?.user;
@@ -70,23 +70,25 @@ export function SiteNavbar({ relative = false, hasPromoBar = false }: SiteNavbar
           )}
 
           {/* Order CTA */}
-          <Link
-            href="/modern-shop"
-            className="group flex items-center gap-3 cursor-pointer select-none"
-          >
-            <span className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
-              <span>RENDELEK</span>
-              <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-            </span>
+          {!hideOrderCta && (
+            <Link
+              href="/modern-shop"
+              className="group flex items-center gap-3 cursor-pointer select-none"
+            >
+              <span className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
+                <span>RENDELEK</span>
+                <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+              </span>
 
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://i.imgur.com/h8taJcy.png"
-              alt="Friss zöldségek"
-              className="h-14 w-auto object-contain hidden sm:block transition-transform duration-300 drop-shadow-sm -mb-2 group-hover:scale-110 group-hover:-rotate-3"
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
-          </Link>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://i.imgur.com/h8taJcy.png"
+                alt="Friss zöldségek"
+                className="h-14 w-auto object-contain hidden sm:block transition-transform duration-300 drop-shadow-sm -mb-2 group-hover:scale-110 group-hover:-rotate-3"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+            </Link>
+          )}
         </div>
       </div>
     </nav>
