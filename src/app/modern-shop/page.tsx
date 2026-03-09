@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import ModernHeader from '../../components/modern-shop/modern-header';
 import PromoBar from '../../components/modern-shop/promo-bar';
+import { SiteNavbar } from '../../components/ui/site-navbar';
 import ProgressBar from '../../components/modern-shop/progress-bar';
 import SelectionScreen from '../../components/modern-shop/selection-screen';
 import BillingScreen from '../../components/modern-shop/billing-screen';
@@ -371,13 +371,7 @@ export default function ModernShopPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <PromoBar />
-      <ModernHeader 
-        onLogoClick={() => navigateTo('selection')} 
-        isLoggedIn={!!session?.user}
-        onToggleAuth={() => {}} // Will be handled by real auth
-        currentScreen={screen}
-        session={session}
-      />
+      <SiteNavbar relative hasPromoBar />
       
       {showProgressBar && (
         <ProgressBar 

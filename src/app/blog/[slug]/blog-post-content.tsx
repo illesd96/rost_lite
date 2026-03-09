@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Calendar, Clock } from 'lucide-react';
+import { SiteNavbar } from '@/components/ui/site-navbar';
 
 interface BlogPost {
   id: string;
@@ -20,7 +21,8 @@ interface BlogPost {
 export function BlogPostContent({ post }: { post: BlogPost }) {
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
-      <div className="container mx-auto max-w-4xl px-6 py-12">
+      <SiteNavbar />
+      <div className="container mx-auto max-w-4xl px-6 pt-28 pb-12">
         <Link
           href="/blog"
           className="flex items-center gap-2 text-[#0B5D3F] font-bold mb-8 hover:underline"

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Leaf, Activity, Heart, CheckCircle2, Sparkles, Code, Shield } from 'lucide-react';
 import { trackQRCodeVisit } from '@/lib/analytics';
+import { SiteNavbar } from '@/components/ui/site-navbar';
 
 // Custom SVG icon for natural fiber/grain
 const NaturalFiberIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
@@ -172,42 +173,7 @@ export default function HomePage() {
       />
 
       <div className="min-h-screen bg-white flex flex-col">
-        {/* Navbar */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all">
-          <div className="container mx-auto px-6 h-20 flex justify-between items-center">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <Image
-                src="/images/logo.png"
-                alt="Rosti"
-                width={160}
-                height={40}
-                className="h-8 md:h-10 w-auto object-contain"
-              />
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Link
-                href="/modern-shop"
-                className="group flex items-center gap-3 cursor-pointer select-none"
-              >
-                <span
-                  className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105"
-                >
-                  <span>RENDELEK</span>
-                  <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-                </span>
-
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://i.imgur.com/h8taJcy.png"
-                  alt="Friss zöldségek"
-                  className="h-14 w-auto object-contain hidden sm:block transition-transform duration-300 drop-shadow-sm -mb-2 group-hover:scale-110 group-hover:-rotate-3"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              </Link>
-            </div>
-          </div>
-        </nav>
+        <SiteNavbar />
 
         {/* Hero Section */}
         <section className="pt-32 pb-20 px-6 relative overflow-hidden">
