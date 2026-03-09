@@ -36,8 +36,8 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
         </Link>
 
         <div className="flex items-center gap-4">
-          {/* User menu (when logged in) */}
-          {isLoggedIn && session?.user && (
+          {/* User menu / Guest login */}
+          {isLoggedIn && session?.user ? (
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
@@ -67,6 +67,14 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
                 </>
               )}
             </div>
+          ) : (
+            <Link
+              href="/auth/signin"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-bold uppercase tracking-widest select-none cursor-pointer transition-all shadow-sm bg-gray-100 border-gray-200 text-gray-900 hover:bg-gray-200 hover:border-gray-300"
+            >
+              <span className="w-2.5 h-2.5 rounded-full shadow-sm bg-red-500"></span>
+              <span>Vendég</span>
+            </Link>
           )}
 
           {/* Order CTA */}
