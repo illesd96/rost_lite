@@ -448,15 +448,33 @@ export default function HomePage() {
 
             {/* Legal & Copyright */}
             <div className="flex flex-col items-center md:items-end gap-2">
-              <div className="flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                <Link
+                  href="/gyik"
+                  className="hover:text-[#0B5D3F] transition-colors"
+                >
+                  GYIK
+                </Link>
+                <Link
+                  href="/blog"
+                  className="hover:text-[#0B5D3F] transition-colors"
+                >
+                  Blog
+                </Link>
                 <Link
                   href="/osszetevok"
+                  className="hover:text-[#0B5D3F] transition-colors"
+                >
+                  Összetevők
+                </Link>
+                <Link
+                  href="/dokumentumok/adatvedelmi"
                   className="hover:text-[#0B5D3F] transition-colors"
                 >
                   Adatkezelés
                 </Link>
                 <Link
-                  href="/osszetevok"
+                  href="/dokumentumok/aszf"
                   className="hover:text-[#0B5D3F] transition-colors"
                 >
                   ÁSZF
