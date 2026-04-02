@@ -5,6 +5,8 @@ import { db } from '@/lib/db';
 import { modernShopOrders, orderDeliverySchedule, orderPaymentGroups } from '@/lib/db/schema';
 import { OrderState, CONSTANTS } from '@/types/modern-shop';
 import { formatCurrency, getDateFromIndex, getMondayDate } from '@/lib/modern-shop-utils';
+import { applyCouponToPricing } from '@/lib/coupon-validation';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 // Helper function to generate order number
 function generateOrderNumber(): string {
@@ -17,45 +19,27 @@ function generateOrderNumber(): string {
   return `ROSTI-${year}${month}${day}-${timestamp}`;
 }
 
-// Helper function to calculate pricing
+// Helper function to calculate pricing using centralized coupon validation
 function calculatePricing(orderState: OrderState) {
-  const CONSTANTS = {
-    UNIT_PRICE: 1490,
-    SHIPPING_FEE_HIGH: 5700,
-    SHIPPING_FEE_LOW: 3700,
-    FREE_SHIPPING_THRESHOLD: 50
-  };
-
   const { quantity, schedule, appliedCoupon, billingData } = orderState;
-  
-  let unitPrice = CONSTANTS.UNIT_PRICE;
-  let shippingFee = 0;
-  let discountAmount = 0;
 
   // Calculate base shipping fee (per delivery)
+  let baseShippingFee = 0;
   if (quantity <= 25) {
-    shippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
+    baseShippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
   } else if (quantity < CONSTANTS.FREE_SHIPPING_THRESHOLD) {
-    shippingFee = CONSTANTS.SHIPPING_FEE_LOW;
-  } else {
-    shippingFee = 0;
+    baseShippingFee = CONSTANTS.SHIPPING_FEE_LOW;
   }
 
-  // Apply coupon discounts (simplified - in production you'd fetch from database)
-  if (appliedCoupon) {
-    if (appliedCoupon === 'private1234' && billingData.type === 'private' && quantity <= 20) {
-      unitPrice = 1250; // Special unit price
-      shippingFee = 1700; // Fixed shipping
-      discountAmount = (CONSTANTS.UNIT_PRICE - unitPrice) * quantity + (shippingFee > 1700 ? shippingFee - 1700 : 0);
-    } else if (appliedCoupon === 'teszt114db' || appliedCoupon === 'mastercard1234') {
-      if (shippingFee > 1700) {
-        discountAmount = shippingFee - 1700;
-        shippingFee = 1700;
-      }
-    }
-  }
+  // Server-side coupon re-validation — never trust client pricing
+  const { unitPrice, shippingFee, discountAmount } = applyCouponToPricing(
+    appliedCoupon,
+    billingData.type,
+    quantity,
+    CONSTANTS.UNIT_PRICE,
+    baseShippingFee
+  );
 
-  // Calculate totals - multiply by number of delivery dates
   const subtotalPerDelivery = unitPrice * quantity;
   const subtotal = subtotalPerDelivery * schedule.length;
   const totalShippingFee = shippingFee * schedule.length;
@@ -184,6 +168,9 @@ function createDeliveryPackages(orderState: OrderState, orderId: string, pricing
 
 export async function POST(req: NextRequest) {
   try {
+    const rateLimitResponse = rateLimit(`create-order:${getClientIp(req)}`, { limit: 5, windowSeconds: 60 });
+    if (rateLimitResponse) return rateLimitResponse;
+
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -201,47 +188,52 @@ export async function POST(req: NextRequest) {
     // Calculate pricing
     const pricing = calculatePricing(orderState);
 
-    // Create the main order
-    const [newOrder] = await db.insert(modernShopOrders).values({
-      userId: session.user.id,
-      orderNumber,
-      quantity: orderState.quantity,
-      unitPrice: pricing.unitPrice,
-      shippingFee: pricing.shippingFee,
-      totalAmount: pricing.totalAmount,
-      deliverySchedule: orderState.schedule,
-      deliveryDatesCount: orderState.schedule.length,
-      paymentPlan: orderState.paymentPlan,
-      paymentMethod: orderState.paymentMethod,
-      appliedCoupon: orderState.appliedCoupon || null,
-      discountAmount: pricing.discountAmount,
-      billingData: orderState.billingData,
-      status: 'confirmed',
-      confirmedAt: new Date()
-    }).returning();
+    // Use a transaction so all inserts succeed or fail together
+    const result = await db.transaction(async (tx) => {
+      // Create the main order
+      const [newOrder] = await tx.insert(modernShopOrders).values({
+        userId: session.user.id,
+        orderNumber,
+        quantity: orderState.quantity,
+        unitPrice: pricing.unitPrice,
+        shippingFee: pricing.shippingFee,
+        totalAmount: pricing.totalAmount,
+        deliverySchedule: orderState.schedule,
+        deliveryDatesCount: orderState.schedule.length,
+        paymentPlan: orderState.paymentPlan,
+        paymentMethod: orderState.paymentMethod,
+        appliedCoupon: orderState.appliedCoupon || null,
+        discountAmount: pricing.discountAmount,
+        billingData: orderState.billingData,
+        status: 'confirmed',
+        confirmedAt: new Date()
+      }).returning();
 
-    // Create payment groups
-    const paymentGroups = createPaymentGroups(orderState, newOrder.id, pricing.totalAmount);
-    if (paymentGroups.length > 0) {
-      await db.insert(orderPaymentGroups).values(paymentGroups);
-    }
+      // Create payment groups
+      const paymentGroups = createPaymentGroups(orderState, newOrder.id, pricing.totalAmount);
+      if (paymentGroups.length > 0) {
+        await tx.insert(orderPaymentGroups).values(paymentGroups);
+      }
 
-    // Create delivery packages
-    const deliveryPackages = createDeliveryPackages(orderState, newOrder.id, pricing);
-    if (deliveryPackages.length > 0) {
-      await db.insert(orderDeliverySchedule).values(deliveryPackages);
-    }
+      // Create delivery packages
+      const deliveryPackages = createDeliveryPackages(orderState, newOrder.id, pricing);
+      if (deliveryPackages.length > 0) {
+        await tx.insert(orderDeliverySchedule).values(deliveryPackages);
+      }
+
+      return { newOrder, paymentGroups, deliveryPackages };
+    });
 
     // Return success response with order details
     return NextResponse.json({
       success: true,
       order: {
-        id: newOrder.id,
-        orderNumber: newOrder.orderNumber,
+        id: result.newOrder.id,
+        orderNumber: result.newOrder.orderNumber,
         totalAmount: pricing.totalAmount,
-        paymentGroups: paymentGroups.length,
-        deliveryPackages: deliveryPackages.length,
-        status: newOrder.status
+        paymentGroups: result.paymentGroups.length,
+        deliveryPackages: result.deliveryPackages.length,
+        status: result.newOrder.status
       },
       message: 'Rendelés sikeresen létrehozva!'
     });

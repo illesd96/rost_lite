@@ -28,8 +28,6 @@ export async function GET(request: NextRequest) {
         subtotalHuf: orders.subtotalHuf,
         deliveryFeeHuf: orders.deliveryFeeHuf,
         totalHuf: orders.totalHuf,
-        barionPaymentId: orders.barionPaymentId,
-        barionStatus: orders.barionStatus,
         customerEmail: users.email,
         itemId: orderItems.id,
         productName: products.name,
@@ -59,8 +57,6 @@ export async function GET(request: NextRequest) {
       'Subtotal (HUF)',
       'Delivery Fee (HUF)',
       'Order Total (HUF)',
-      'Payment ID',
-      'Payment Status',
     ].join(',');
 
     const csvRows = ordersData.map(row => [
@@ -77,8 +73,6 @@ export async function GET(request: NextRequest) {
       row.subtotalHuf,
       row.deliveryFeeHuf,
       row.totalHuf,
-      row.barionPaymentId || '',
-      row.barionStatus || '',
     ].map(field => `"${field}"`).join(','));
 
     const csvContent = [csvHeaders, ...csvRows].join('\n');

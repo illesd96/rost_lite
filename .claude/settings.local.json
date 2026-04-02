@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc -l /c/Projects/cursor/WebShop/src/app/api/**/route.ts)",
+      "Bash(find /c/Projects/cursor/WebShop/src/app/api -type f -name \"*.ts\" -exec grep -l \"POST\\\\|GET\\\\|PATCH\\\\|DELETE\" {} \\\\;)",
+      "Bash(npm install:*)",
+      "Bash(npm ls:*)",
+      "Bash(grep -r \"export default function\" /c/Projects/cursor/WebShop/src/app/*.tsx)",
+      "WebFetch(domain:rosti-demo-final-523449124778.us-west1.run.app)",
+      "Bash(curl -s https://rosti-demo-final-523449124778.us-west1.run.app/)",
+      "Bash(curl -s https://rosti-demo-final-523449124778.us-west1.run.app/assets/index-XXa_ydwu.js)",
+      "Bash(grep -oP '\"[^\"]{20,200}\"')",
+      "Read(//tmp/**)",
+      "Bash(grep -oE '\"[^\"]{15,300}\"' /tmp/demo-bundle.js)",
+      "Bash(grep -oE '\"[^\"]{10,200}\"' /tmp/demo-bundle.js)",
+      "Bash(grep -oE '\"[^\"]{5,300}\"' /tmp/demo-bundle.js)",
+      "Bash(grep -oP '.{0,500}Egészség az irodában.{0,500}' /tmp/demo-bundle.js)",
+      "Bash(grep -o '.\\\\{0,500\\\\}Egészség az irodában.\\\\{0,1500\\\\}' /tmp/demo-bundle.js)",
+      "Bash(git ls-tree:*)"
+    ]
+  }
+}

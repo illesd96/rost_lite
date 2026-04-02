@@ -6,29 +6,28 @@ import { db } from '@/lib/db';
 import { modernShopOrders, orderPaymentGroups, orderDeliverySchedule } from '@/lib/db/schema';
 import { OrderState, CONSTANTS } from '@/types/modern-shop';
 import { getDateFromIndex } from '@/lib/modern-shop-utils';
+import { applyCouponToPricing } from '@/lib/coupon-validation';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 function calculatePricing(orderState: OrderState) {
   const { quantity, schedule, appliedCoupon, billingData } = orderState;
 
-  let unitPrice = CONSTANTS.UNIT_PRICE;
-  let shippingFee = 0;
-
+  // Calculate base shipping fee
+  let baseShippingFee = 0;
   if (quantity <= 25) {
-    shippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
+    baseShippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
   } else if (quantity < CONSTANTS.FREE_SHIPPING_THRESHOLD) {
-    shippingFee = CONSTANTS.SHIPPING_FEE_LOW;
+    baseShippingFee = CONSTANTS.SHIPPING_FEE_LOW;
   }
 
-  if (appliedCoupon) {
-    if (appliedCoupon === 'private1234' && billingData.type === 'private' && quantity <= 20) {
-      unitPrice = 1250;
-      shippingFee = 1700;
-    } else if (appliedCoupon === 'teszt114db' || appliedCoupon === 'mastercard1234') {
-      if (shippingFee > 1700) {
-        shippingFee = 1700;
-      }
-    }
-  }
+  // Server-side coupon re-validation — never trust client pricing
+  const { unitPrice, shippingFee } = applyCouponToPricing(
+    appliedCoupon,
+    billingData.type,
+    quantity,
+    CONSTANTS.UNIT_PRICE,
+    baseShippingFee
+  );
 
   const subtotalPerDelivery = unitPrice * quantity;
   const subtotal = subtotalPerDelivery * schedule.length;
@@ -49,6 +48,9 @@ function generateOrderNumber(): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const rateLimitResponse = rateLimit(`checkout:${getClientIp(req)}`, { limit: 5, windowSeconds: 60 });
+    if (rateLimitResponse) return rateLimitResponse;
+
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -63,53 +65,55 @@ export async function POST(req: NextRequest) {
     const pricing = calculatePricing(orderState);
     const orderNumber = generateOrderNumber();
 
-    // Create the order with pending_payment status
-    const [newOrder] = await db.insert(modernShopOrders).values({
-      userId: session.user.id,
-      orderNumber,
-      quantity: orderState.quantity,
-      unitPrice: pricing.unitPrice,
-      shippingFee: pricing.totalShippingFee,
-      totalAmount: pricing.totalAmount,
-      deliverySchedule: orderState.schedule,
-      deliveryDatesCount: orderState.schedule.length,
-      paymentPlan: 'full',
-      paymentMethod: 'card',
-      appliedCoupon: orderState.appliedCoupon || null,
-      discountAmount: 0,
-      billingData: orderState.billingData,
-      status: 'pending_payment',
-    }).returning();
-
-    // Create payment group
-    await db.insert(orderPaymentGroups).values({
-      orderId: newOrder.id,
-      groupNumber: 1,
-      amount: pricing.totalAmount,
-      dueDate: new Date().toISOString().split('T')[0],
-      status: 'pending',
-      description: 'Teljes összeg kártyás fizetése (Stripe)',
-    });
-
-    // Create delivery packages
-    const packages = orderState.schedule.map((deliveryIndex: number, index: number) => {
-      const deliveryDate = getDateFromIndex(CONSTANTS.START_DATE, deliveryIndex);
-      return {
-        orderId: newOrder.id,
-        deliveryDate: deliveryDate.toISOString().split('T')[0],
-        deliveryIndex,
-        isMonday: deliveryDate.getDay() === 1,
+    // Use a transaction so all inserts succeed or fail together
+    const newOrder = await db.transaction(async (tx) => {
+      const [order] = await tx.insert(modernShopOrders).values({
+        userId: session.user.id,
+        orderNumber,
         quantity: orderState.quantity,
-        amount: pricing.unitPrice * orderState.quantity,
-        status: 'scheduled' as const,
-        packageNumber: index + 1,
-        totalPackages: orderState.schedule.length,
-      };
-    });
+        unitPrice: pricing.unitPrice,
+        shippingFee: pricing.totalShippingFee,
+        totalAmount: pricing.totalAmount,
+        deliverySchedule: orderState.schedule,
+        deliveryDatesCount: orderState.schedule.length,
+        paymentPlan: 'full',
+        paymentMethod: 'card',
+        appliedCoupon: orderState.appliedCoupon || null,
+        discountAmount: 0,
+        billingData: orderState.billingData,
+        status: 'pending_payment',
+      }).returning();
 
-    if (packages.length > 0) {
-      await db.insert(orderDeliverySchedule).values(packages);
-    }
+      await tx.insert(orderPaymentGroups).values({
+        orderId: order.id,
+        groupNumber: 1,
+        amount: pricing.totalAmount,
+        dueDate: new Date().toISOString().split('T')[0],
+        status: 'pending',
+        description: 'Teljes összeg kártyás fizetése (Stripe)',
+      });
+
+      const packages = orderState.schedule.map((deliveryIndex: number, index: number) => {
+        const deliveryDate = getDateFromIndex(CONSTANTS.START_DATE, deliveryIndex);
+        return {
+          orderId: order.id,
+          deliveryDate: deliveryDate.toISOString().split('T')[0],
+          deliveryIndex,
+          isMonday: deliveryDate.getDay() === 1,
+          quantity: orderState.quantity,
+          amount: pricing.unitPrice * orderState.quantity,
+          status: 'scheduled' as const,
+          packageNumber: index + 1,
+          totalPackages: orderState.schedule.length,
+        };
+      });
+
+      if (packages.length > 0) {
+        await tx.insert(orderDeliverySchedule).values(packages);
+      }
+
+      return order;
+    });
 
     // Build Stripe line items
     const deliveryDates = orderState.schedule

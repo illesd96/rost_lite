@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Leaf, Activity, Heart, CheckCircle2, Sparkles, Code, Shield } from 'lucide-react';
+import { ArrowRight, Leaf, Activity, Heart, CheckCircle2 } from 'lucide-react';
 import { trackQRCodeVisit } from '@/lib/analytics';
 import { SiteNavbar } from '@/components/ui/site-navbar';
 
@@ -185,14 +185,13 @@ export default function HomePage() {
                   <span>100% Természetes</span>
                 </div>
 
-                <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1] tracking-tight">
+                <h1 className="text-[40px] sm:text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1] tracking-tight">
                   Egészség az irodában. <br />
                   <span className="text-[#0B5D3F]">Végre finom.</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed max-w-lg">
-                  5 féle nyers zöldség, frissen facsart citrom<br />
-                  és préselt alma, szűrt víz. Semmi más.
+                  5 féle nyers zöldség és friss citrom.<br />Egyetlen prémium smoothie-ban.
                 </p>
 
                 <div className="flex items-center gap-6 pt-8">
@@ -289,31 +288,20 @@ export default function HomePage() {
         </section>
 
         {/* Features Grid */}
-        <section className="py-20 bg-gray-50 px-6">
+        <section className="pt-10 pb-10 bg-gray-50 px-6">
           <div className="container mx-auto max-w-6xl">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Miért imádják a kollégáid?</h2>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Miért fogja imádni a csapatod?</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl transition-shadow text-left">
                 <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-[#0B5D3F] mb-6 relative">
                   <Leaf size={28} />
-                  <Sparkles size={14} className="absolute top-1 right-1 text-[#0B5D3F]" fill="currentColor" />
                 </div>
                 <h3 className="text-xl font-black text-gray-900 mb-3">5 féle zöldség</h3>
                 <p className="text-gray-500 leading-relaxed font-medium">
                   Friss és nyers, de a legfinomabb formában. Valódi alapanyagokból, semmi más.
-                </p>
-              </div>
-
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl transition-shadow text-left">
-                <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
-                  <Activity size={28} />
-                </div>
-                <h3 className="text-xl font-black text-gray-900 mb-3">Mikrobiom & bélflóra</h3>
-                <p className="text-gray-500 leading-relaxed font-medium">
-                  A növényi rost a mikrobiom alapja. Természetes támogatás a bélrendszer egyensúlyához.
                 </p>
               </div>
 
@@ -329,51 +317,50 @@ export default function HomePage() {
                   A rost marad. A lényeg marad. Teltségérzet és kiegyensúlyozott felszívódás, kompromisszum nélkül.
                 </p>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* CTA Bottom */}
-        <section className="py-20 px-6">
-          <div className="container mx-auto max-w-5xl">
-            <div className="bg-[#0B5D3F] rounded-[3rem] p-10 md:p-20 text-center relative overflow-hidden">
-              <div className="relative z-10 flex flex-col items-center">
-                <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-10 tracking-tight">Készen álltok a <br/>vitaminbomba robbanásra?</h2>
-
-                <Link
-                  href="/modern-shop"
-                  className="group inline-flex items-center gap-4 bg-white text-[#0B5D3F] px-8 sm:px-10 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-black shadow-2xl transition-all transform hover:bg-gray-50 hover:scale-105"
-                >
-                  <span>Feltöltöm a hűtőt</span>
-                  <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://i.imgur.com/h8taJcy.png"
-                    alt="Friss zöldségek"
-                    className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 drop-shadow-sm group-hover:scale-110 group-hover:-rotate-3"
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                  />
-                </Link>
+              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl transition-shadow text-left">
+                <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
+                  <Activity size={28} />
+                </div>
+                <h3 className="text-xl font-black text-gray-900 mb-3">Mikrobiom & bélflóra</h3>
+                <p className="text-gray-500 leading-relaxed font-medium">
+                  A növényi rost a mikrobiom alapja. Természetes támogatás a bélrendszer egyensúlyához.
+                </p>
               </div>
+            </div>
 
-              {/* Decorative Circles */}
-              <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-              <div className="absolute bottom-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full translate-x-1/3 translate-y-1/3"></div>
+            <div className="mt-10 flex flex-col items-center text-center">
+              <Link
+                href="/modern-shop"
+                className="group flex flex-col sm:flex-row items-center gap-4"
+              >
+                <span className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
+                  <span>FELTÖLTÖM A HŰTŐT</span>
+                  <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://i.imgur.com/h8taJcy.png"
+                  alt="Friss zöldségek"
+                  className="h-16 sm:h-20 w-auto object-contain transition-transform duration-300 drop-shadow-sm group-hover:scale-110 group-hover:-rotate-3"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              </Link>
             </div>
           </div>
         </section>
 
         {/* UGC Section */}
-        <section className="pb-8 px-6">
+        <section className="pt-10 pb-20 px-6">
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col items-center mb-12">
               <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center">A nap fénypontja, amiért hálás a csapat</h2>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               <HoverImage
-                src="/images/product_pictures/Rosti2.jpg"
-                hoverSrc="/images/product_pictures/Rosti8.jpg"
+                src="/images/product_pictures/Rosti5.jpg"
+                hoverSrc="/images/product_pictures/Rosti7.jpg"
                 alt="Rosti pillanat"
               />
 
@@ -385,48 +372,62 @@ export default function HomePage() {
               />
 
               <HoverImage
-                src="/images/product_pictures/Rosti5.jpg"
-                hoverSrc="/images/product_pictures/Rosti7.jpg"
-                alt="Rosti pillanat"
-              />
-
-              <HoverImage
                 src="/images/product_pictures/Rosti4.jpg"
                 hoverSrc="/images/product_pictures/Rosti1.jpg"
                 alt="Rosti pillanat"
-                className="mt-0 md:mt-8"
               />
             </div>
 
-            <div className="mt-16 flex justify-center">
-              <Link
-                href="/blog"
-                className="group relative flex items-center gap-4 sm:gap-8 px-8 sm:px-12 py-5 bg-white border border-gray-200 rounded-2xl text-gray-600 hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-xl hover:-translate-y-1"
-              >
-                {/* Left Icon */}
-                <div className="bg-gray-50 p-3 rounded-full group-hover:bg-[#0B5D3F]/10 transition-colors duration-500">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://cdn-icons-png.freepik.com/512/13442/13442172.png"
-                    alt="Science Icon"
-                    className="w-6 h-6 object-contain opacity-60 group-hover:opacity-100 transition-opacity duration-500"
-                  />
-                </div>
+            <div className="mt-10 max-w-5xl mx-auto">
+              <div className="text-center mb-12">
+                <h3 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">Vágj rendet az egészség-zajban</h3>
+                <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                  A táplálkozási tanácsok gyakran ellentmondásosak, de a tények nem.<br className="hidden md:block" />
+                  Tegyél különbséget a trendek és a valóság között.
+                </p>
+              </div>
 
-                <div className="flex flex-col items-center">
-                  <span className="font-black text-xs sm:text-sm uppercase tracking-widest text-center mb-1">
-                    Tudj meg többet a tudományos háttérről
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-bold opacity-60 group-hover:opacity-100 transition-opacity uppercase tracking-wider">
-                    a Rosti Blogon
-                  </span>
-                </div>
+              <div className="grid md:grid-cols-2 gap-6 mb-10">
+                <Link
+                  href="/blog"
+                  className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                  <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">Juice vagy smoothie: mi a különbség?</h4>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                    Még a 100%-os gyümölcs juice is hirtelen vércukorszint-emelkedést okozhat. A zöldségekből készült, rostban gazdag smoothie azonban lassítja a felszívódást...
+                  </p>
+                  <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
+                    ELOLVASOM <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
 
-                {/* Right Icon */}
-                <div className="bg-gray-50 p-3 rounded-full group-hover:bg-[#0B5D3F]/10 transition-colors duration-500">
-                  <ArrowRight size={24} className="text-gray-400 group-hover:text-[#0B5D3F] transition-colors duration-300" />
-                </div>
-              </Link>
+                <Link
+                  href="/blog"
+                  className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                  <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">3 ok, amiért a testnek rostra van szüksége</h4>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                    Sokan úgy nőttek fel, hogy a rostfogyasztás egyetlen célja az emésztés &ldquo;rendben tartása&rdquo;. A modern orvostudomány szerint a rost a bélflóra igazi védőpajzsa...
+                  </p>
+                  <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
+                    ELOLVASOM <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              </div>
+
+              <div className="flex justify-center">
+                <Link
+                  href="/blog"
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-50 border border-gray-200 rounded-full text-gray-600 hover:bg-white hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-md"
+                >
+                  <span className="font-black text-xs uppercase tracking-widest">
+                    Tudomány, közhelyek nélkül
+                  </span>
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -443,26 +444,6 @@ export default function HomePage() {
                 height={24}
                 className="h-6 w-auto object-contain"
               />
-            </div>
-
-            {/* Developer & Admin Links */}
-            <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-widest md:absolute md:left-1/2 md:-translate-x-1/2">
-              <Link
-                href="/admin"
-                className="flex items-center gap-1 text-blue-400/70 hover:text-blue-600 cursor-pointer transition-colors"
-                title="Fejlesztői dokumentáció"
-              >
-                <Code size={10} />
-                <span>Fejlesztéshez</span>
-              </Link>
-              <Link
-                href="/admin"
-                className="flex items-center gap-1 text-red-400/70 hover:text-red-600 cursor-pointer transition-colors"
-                title="Adminisztráció"
-              >
-                <Shield size={10} />
-                <span>Admin</span>
-              </Link>
             </div>
 
             {/* Legal & Copyright */}

@@ -12,8 +12,6 @@ interface Order {
   subtotalHuf: number;
   deliveryFeeHuf: number;
   totalHuf: number;
-  barionPaymentId: string | null;
-  barionStatus: string | null;
   userEmail: string | null;
   userId: string | null;
 }
@@ -173,13 +171,7 @@ export function OrderManagement({ orders: initialOrders }: OrderManagementProps)
                       {formatPrice(order.totalHuf)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {order.barionPaymentId ? (
-                        <span className="text-green-600">
-                          {order.barionStatus || 'Processed'}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">No payment</span>
-                      )}
+                      <span className="text-gray-400">—</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <button

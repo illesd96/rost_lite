@@ -11,8 +11,6 @@ interface Order {
   subtotalHuf: number;
   deliveryFeeHuf: number;
   totalHuf: number;
-  barionPaymentId: string | null;
-  barionStatus: string | null;
   userEmail: string | null;
   userId: string | null;
 }
@@ -144,14 +142,8 @@ export function OrderDetailsModal({ order, onClose }: OrderDetailsModalProps) {
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">Payment ID:</span>
-                <span className="font-medium">
-                  {order.barionPaymentId ? order.barionPaymentId.slice(0, 12) + '...' : 'N/A'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Barion Status:</span>
-                <span className="font-medium">{order.barionStatus || 'N/A'}</span>
+                <span className="text-gray-600">Payment method:</span>
+                <span className="font-medium">Stripe</span>
               </div>
             </div>
           </div>

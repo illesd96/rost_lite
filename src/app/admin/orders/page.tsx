@@ -14,8 +14,6 @@ export default async function AdminOrdersPage() {
       subtotalHuf: orders.subtotalHuf,
       deliveryFeeHuf: orders.deliveryFeeHuf,
       totalHuf: orders.totalHuf,
-      barionPaymentId: orders.barionPaymentId,
-      barionStatus: orders.barionStatus,
       userEmail: users.email,
       userId: users.id,
     })

@@ -36,9 +36,6 @@ jobs:
         DATABASE_URL: "postgresql://test:test@localhost:5432/test"
         NEXTAUTH_SECRET: "test-secret-key-for-ci-build-only"
         NEXTAUTH_URL: "http://localhost:3000"
-        BARION_POSKEY: "test-pos-key"
-        BARION_ENV: "test"
-        BARION_BASE_URL: "https://api.test.barion.com"
 
   deploy:
     needs: test

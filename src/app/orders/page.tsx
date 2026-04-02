@@ -112,11 +112,8 @@ export default async function OrdersPage() {
 
                   <div className="flex justify-between items-center pt-4 border-t">
                     <div className="text-sm text-gray-500">
-                      {order.barionPaymentId && (
-                        <span>Payment ID: {order.barionPaymentId.slice(0, 12)}...</span>
-                      )}
                     </div>
-                    
+
                     <Link
                       href={`/orders/${order.id}`}
                       className="inline-flex items-center px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors duration-200"

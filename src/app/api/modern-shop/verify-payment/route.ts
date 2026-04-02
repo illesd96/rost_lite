@@ -47,15 +47,12 @@ export async function GET(req: NextRequest) {
         .set({ status: 'paid' })
         .where(eq(orderPaymentGroups.orderId, orderId));
 
-      // Fetch the full order data so the success page can display delivery details
+      // Fetch only non-sensitive order data for the success page
       const [order] = await db
         .select({
           quantity: modernShopOrders.quantity,
           deliverySchedule: modernShopOrders.deliverySchedule,
-          billingData: modernShopOrders.billingData,
-          paymentPlan: modernShopOrders.paymentPlan,
-          paymentMethod: modernShopOrders.paymentMethod,
-          appliedCoupon: modernShopOrders.appliedCoupon,
+          deliveryDatesCount: modernShopOrders.deliveryDatesCount,
         })
         .from(modernShopOrders)
         .where(eq(modernShopOrders.id, orderId));
@@ -67,10 +64,7 @@ export async function GET(req: NextRequest) {
         orderData: order ? {
           quantity: order.quantity,
           schedule: order.deliverySchedule,
-          billingData: order.billingData,
-          paymentPlan: order.paymentPlan,
-          paymentMethod: order.paymentMethod,
-          appliedCoupon: order.appliedCoupon,
+          deliveryDatesCount: order.deliveryDatesCount,
         } : null,
       });
     }

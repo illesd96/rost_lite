@@ -34,8 +34,6 @@ export default async function OrderDetailsPage({ params }: PageProps) {
       deliveryMethod: orders.deliveryMethod,
       deliveryAddress: orders.deliveryAddress,
       pickupPointId: orders.pickupPointId,
-      barionPaymentId: orders.barionPaymentId,
-      barionStatus: orders.barionStatus,
     })
     .from(orders)
     .where(eq(orders.id, params.id))
@@ -306,24 +304,6 @@ export default async function OrderDetailsPage({ params }: PageProps) {
               </div>
               
               <div className="p-6 space-y-4">
-                {order.barionPaymentId && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Payment ID</p>
-                    <p className="text-sm text-gray-600 mt-1 font-mono">
-                      {order.barionPaymentId}
-                    </p>
-                  </div>
-                )}
-                
-                {order.barionStatus && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Payment Status</p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {order.barionStatus}
-                    </p>
-                  </div>
-                )}
-                
                 <div>
                   <p className="text-sm font-medium text-gray-900">Order Status</p>
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(order.status)}`}>

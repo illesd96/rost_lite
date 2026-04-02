@@ -4,9 +4,13 @@ import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { signUpSchema } from '@/lib/validations';
 import { eq } from 'drizzle-orm';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
+    const rateLimitResponse = rateLimit(`register:${getClientIp(request)}`, { limit: 5, windowSeconds: 60 });
+    if (rateLimitResponse) return rateLimitResponse;
+
     const body = await request.json();
     const validatedData = signUpSchema.parse(body);
 

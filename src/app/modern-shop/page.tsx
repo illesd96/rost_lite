@@ -225,34 +225,16 @@ export default function ModernShopPage() {
   };
 
   const handleOrderSubmit = useCallback(async () => {
-    // Prevent multiple submissions using ref (React strict mode protection)
+    // Prevent multiple submissions using ref — this is the primary guard.
+    // Ref is synchronous and immune to React batching/closure stale-state issues.
     if (orderSubmissionRef.current) {
-      console.log('Order submission already in progress (ref check), ignoring duplicate call');
       return;
     }
-    
-    // Prevent multiple submissions using state
-    if (isOrderCreating) {
-      console.log('Order creation already in progress (state check), ignoring duplicate call');
-      return;
-    }
-    
-    // Check if order was already completed recently
-    const lastOrderTime = localStorage.getItem('modern-shop-last-order-time');
-    const now = Date.now();
-    if (lastOrderTime && (now - parseInt(lastOrderTime)) < 5000) { // 5 second cooldown
-      console.log('Order submitted too recently, ignoring duplicate');
-      return;
-    }
-    
-    // Set both ref and state to prevent duplicates
+
     orderSubmissionRef.current = true;
     setIsOrderCreating(true);
     setOrderCreationError(null);
     setCreatedOrderNumber(null);
-    
-    // Record submission time
-    localStorage.setItem('modern-shop-last-order-time', now.toString());
 
     try {
       const response = await fetch('/api/modern-shop/create-order', {
@@ -265,16 +247,12 @@ export default function ModernShopPage() {
 
       if (response.ok) {
         setCreatedOrderNumber(result.orderNumber);
-        // Store the completed order state in sessionStorage for the success page
         sessionStorage.setItem('completed-order-state', JSON.stringify(orderState));
         setCompletedOrderState(orderState);
-        // Clear ALL localStorage data immediately to prevent any loops
         clearAllModernShopStorage();
-        
-        // Clear the order state to prevent resubmission
         setOrderState(INITIAL_STATE);
-        
-        // Redirect to dedicated success page to prevent reload issues
+        // Don't reset the ref on success — we're navigating away.
+        // This prevents any late double-fires from getting through.
         window.location.href = `/modern-shop/success?orderNumber=${result.orderNumber}`;
         return;
       } else {
@@ -284,10 +262,13 @@ export default function ModernShopPage() {
       console.error('Order creation failed:', error);
       setOrderCreationError('Hiba történt a rendelés létrehozása során.');
     } finally {
-      setIsOrderCreating(false);
-      orderSubmissionRef.current = false;
+      // Only reset on failure so the user can retry
+      if (orderSubmissionRef.current) {
+        setIsOrderCreating(false);
+        orderSubmissionRef.current = false;
+      }
     }
-  }, [isOrderCreating, orderState]);
+  }, [orderState]);
 
   // Progress Bar Logic
   let currentStep = 0;

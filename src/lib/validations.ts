@@ -2,7 +2,11 @@ import { z } from 'zod';
 
 export const signUpSchema = z.object({
   email: z.string().email('Érvénytelen email cím'),
-  password: z.string().min(6, 'A jelszónak legalább 6 karakter hosszúnak kell lennie'),
+  password: z.string()
+    .min(8, 'A jelszónak legalább 8 karakter hosszúnak kell lennie')
+    .regex(/[A-Z]/, 'A jelszónak tartalmaznia kell legalább egy nagybetűt')
+    .regex(/[a-z]/, 'A jelszónak tartalmaznia kell legalább egy kisbetűt')
+    .regex(/[0-9]/, 'A jelszónak tartalmaznia kell legalább egy számot'),
 });
 
 export const signInSchema = z.object({

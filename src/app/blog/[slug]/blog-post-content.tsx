@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Calendar, Clock } from 'lucide-react';
 import { SiteNavbar } from '@/components/ui/site-navbar';
+import DOMPurify from 'isomorphic-dompurify';
 
 interface BlogPost {
   id: string;
@@ -59,7 +60,7 @@ export function BlogPostContent({ post }: { post: BlogPost }) {
 
           <div
             className="space-y-6 leading-relaxed text-gray-700 text-lg blog-content"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           />
 
           {/* CTA */}
