@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Leaf, Activity, Heart, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Leaf, Activity, Heart, CheckCircle2, Sparkles } from 'lucide-react';
 import { trackQRCodeVisit } from '@/lib/analytics';
 import { SiteNavbar } from '@/components/ui/site-navbar';
 
