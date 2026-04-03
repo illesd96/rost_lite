@@ -325,7 +325,8 @@ export const waitlistApplications = pgTable('waitlist_applications', {
   quantityMin: integer('quantity_min'),
   quantityMax: integer('quantity_max'),
   acceptedTerms: boolean('accepted_terms').notNull().default(false),
-  status: varchar('status', { length: 20 }).default('pending'), // 'pending', 'contacted', 'approved', 'rejected'
+  status: varchar('status', { length: 20 }).default('to_contact'), // 'to_contact', 'contacted', 'rejected', 'later', 'create_account', 'account_created', 'sent'
+  source: varchar('source', { length: 10 }).default('form'), // 'form' or 'manual'
   notes: text('notes'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

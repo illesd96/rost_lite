@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Building2, User, Plus, Lock, X, Check, ChevronDown, Save
 } from 'lucide-react';
@@ -107,12 +107,16 @@ function AddressForm({ data, onChange }: { data: Address; onChange: (field: keyo
 
 export default function NewCompanyPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // Prefill from waitlist if coming from there
+  const fromWaitlist = searchParams.get('fromWaitlist');
+
   // Company data
-  const [companyName, setCompanyName] = useState('');
+  const [companyName, setCompanyName] = useState(searchParams.get('companyName') || '');
   const [taxId, setTaxId] = useState('');
   const [groupTaxId, setGroupTaxId] = useState('');
   const [useGroupTaxId, setUseGroupTaxId] = useState(false);
@@ -124,9 +128,14 @@ export default function NewCompanyPage() {
   const [internalShippingNote, setInternalShippingNote] = useState('');
   const [notifyMinutes, setNotifyMinutes] = useState<number>(60);
 
-  // Contacts
+  // Contacts — prefill from waitlist if available
   const [contacts, setContacts] = useState<Contact[]>([
-    { name: '', phone: '+36', email: '', isPrimary: true },
+    {
+      name: searchParams.get('contactName') || '',
+      phone: searchParams.get('phone') || '+36',
+      email: searchParams.get('email') || '',
+      isPrimary: true,
+    },
   ]);
 
   const updateBillingAddress = (field: keyof Address, value: string) => {
@@ -207,8 +216,17 @@ export default function NewCompanyPage() {
         return;
       }
 
+      // If created from waitlist, update the waitlist entry status
+      if (fromWaitlist) {
+        await fetch(`/api/admin/waitlist/${fromWaitlist}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'account_created' }),
+        });
+      }
+
       setSuccess(true);
-      setTimeout(() => router.push('/admin/companies'), 1500);
+      setTimeout(() => router.push(fromWaitlist ? '/admin/waitlist' : '/admin/companies'), 1500);
     } catch {
       setError('Hiba történt a mentés során.');
       setSaving(false);

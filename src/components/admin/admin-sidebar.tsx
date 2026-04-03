@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Package,
   Users,
+  UserPlus,
   BarChart3,
   Settings,
   Truck,
@@ -16,6 +17,7 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Jelentkezések', href: '/admin/waitlist', icon: UserPlus },
   { name: 'Cégek', href: '/admin/companies', icon: Building2 },
   { name: 'Deliveries', href: '/admin/deliveries', icon: Truck },
   { name: 'Billing', href: '/admin/billing', icon: FileText },
