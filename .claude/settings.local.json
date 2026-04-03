@@ -10,7 +10,8 @@
       "Bash(npx next:*)",
       "Read(//c/Projects/cursor/WebShop/**)",
       "Bash(ls -lht /c/Projects/cursor/WebShop/drizzle/*.sql)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(ls drizzle/*.sql)"
     ]
   }
 }

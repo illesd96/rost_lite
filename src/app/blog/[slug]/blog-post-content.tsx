@@ -150,22 +150,40 @@ export function BlogPostContent({ post }: { post: BlogPost }) {
         }
 
         /* Dark mode overrides for blog content */
+        /* Force override inline Tailwind classes (e.g. text-gray-900) from DB-stored HTML */
+        .dark .blog-content,
+        .dark .blog-content p,
+        .dark .blog-content li,
+        .dark .blog-content span,
+        .dark .blog-content div {
+          color: #D1D5DB !important;
+        }
         .dark .blog-content h2,
         .dark .blog-content h3 {
-          color: #F3F4F6;
+          color: #F3F4F6 !important;
         }
-        .dark .blog-content blockquote {
-          color: #9CA3AF;
+        .dark .blog-content .font-medium,
+        .dark .blog-content [class*="text-gray-9"],
+        .dark .blog-content [class*="text-gray-8"],
+        .dark .blog-content [class*="text-gray-7"] {
+          color: #D1D5DB !important;
+        }
+        .dark .blog-content blockquote,
+        .dark .blog-content blockquote * {
+          color: #9CA3AF !important;
         }
         .dark .blog-content a {
-          color: #34D399;
+          color: #34D399 !important;
         }
         .dark .blog-content .conclusion {
-          background-color: #1F2937;
-          border-color: #374151;
+          background-color: #1F2937 !important;
+          border-color: #374151 !important;
         }
         .dark .blog-content li::marker {
           color: #34D399;
+        }
+        .dark .blog-content strong {
+          color: #F3F4F6 !important;
         }
       `}</style>
     </div>
