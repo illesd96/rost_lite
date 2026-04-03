@@ -1,11 +1,66 @@
 import { pgTable, uuid, text, integer, boolean, timestamp, check, varchar, date, jsonb } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
+// Companies table
+export const companies = pgTable('companies', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  companyName: text('company_name').notNull(),
+  taxId: varchar('tax_id', { length: 20 }),
+  groupTaxId: varchar('group_tax_id', { length: 20 }),
+  useGroupTaxId: boolean('use_group_tax_id').default(false).notNull(),
+  logoUrl: text('logo_url'),
+
+  // Billing address
+  billingPostcode: varchar('billing_postcode', { length: 4 }),
+  billingCity: text('billing_city'),
+  billingStreetName: text('billing_street_name'),
+  billingStreetType: varchar('billing_street_type', { length: 20 }),
+  billingHouseNum: varchar('billing_house_num', { length: 20 }),
+  billingBuilding: varchar('billing_building', { length: 10 }),
+  billingFloor: varchar('billing_floor', { length: 10 }),
+  billingDoor: varchar('billing_door', { length: 10 }),
+  billingOfficeBuilding: text('billing_office_building'),
+
+  // Shipping address
+  isShippingSame: boolean('is_shipping_same').default(true).notNull(),
+  shippingPostcode: varchar('shipping_postcode', { length: 4 }),
+  shippingCity: text('shipping_city'),
+  shippingStreetName: text('shipping_street_name'),
+  shippingStreetType: varchar('shipping_street_type', { length: 20 }),
+  shippingHouseNum: varchar('shipping_house_num', { length: 20 }),
+  shippingBuilding: varchar('shipping_building', { length: 10 }),
+  shippingFloor: varchar('shipping_floor', { length: 10 }),
+  shippingDoor: varchar('shipping_door', { length: 10 }),
+  shippingOfficeBuilding: text('shipping_office_building'),
+
+  // Extra
+  emailCC1: text('email_cc1'),
+  emailCC2: text('email_cc2'),
+  internalShippingNote: text('internal_shipping_note'),
+  notifyMinutes: integer('notify_minutes').default(60),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Company contacts
+export const companyContacts = pgTable('company_contacts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  companyId: uuid('company_id').references(() => companies.id, { onDelete: 'cascade' }).notNull(),
+  name: text('name').notNull(),
+  phone: varchar('phone', { length: 20 }),
+  email: text('email'),
+  isPrimary: boolean('is_primary').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').unique().notNull(),
   password: text('password'), // For credentials auth
   role: text('role').notNull().default('customer'),
+  companyId: uuid('company_id').references(() => companies.id, { onDelete: 'set null' }),
+  requirePasswordChange: boolean('require_password_change').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -97,9 +152,25 @@ export const orderItems = pgTable('order_items', {
 });
 
 // Relations
-export const usersRelations = relations(users, ({ many }) => ({
+export const companiesRelations = relations(companies, ({ many }) => ({
+  contacts: many(companyContacts),
+  users: many(users),
+}));
+
+export const companyContactsRelations = relations(companyContacts, ({ one }) => ({
+  company: one(companies, {
+    fields: [companyContacts.companyId],
+    references: [companies.id],
+  }),
+}));
+
+export const usersRelations = relations(users, ({ many, one }) => ({
   orders: many(orders),
   addresses: many(userAddresses),
+  company: one(companies, {
+    fields: [users.companyId],
+    references: [companies.id],
+  }),
 }));
 
 export const userAddressesRelations = relations(userAddresses, ({ one }) => ({

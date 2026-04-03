@@ -10,11 +10,13 @@ import {
   Settings,
   Truck,
   FileText,
-  BookOpen
+  BookOpen,
+  Building2
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Cégek', href: '/admin/companies', icon: Building2 },
   { name: 'Deliveries', href: '/admin/deliveries', icon: Truck },
   { name: 'Billing', href: '/admin/billing', icon: FileText },
   { name: 'Modern Orders', href: '/admin/modern-orders', icon: Package },
@@ -32,7 +34,7 @@ export function AdminSidebar() {
       <nav className="mt-6 px-4">
         <ul className="space-y-2">
           {navigation.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href);
             return (
               <li key={item.name}>
                 <Link
