@@ -14,7 +14,9 @@
       "Bash(ls drizzle/*.sql)",
       "Bash(ls -la /c/Projects/cursor/WebShop/src/app/admin/*/page.tsx)",
       "Bash(ls -la /c/Projects/cursor/WebShop/src/app/blog/[slug]/)",
-      "Bash(grep -l \"footer\" /c/Projects/cursor/WebShop/src/app/**/page.tsx)"
+      "Bash(grep -l \"footer\" /c/Projects/cursor/WebShop/src/app/**/page.tsx)",
+      "Bash(xargs wc:*)",
+      "Bash(find /c/Projects/cursor/WebShop/src/app -name \"page.tsx\" -exec grep -L \"metadata\\\\|generateMetadata\" {} \\\\;)"
     ],
     "additionalDirectories": [
       "c:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\waitlist"
