@@ -35,7 +35,7 @@ export function ShopSettings() {
   const toggleSetting = async (key: string, currentValue: string) => {
     setUpdatingKey(key);
     const newValue = currentValue === 'true' ? 'false' : 'true';
-    
+
     try {
       const response = await fetch('/api/admin/shop-settings', {
         method: 'PATCH',
@@ -44,7 +44,7 @@ export function ShopSettings() {
       });
 
       if (response.ok) {
-        setSettings(prev => prev.map(s => 
+        setSettings(prev => prev.map(s =>
           s.key === key ? { ...s, value: newValue } : s
         ));
       }
@@ -64,41 +64,41 @@ export function ShopSettings() {
 
   if (settings.length === 0) {
     return (
-      <div className="p-6 text-center text-gray-500 text-sm">
+      <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">
         Nincsenek beállítások. Futtasd a migrációt a kezdeti beállítások létrehozásához.
       </div>
     );
   }
 
   return (
-    <div className="divide-y divide-gray-200">
+    <div className="divide-y divide-gray-200 dark:divide-gray-700">
       {settings.map((setting) => {
         const isEnabled = setting.value === 'true';
         const isUpdating = updatingKey === setting.key;
-        
+
         return (
           <div key={setting.key} className="p-6 flex items-center justify-between gap-6">
             <div className="flex-1">
-              <div className="font-medium text-gray-900">
+              <div className="font-medium text-gray-900 dark:text-gray-100">
                 {setting.label || setting.key}
               </div>
               {setting.description && (
-                <p className="text-sm text-gray-500 mt-1">{setting.description}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{setting.description}</p>
               )}
               <span className={`inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                isEnabled ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                isEnabled ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
               }`}>
                 {isEnabled ? 'Bekapcsolva' : 'Kikapcsolva'}
               </span>
             </div>
-            
+
             <button
               type="button"
               onClick={() => toggleSetting(setting.key, setting.value)}
               disabled={isUpdating}
               className={`relative w-14 h-7 rounded-full transition-colors flex items-center px-1 ${
                 isUpdating ? 'opacity-50 cursor-wait' : 'cursor-pointer'
-              } ${isEnabled ? 'bg-emerald-500' : 'bg-gray-300'}`}
+              } ${isEnabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}
             >
               <div className={`w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
                 isEnabled ? 'translate-x-7' : 'translate-x-0'

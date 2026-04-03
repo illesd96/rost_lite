@@ -33,13 +33,13 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
     notes: '',
     ...address,
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     // Only validate touched fields
     if (touchedFields.has('postalCode') && !formData.postalCode) {
       newErrors.postalCode = 'Kötelező mező';
@@ -49,23 +49,23 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
         newErrors.postalCode = 'Érvénytelen irányítószám';
       }
     }
-    
+
     if (touchedFields.has('city') && !formData.city) {
       newErrors.city = 'Kötelező mező';
     }
-    
+
     if (touchedFields.has('streetAddress') && !formData.streetAddress) {
       newErrors.streetAddress = 'Kötelező mező';
     }
-    
+
     setErrors(newErrors);
-    const isValid = Object.keys(newErrors).length === 0 && 
-                   formData.postalCode && 
-                   formData.city && 
+    const isValid = Object.keys(newErrors).length === 0 &&
+                   formData.postalCode &&
+                   formData.city &&
                    formData.streetAddress;
-    
+
     onValidChange(!!isValid);
-    
+
     if (isValid) {
       onAddressChange(formData as AddressData);
     }
@@ -94,15 +94,15 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
   return (
     <div className="space-y-4">
       {/* Header */}
-      <h4 className="font-medium text-gray-900 flex items-center gap-2">
+      <h4 className="font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
         <MapPin className="w-4 h-4 text-blue-600" />
         {title}
       </h4>
-      
+
       {/* Address Information */}
       <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Irányítószám *
           </label>
           <input
@@ -110,8 +110,8 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
             value={formData.postalCode || ''}
             onChange={(e) => updateField('postalCode', e.target.value)}
             onBlur={() => handleFieldTouch('postalCode')}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-              errors.postalCode ? 'border-red-300' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+              errors.postalCode ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
             }`}
             placeholder="1234"
             maxLength={4}
@@ -120,9 +120,9 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
             <p className="text-sm text-red-600 mt-1">Required</p>
           )}
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Város *
           </label>
           <input
@@ -130,8 +130,8 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
             value={formData.city || ''}
             onChange={(e) => updateField('city', e.target.value)}
             onBlur={() => handleFieldTouch('city')}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-              errors.city ? 'border-red-300' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+              errors.city ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
             }`}
             placeholder="Budapest"
           />
@@ -143,7 +143,7 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Utca *
           </label>
           <input
@@ -151,8 +151,8 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
             value={formData.streetAddress || ''}
             onChange={(e) => updateField('streetAddress', e.target.value)}
             onBlur={() => handleFieldTouch('streetAddress')}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-              errors.streetAddress ? 'border-red-300' : 'border-gray-300'
+            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+              errors.streetAddress ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
             }`}
             placeholder="Fő utca"
           />
@@ -160,22 +160,22 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
             <p className="text-sm text-red-600 mt-1">Required</p>
           )}
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Házszám
           </label>
           <input
             type="text"
             value={formData.houseNumber || ''}
             onChange={(e) => updateField('houseNumber', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900"
             placeholder="123"
           />
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Emelet/Ajtó
           </label>
           <input
@@ -186,21 +186,21 @@ export function AddressForm({ title, address, onAddressChange, onValidChange, fo
               updateField('floor', floor?.trim() || '');
               updateField('door', door?.trim() || '');
             }}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900"
             placeholder="2/A"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Megjegyzés
         </label>
         <textarea
           value={formData.notes || ''}
           onChange={(e) => updateField('notes', e.target.value)}
           rows={2}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900"
           placeholder="További információk..."
         />
       </div>

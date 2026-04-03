@@ -30,6 +30,17 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ success: false, message: 'Missing order data' }, { status: 400 });
       }
 
+      // Verify the authenticated user owns this order
+      const [existingOrder] = await db
+        .select({ userId: modernShopOrders.userId })
+        .from(modernShopOrders)
+        .where(eq(modernShopOrders.id, orderId))
+        .limit(1);
+
+      if (!existingOrder || existingOrder.userId !== session.user.id) {
+        return NextResponse.json({ success: false, message: 'Access denied' }, { status: 403 });
+      }
+
       // Update order to confirmed (idempotent - safe if webhook already did this)
       await db
         .update(modernShopOrders)

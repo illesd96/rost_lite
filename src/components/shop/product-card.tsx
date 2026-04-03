@@ -19,18 +19,18 @@ export function ProductCard({ product }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1);
   const [isClient, setIsClient] = useState(false);
   const { addItem, getItem } = useCart();
-  
-  const currentPrice = product.onSale && product.salePriceHuf 
-    ? product.salePriceHuf 
+
+  const currentPrice = product.onSale && product.salePriceHuf
+    ? product.salePriceHuf
     : product.basePriceHuf;
-  
+
   const discount = calculateDiscount(
-    quantity, 
-    currentPrice, 
-    product.discountThreshold || 5, 
+    quantity,
+    currentPrice,
+    product.discountThreshold || 5,
     product.discountPercentage || 10
   );
-  
+
   const totalPrice = (currentPrice * quantity) - discount;
   const cartItem = isClient ? getItem(product.id) : null;
   const productImages = parseProductImages(product.images, product.imageUrl);
@@ -46,7 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
       price: currentPrice,
       quantity: quantity,
     }, quantity);
-    
+
     // Reset quantity after adding
     setQuantity(1);
   };
@@ -60,22 +60,22 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200 overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border dark:border-gray-700 hover:shadow-md transition-shadow duration-200 overflow-hidden">
       {/* Product Gallery */}
       <div className="p-4">
         <ProductGallery images={productImages} productName={product.name} />
       </div>
-      
+
       <div className="p-6 pt-2">
         <div className="flex justify-between items-start mb-4">
           <div>
             <Link href={`/products/${product.id}`}>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1 hover:text-primary-600 transition-colors cursor-pointer">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 hover:text-primary-600 transition-colors cursor-pointer">
                 {product.name}
               </h3>
             </Link>
             {product.onSale && (
-              <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mb-2">
+              <span className="inline-block bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 text-xs px-2 py-1 rounded-full mb-2">
                 On Sale!
               </span>
             )}
@@ -89,7 +89,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {product.description && (
           <Link href={`/products/${product.id}`}>
-            <p className="text-gray-600 text-sm mb-4 line-clamp-2 hover:text-gray-800 transition-colors cursor-pointer">
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 hover:text-gray-800 dark:hover:text-gray-200 transition-colors cursor-pointer">
               {product.description}
             </p>
           </Link>
@@ -99,23 +99,23 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center space-x-2 mb-2">
             {product.onSale && product.salePriceHuf ? (
               <>
-                <span className="text-lg font-bold text-gray-900">
+                <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   {formatPrice(product.salePriceHuf)}
                 </span>
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
                   {formatPrice(product.basePriceHuf)}
                 </span>
               </>
             ) : (
-              <span className="text-lg font-bold text-gray-900">
+              <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
                 {formatPrice(product.basePriceHuf)}
               </span>
             )}
           </div>
-          
+
           {quantity >= (product.discountThreshold || 5) && (
             <p className="text-sm text-green-600">
-              Bulk discount: -{formatPrice(discount)} 
+              Bulk discount: -{formatPrice(discount)}
               ({product.discountPercentage || 10}% off)
             </p>
           )}
@@ -125,25 +125,25 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center space-x-2">
             <button
               onClick={decrementQuantity}
-              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+              className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              <Minus className="w-4 h-4 text-gray-600" />
+              <Minus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             </button>
-            <span className="w-12 text-center font-medium text-gray-900">{quantity}</span>
+            <span className="w-12 text-center font-medium text-gray-900 dark:text-gray-100">{quantity}</span>
             <button
               onClick={incrementQuantity}
-              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+              className="w-8 h-8 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              <Plus className="w-4 h-4 text-gray-600" />
+              <Plus className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             </button>
           </div>
-          
+
           <div className="text-right">
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
               {formatPrice(totalPrice)}
             </p>
             {quantity > 1 && (
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 {quantity} × {formatPrice(currentPrice)}
               </p>
             )}

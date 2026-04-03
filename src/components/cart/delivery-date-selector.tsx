@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, Package } from 'lucide-react';
-import { 
-  DeliverySettings, 
-  DeliveryDate, 
-  getAvailableDeliveryDates, 
+import {
+  DeliverySettings,
+  DeliveryDate,
+  getAvailableDeliveryDates,
   getQuickSelectDates,
   getNearestAvailableDate,
   formatDateWithDay
@@ -17,17 +17,17 @@ interface DeliveryDateSelectorProps {
   deliverySettings: DeliverySettings;
 }
 
-export function DeliveryDateSelector({ 
-  selectedDates, 
-  onDatesChange, 
-  deliverySettings 
+export function DeliveryDateSelector({
+  selectedDates,
+  onDatesChange,
+  deliverySettings
 }: DeliveryDateSelectorProps) {
   const [availableDates, setAvailableDates] = useState<DeliveryDate[]>([]);
 
   useEffect(() => {
     const dates = getAvailableDeliveryDates(deliverySettings);
     setAvailableDates(dates);
-    
+
     // Auto-select nearest date if no dates selected
     if (selectedDates.length === 0) {
       const nearest = getNearestAvailableDate(dates);
@@ -42,12 +42,12 @@ export function DeliveryDateSelector({
     // Normalize the date to avoid time differences
     const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     const dateTime = normalizedDate.getTime();
-    
+
     const isSelected = selectedDates.some(d => {
       const normalizedSelected = new Date(d.getFullYear(), d.getMonth(), d.getDate());
       return normalizedSelected.getTime() === dateTime;
     });
-    
+
     if (isSelected) {
       // If already selected, remove it (deselect)
       const newDates = selectedDates.filter(d => {
@@ -63,12 +63,12 @@ export function DeliveryDateSelector({
 
   const handleQuickSelect = (type: 'weekly' | 'biweekly') => {
     const quickDates = getQuickSelectDates(deliverySettings, type);
-    
+
     // Normalize quick dates and filter only available dates
-    const normalizedQuickDates = quickDates.map(date => 
+    const normalizedQuickDates = quickDates.map(date =>
       new Date(date.getFullYear(), date.getMonth(), date.getDate())
     );
-    
+
     const availableQuickDates = normalizedQuickDates.filter(date => {
       const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
       return availableDates.some(ad => {
@@ -76,7 +76,7 @@ export function DeliveryDateSelector({
         return normalizedAvailable.getTime() === normalizedDate.getTime() && ad.isAvailable;
       });
     });
-    
+
     onDatesChange(availableQuickDates);
   };
 
@@ -89,10 +89,10 @@ export function DeliveryDateSelector({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6 mb-6">
       <div className="flex items-center gap-2 mb-4">
         <Calendar className="w-5 h-5 text-blue-600" />
-        <h3 className="text-lg font-semibold text-gray-900">Kiszállítási dátumok</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Kiszállítási dátumok</h3>
       </div>
 
       {/* Quick Select Buttons */}
@@ -119,7 +119,7 @@ export function DeliveryDateSelector({
           const isSelected = isDateSelected(deliveryDate.date);
           const isDisabled = !deliveryDate.isAvailable;
           const formattedWithDay = formatDateWithDay(deliveryDate.date);
-          
+
           return (
             <button
               key={index}
@@ -127,17 +127,17 @@ export function DeliveryDateSelector({
               disabled={isDisabled}
               className={`
                 p-3 rounded-lg border-2 text-center transition-all
-                ${isSelected 
-                  ? 'border-green-500 bg-green-100 text-green-800 shadow-md' 
-                  : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+                ${isSelected
+                  ? 'border-green-500 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 shadow-md'
+                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }
-                ${isDisabled 
-                  ? 'opacity-50 cursor-not-allowed bg-gray-100' 
+                ${isDisabled
+                  ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-700'
                   : 'cursor-pointer'
                 }
               `}
             >
-              <div className={`font-medium text-sm ${isSelected ? 'text-green-800' : 'text-black'}`}>
+              <div className={`font-medium text-sm ${isSelected ? 'text-green-800 dark:text-green-400' : 'text-black dark:text-gray-100'}`}>
                 {formattedWithDay}
               </div>
               {isDisabled && (
@@ -153,22 +153,22 @@ export function DeliveryDateSelector({
 
       {/* Selected Dates Summary */}
       {selectedDates.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-2">
             <Package className="w-4 h-4 text-blue-600" />
-            <span className="font-medium text-blue-900">
+            <span className="font-medium text-blue-900 dark:text-blue-300">
               Kiválasztott dátumok ({selectedDates.length} db)
             </span>
           </div>
-          <div className="text-sm text-blue-800">
+          <div className="text-sm text-blue-800 dark:text-blue-300">
             {selectedDates.length} rendelés lesz létrehozva a különböző dátumokra.
           </div>
         </div>
       )}
 
       {selectedDates.length === 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <div className="text-amber-800 text-sm">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+          <div className="text-amber-800 dark:text-amber-300 text-sm">
             Kérjük, válasszon legalább egy kiszállítási dátumot.
           </div>
         </div>
@@ -176,4 +176,3 @@ export function DeliveryDateSelector({
     </div>
   );
 }
-

@@ -36,7 +36,7 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
 
   useEffect(() => {
     setIsClient(true);
-    
+
     // Load selected delivery dates from localStorage
     try {
       const storedDates = localStorage.getItem('selectedDeliveryDates');
@@ -56,7 +56,7 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
     return (
       <div className="text-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-        <p className="text-gray-500">Loading checkout...</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading checkout...</p>
       </div>
     );
   }
@@ -104,7 +104,7 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   const handleCheckout = async () => {
     // Force validation on all fields
     setForceValidation(true);
-    
+
     // Trigger validation in AddressSection
     if (addressSectionRef.current) {
       addressSectionRef.current.validateAllFields();
@@ -113,7 +113,7 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
     // Wait a bit for validation to complete
     setTimeout(() => {
       const errors = validateForm();
-      
+
       if (errors.length > 0) {
         setValidationErrors(errors);
         setShowValidationPopup(true);
@@ -176,9 +176,9 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
-        <WebshopIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
-        <p className="text-gray-600 mb-6">Add some products before checking out!</p>
+        <WebshopIcon className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Your cart is empty</h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">Add some products before checking out!</p>
         <button
           onClick={() => router.push('/shop')}
           className="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200"
@@ -228,7 +228,7 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mt-4">
           <p className="text-sm text-red-600">{error}</p>
         </div>
       )}
@@ -236,38 +236,38 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
       {/* Validation Popup */}
       {showValidationPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div className="flex items-center justify-between p-6 border-b">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-6 border-b dark:border-gray-700">
               <div className="flex items-center">
                 <AlertTriangle className="w-6 h-6 text-red-600 mr-3" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Hiányzó adatok
                 </h3>
               </div>
               <button
                 onClick={closeValidationPopup}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="p-6">
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
                 A rendelés leadásához kérjük, töltse ki a következő kötelező mezőket:
               </p>
-              
+
               <ul className="space-y-2">
                 {validationErrors.map((error, index) => (
                   <li key={index} className="flex items-start">
                     <span className="w-2 h-2 bg-red-600 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                    <span className="text-sm text-gray-700">{error}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{error}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            
-            <div className="flex justify-end gap-3 p-6 border-t bg-gray-50">
+
+            <div className="flex justify-end gap-3 p-6 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <button
                 onClick={closeValidationPopup}
                 className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"

@@ -22,13 +22,13 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [roleFilter, setRoleFilter] = useState<string>('ALL');
 
-  const filteredUsers = roleFilter === 'ALL' 
-    ? users 
+  const filteredUsers = roleFilter === 'ALL'
+    ? users
     : users.filter(user => user.role === roleFilter.toLowerCase());
 
   const handleRoleToggle = async (userId: string, currentRole: string) => {
     const newRole = currentRole === 'admin' ? 'customer' : 'admin';
-    
+
     if (!confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
       return;
     }
@@ -45,9 +45,9 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
         throw new Error('Failed to update user role');
       }
 
-      setUsers(prev => 
-        prev.map(user => 
-          user.id === userId 
+      setUsers(prev =>
+        prev.map(user =>
+          user.id === userId
             ? { ...user, role: newRole }
             : user
         )
@@ -83,9 +83,9 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
   };
 
   const getRoleColor = (role: string) => {
-    return role === 'admin' 
-      ? 'bg-purple-100 text-purple-800'
-      : 'bg-green-100 text-green-800';
+    return role === 'admin'
+      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400'
+      : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400';
   };
 
   const getRoleIcon = (role: string) => {
@@ -104,7 +104,7 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
               className={`px-3 py-1 text-sm font-medium rounded-full transition-colors duration-200 ${
                 roleFilter === role
                   ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {role} ({role === 'ALL' ? users.length : users.filter(u => u.role === role.toLowerCase()).length})
@@ -116,40 +116,40 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
       {/* Users Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 User
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Role
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Join Date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Orders
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
             {filteredUsers.map((user) => {
               const RoleIcon = getRoleIcon(user.role);
               return (
-                <tr key={user.id} className="hover:bg-gray-50">
+                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                        <RoleIcon className="w-5 h-5 text-gray-600" />
+                      <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                        <RoleIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {user.email}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           ID: {user.id.slice(0, 8)}...
                         </div>
                       </div>
@@ -161,13 +161,13 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
                       {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-1" />
                       {user.createdAt.toLocaleDateString()}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     <div>
                       <div className="font-medium">{user.orderCount} orders</div>
                     </div>
@@ -176,18 +176,18 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
                     <button
                       onClick={() => handleRoleToggle(user.id, user.role)}
                       disabled={isLoading === user.id}
-                      className={`text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50 ${
+                      className={`text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 p-1 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
                         isLoading === user.id ? 'opacity-50 cursor-not-allowed' : ''
                       }`}
                       title={`Change role to ${user.role === 'admin' ? 'customer' : 'admin'}`}
                     >
                       <Edit className="w-4 h-4" />
                     </button>
-                    
+
                     <button
                       onClick={() => handleDeleteUser(user.id)}
                       disabled={isLoading === user.id}
-                      className={`text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50 ${
+                      className={`text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-1 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 ${
                         isLoading === user.id ? 'opacity-50 cursor-not-allowed' : ''
                       }`}
                       title="Delete user"
@@ -204,8 +204,8 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
 
       {filteredUsers.length === 0 && (
         <div className="text-center py-12">
-          <User className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">No users found for the selected filter.</p>
+          <User className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-500 dark:text-gray-400">No users found for the selected filter.</p>
         </div>
       )}
     </div>

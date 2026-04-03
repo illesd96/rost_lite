@@ -16,11 +16,11 @@ interface FileWithPreview extends File {
   preview?: string;
 }
 
-export function FileUpload({ 
-  onUploadComplete, 
-  onUploadError, 
+export function FileUpload({
+  onUploadComplete,
+  onUploadError,
   maxFiles = 5,
-  disabled = false 
+  disabled = false
 }: FileUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<FileWithPreview[]>([]);
@@ -32,7 +32,7 @@ export function FileUpload({
 
     try {
       setUploadProgress(prev => ({ ...prev, [file.name]: 0 }));
-      
+
       const response = await fetch('/api/upload/images', {
         method: 'POST',
         body: formData,
@@ -46,7 +46,7 @@ export function FileUpload({
 
       setUploadProgress(prev => ({ ...prev, [file.name]: 100 }));
       onUploadComplete(result.url);
-      
+
       // Remove from uploaded files after successful upload
       setTimeout(() => {
         setUploadedFiles(prev => prev.filter(f => f.name !== file.name));
@@ -60,7 +60,7 @@ export function FileUpload({
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';
       onUploadError?.(errorMessage);
-      
+
       // Remove failed file
       setUploadedFiles(prev => prev.filter(f => f.name !== file.name));
       setUploadProgress(prev => {
@@ -75,9 +75,9 @@ export function FileUpload({
     if (disabled) return;
 
     setUploading(true);
-    
+
     const validFiles: FileWithPreview[] = [];
-    
+
     for (const file of acceptedFiles) {
       const validation = validateImageFile(file);
       if (!validation.valid) {
@@ -96,13 +96,13 @@ export function FileUpload({
 
     if (validFiles.length > 0) {
       setUploadedFiles(prev => [...prev, ...validFiles]);
-      
+
       // Upload files sequentially
       for (const file of validFiles) {
         await uploadFile(file);
       }
     }
-    
+
     setUploading(false);
   }, [disabled, onUploadComplete, onUploadError]);
 
@@ -134,27 +134,27 @@ export function FileUpload({
         {...getRootProps()}
         className={`
           border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-          ${isDragActive 
-            ? 'border-primary-500 bg-primary-50' 
-            : 'border-gray-300 hover:border-gray-400'
+          ${isDragActive
+            ? 'border-primary-500 bg-primary-50'
+            : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
           }
           ${disabled || uploading ? 'opacity-50 cursor-not-allowed' : ''}
         `}
       >
         <input {...getInputProps()} />
-        
+
         <div className="flex flex-col items-center space-y-2">
           {uploading ? (
             <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
           ) : (
-            <Upload className="w-8 h-8 text-gray-400" />
+            <Upload className="w-8 h-8 text-gray-400 dark:text-gray-500" />
           )}
-          
+
           <div>
-            <p className="text-sm font-medium text-gray-900">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
               {isDragActive ? 'Drop images here' : 'Click to upload or drag and drop'}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               JPG, PNG, GIF, WebP up to 5MB each
             </p>
           </div>
@@ -164,15 +164,15 @@ export function FileUpload({
       {/* Upload Progress */}
       {uploadedFiles.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-700">Uploading Files</h4>
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Uploading Files</h4>
           {uploadedFiles.map((file) => {
             const progress = uploadProgress[file.name] || 0;
             const isComplete = progress === 100;
-            
+
             return (
-              <div key={file.name} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div key={file.name} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 {/* Preview */}
-                <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
                   {file.preview ? (
                     <img
                       src={file.preview}
@@ -181,22 +181,22 @@ export function FileUpload({
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon className="w-5 h-5 text-gray-400" />
+                      <ImageIcon className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                     </div>
                   )}
                 </div>
 
                 {/* File Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                     {file.name}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {formatFileSize(file.size)}
                   </p>
-                  
+
                   {/* Progress Bar */}
-                  <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                  <div className="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
                       className={`h-2 rounded-full transition-all duration-300 ${
                         isComplete ? 'bg-green-500' : 'bg-primary-600'
@@ -215,10 +215,10 @@ export function FileUpload({
                   ) : (
                     <AlertCircle className="w-5 h-5 text-yellow-500" />
                   )}
-                  
+
                   <button
                     onClick={() => removeFile(file.name)}
-                    className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-1 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>

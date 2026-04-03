@@ -20,7 +20,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
   const addImageFromUrl = (e?: React.MouseEvent) => {
     e?.preventDefault();
     setError(null);
-    
+
     if (!newImageUrl.trim()) {
       setError('Please enter an image URL');
       return;
@@ -49,7 +49,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
 
   const handleUploadComplete = (url: string) => {
     setError(null);
-    
+
     if (images.length >= maxImages) {
       setError(`Maximum ${maxImages} images allowed`);
       return;
@@ -71,12 +71,12 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
 
   const removeImage = (imageId: string) => {
     const updatedImages = images.filter(img => img.id !== imageId);
-    
+
     // If we removed the primary image, make the first remaining image primary
     if (updatedImages.length > 0 && !updatedImages.some(img => img.isPrimary)) {
       updatedImages[0].isPrimary = true;
     }
-    
+
     onChange(updatedImages);
   };
 
@@ -123,38 +123,38 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-medium text-gray-700">
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Product Images ({images.length}/{maxImages})
         </h3>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
           Drag to reorder • Click star to set as primary
         </span>
       </div>
 
       {/* Add New Image */}
-      <div className="border border-dashed border-gray-300 rounded-lg p-4">
+      <div className="border border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4">
         {/* Upload Mode Toggle */}
         <div className="flex items-center justify-center space-x-1 mb-4">
           <button
             type="button"
             onClick={() => setUploadMode('upload')}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
-              uploadMode === 'upload' 
-                ? 'bg-primary-100 text-primary-700 font-medium' 
-                : 'text-gray-600 hover:text-gray-800'
+              uploadMode === 'upload'
+                ? 'bg-primary-100 text-primary-700 font-medium'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             <Upload className="w-4 h-4 inline mr-1" />
             Upload Files
           </button>
-          <span className="text-gray-300">|</span>
+          <span className="text-gray-300 dark:text-gray-600">|</span>
           <button
             type="button"
             onClick={() => setUploadMode('url')}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
-              uploadMode === 'url' 
-                ? 'bg-primary-100 text-primary-700 font-medium' 
-                : 'text-gray-600 hover:text-gray-800'
+              uploadMode === 'url'
+                ? 'bg-primary-100 text-primary-700 font-medium'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             <Link className="w-4 h-4 inline mr-1" />
@@ -177,7 +177,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
                 value={newImageUrl}
                 onChange={(e) => setNewImageUrl(e.target.value)}
                 placeholder="Enter image URL (https://...)"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white text-sm"
+                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 text-sm"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -195,15 +195,15 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
                 Add
               </button>
             </div>
-            
-            <p className="mt-2 text-xs text-gray-500">
+
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
               Supported formats: JPG, JPEG, PNG, GIF, WebP
             </p>
           </div>
         )}
-        
+
         {error && (
-          <p className="mt-2 text-sm text-red-600">{error}</p>
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
         )}
       </div>
 
@@ -217,13 +217,13 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
               onDragStart={(e) => handleDragStart(e, index)}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, index)}
-              className={`flex items-center space-x-3 p-3 border rounded-lg bg-white hover:bg-gray-50 transition-colors cursor-move ${
+              className={`flex items-center space-x-3 p-3 border dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-move ${
                 draggedIndex === index ? 'opacity-50' : ''
               }`}
             >
-              <Move className="w-4 h-4 text-gray-400 flex-shrink-0" />
-              
-              <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+              <Move className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+
+              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
                 <img
                   src={image.url}
                   alt={image.alt}
@@ -239,22 +239,22 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
                   type="text"
                   value={image.alt}
                   onChange={(e) => updateImageAlt(image.id, e.target.value)}
-                  className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
+                  className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                   placeholder="Image description"
                 />
-                
+
                 <div className="flex items-center mt-1 space-x-2">
                   <a
                     href={image.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-blue-600 hover:text-blue-700 flex items-center"
+                    className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center"
                   >
                     <ExternalLink className="w-3 h-3 mr-1" />
                     View
                   </a>
                   {image.isPrimary && (
-                    <span className="text-xs text-green-600 font-medium">Primary</span>
+                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">Primary</span>
                   )}
                 </div>
               </div>
@@ -263,18 +263,18 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
                 <button
                   type="button"
                   onClick={() => setPrimaryImage(image.id)}
-                  className={`p-1 rounded hover:bg-gray-100 ${
-                    image.isPrimary ? 'text-yellow-500' : 'text-gray-400'
+                  className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                    image.isPrimary ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-500'
                   }`}
                   title="Set as primary image"
                 >
                   {image.isPrimary ? <Star className="w-4 h-4 fill-current" /> : <StarOff className="w-4 h-4" />}
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={() => removeImage(image.id)}
-                  className="p-1 text-red-600 hover:bg-red-50 rounded"
+                  className="p-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
                   title="Remove image"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -286,9 +286,9 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
       )}
 
       {images.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          <div className="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-3 flex items-center justify-center">
-            <Plus className="w-6 h-6 text-gray-400" />
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg mx-auto mb-3 flex items-center justify-center">
+            <Plus className="w-6 h-6 text-gray-400 dark:text-gray-500" />
           </div>
           <p className="text-sm">No images added yet</p>
           <p className="text-xs">Add your first product image above</p>

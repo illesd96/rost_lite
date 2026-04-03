@@ -11,7 +11,7 @@ export function DeliverySettings() {
   const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState(15000);
   const [editingOption, setEditingOption] = useState<string | null>(null);
   const [editPrice, setEditPrice] = useState<number>(0);
-  
+
   // Delivery date settings
   const [deliveryDateSettings, setDeliveryDateSettings] = useState<DeliverySettingsType>({
     deliveryDays: ['monday', 'wednesday'],
@@ -44,7 +44,7 @@ export function DeliverySettings() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(deliveryDateSettings),
       });
-      
+
       if (response.ok) {
         alert('Delivery settings saved successfully!');
       } else {
@@ -58,9 +58,9 @@ export function DeliverySettings() {
   };
 
   const handleToggleOption = (optionId: string) => {
-    setDeliveryOptions(prev => 
-      prev.map(option => 
-        option.id === optionId 
+    setDeliveryOptions(prev =>
+      prev.map(option =>
+        option.id === optionId
           ? { ...option, enabled: !option.enabled }
           : option
       )
@@ -73,9 +73,9 @@ export function DeliverySettings() {
   };
 
   const handlePriceSave = (optionId: string) => {
-    setDeliveryOptions(prev => 
-      prev.map(option => 
-        option.id === optionId 
+    setDeliveryOptions(prev =>
+      prev.map(option =>
+        option.id === optionId
           ? { ...option, price: editPrice }
           : option
       )
@@ -91,15 +91,15 @@ export function DeliverySettings() {
   const getProviderColor = (provider: string) => {
     switch (provider) {
       case 'own':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400';
       case 'foxpost':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400';
       case 'posta':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400';
       case 'packeta':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
     }
   };
 
@@ -125,16 +125,16 @@ export function DeliverySettings() {
   return (
     <div className="p-6 space-y-6">
       {/* Delivery Date Settings */}
-      <div className="bg-green-50 rounded-lg p-4">
+      <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-3">
-          <Calendar className="w-5 h-5 text-green-600" />
-          <h3 className="font-semibold text-gray-900">Kiszállítási dátumok beállítása</h3>
+          <Calendar className="w-5 h-5 text-green-600 dark:text-green-400" />
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100">Kiszállítási dátumok beállítása</h3>
         </div>
-        
+
         <div className="space-y-4">
           {/* Delivery Days */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Kiszállítási napok
             </label>
             <div className="grid grid-cols-4 gap-2">
@@ -144,8 +144,8 @@ export function DeliverySettings() {
                   onClick={() => toggleDeliveryDay(value)}
                   className={`p-2 text-sm rounded-lg border-2 transition-colors ${
                     deliveryDateSettings.deliveryDays.includes(value)
-                      ? 'border-green-500 bg-green-50 text-green-900'
-                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-900 dark:text-green-300'
+                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                 >
                   {label}
@@ -157,7 +157,7 @@ export function DeliverySettings() {
           {/* Weeks in Advance */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Hány hét előre
               </label>
               <input
@@ -169,12 +169,12 @@ export function DeliverySettings() {
                   ...prev,
                   weeksInAdvance: parseInt(e.target.value) || 4
                 }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Rendelési határidő (órák)
               </label>
               <input
@@ -186,18 +186,18 @@ export function DeliverySettings() {
                   ...prev,
                   cutoffHours: parseInt(e.target.value) || 24
                 }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
           </div>
 
-          <div className="bg-green-100 rounded-lg p-3">
+          <div className="bg-green-100 dark:bg-green-900/30 rounded-lg p-3">
             <div className="flex items-start gap-2">
-              <Clock className="w-4 h-4 text-green-600 mt-0.5" />
-              <div className="text-sm text-green-800">
+              <Clock className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5" />
+              <div className="text-sm text-green-800 dark:text-green-400">
                 <p className="font-medium">Jelenlegi beállítás:</p>
                 <p>
-                  Kiszállítás: {deliveryDateSettings.deliveryDays.map(day => 
+                  Kiszállítás: {deliveryDateSettings.deliveryDays.map(day =>
                     dayOptions.find(opt => opt.value === day)?.label
                   ).join(', ')}
                 </p>
@@ -220,31 +220,31 @@ export function DeliverySettings() {
       </div>
 
       {/* Free Delivery Threshold */}
-      <div className="bg-blue-50 rounded-lg p-4">
-        <h3 className="font-semibold text-gray-900 mb-3">Ingyenes szállítás küszöb</h3>
+      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Ingyenes szállítás küszöb</h3>
         <div className="flex items-center space-x-4">
-          <label className="text-sm text-gray-600">Minimum rendelési érték:</label>
+          <label className="text-sm text-gray-600 dark:text-gray-400">Minimum rendelési érték:</label>
           <div className="flex items-center space-x-2">
             <input
               type="number"
               value={freeDeliveryThreshold}
               onChange={(e) => setFreeDeliveryThreshold(parseInt(e.target.value))}
-              className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
+              className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
             />
-            <span className="text-sm text-gray-600">HUF</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">HUF</span>
           </div>
         </div>
-        <p className="text-xs text-gray-500 mt-2">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
           {formatPrice(freeDeliveryThreshold)} feletti rendelések esetén ingyenes a saját szállítás
         </p>
       </div>
 
       {/* Delivery Options */}
       <div>
-        <h3 className="font-semibold text-gray-900 mb-4">Szállítási lehetőségek</h3>
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Szállítási lehetőségek</h3>
         <div className="space-y-3">
           {deliveryOptions.map((option) => (
-            <div key={option.id} className="border rounded-lg p-4">
+            <div key={option.id} className="border dark:border-gray-700 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <button
@@ -254,31 +254,31 @@ export function DeliverySettings() {
                     {option.enabled ? (
                       <ToggleRight className="w-8 h-8 text-green-500" />
                     ) : (
-                      <ToggleLeft className="w-8 h-8 text-gray-400" />
+                      <ToggleLeft className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                     )}
                   </button>
-                  
+
                   <div className="flex items-center space-x-3">
                     {option.logo && (
-                      <img 
-                        src={option.logo} 
+                      <img
+                        src={option.logo}
                         alt={option.name}
                         className="w-8 h-8"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                       />
                     )}
-                    <Truck className="w-5 h-5 text-gray-500" />
+                    <Truck className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   </div>
-                  
+
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h4 className="font-medium text-gray-900">{option.name}</h4>
+                      <h4 className="font-medium text-gray-900 dark:text-gray-100">{option.name}</h4>
                       <span className={`px-2 py-1 text-xs rounded-full ${getProviderColor(option.provider)}`}>
                         {option.provider.toUpperCase()}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600">{option.description}</p>
-                    <p className="text-xs text-gray-500">{option.estimatedDays}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{option.description}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{option.estimatedDays}</p>
                   </div>
                 </div>
 
@@ -289,9 +289,9 @@ export function DeliverySettings() {
                         type="number"
                         value={editPrice}
                         onChange={(e) => setEditPrice(parseInt(e.target.value))}
-                        className="w-24 px-2 py-1 border border-gray-300 rounded text-sm text-gray-900 bg-white"
+                        className="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                       />
-                      <span className="text-xs text-gray-500">HUF</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">HUF</span>
                       <button
                         onClick={() => handlePriceSave(option.id)}
                         className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
@@ -312,7 +312,7 @@ export function DeliverySettings() {
                       </span>
                       <button
                         onClick={() => handlePriceEdit(option.id, option.price)}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
@@ -326,7 +326,7 @@ export function DeliverySettings() {
       </div>
 
       {/* Save Button */}
-      <div className="flex justify-end pt-4 border-t">
+      <div className="flex justify-end pt-4 border-t dark:border-gray-700">
         <button className="px-6 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200">
           Beállítások mentése
         </button>

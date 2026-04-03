@@ -12,7 +12,6 @@ interface BillingScreenProps {
 
 const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling, onBack, onNext }) => {
   const { billingData } = orderState;
-  const [isDemoActive, setIsDemoActive] = useState(false);
   const [allowPrivateBilling, setAllowPrivateBilling] = useState(false);
 
   useEffect(() => {
@@ -44,86 +43,8 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
     onNext();
   };
 
-  const fillDemoData = (targetType: UserType) => {
-    const commonData = {
-      billingAddress: { postcode: '1055', city: 'Budapest', streetName: 'Kossuth Lajos', streetType: 'tér', houseNum: '1-3.', building: 'A', floor: '2', door: '12', officeBuilding: 'Rosti HQ' },
-      isShippingSame: true,
-      shippingAddress: { postcode: '1055', city: 'Budapest', streetName: 'Kossuth Lajos', streetType: 'tér', houseNum: '1-3.', building: 'A', floor: '2', door: '12', officeBuilding: 'Rosti HQ' },
-      contactName: 'Minta János',
-      contactPhone: '+36301234567',
-      emailCC1: 'penzugy@rosti.demo',
-      notifyMinutes: 30 as const
-    };
-
-    if (targetType === 'business') {
-      updateBilling({
-        ...commonData,
-        type: 'business',
-        companyName: 'Rosti Demo Kft.',
-        taxId: '12345678-2-42',
-        useGroupTaxId: false,
-        firstName: '',
-        lastName: ''
-      });
-    } else {
-      updateBilling({
-        ...commonData,
-        type: 'private',
-        firstName: 'János',
-        lastName: 'Minta',
-        companyName: '',
-        taxId: '',
-        groupTaxId: '',
-        useGroupTaxId: false
-      });
-    }
-  };
-
-  useEffect(() => {
-    // Only fill demo data if explicitly activated and data is empty
-    const isBusinessEmpty = billingData.type === 'business' && !billingData.companyName;
-    const isPrivateEmpty = billingData.type === 'private' && !billingData.lastName;
-
-    if (isDemoActive && (isBusinessEmpty || isPrivateEmpty)) {
-      fillDemoData(billingData.type);
-    }
-  }, [isDemoActive]);
-
   const handleTypeChange = (newType: UserType) => {
-    if (isDemoActive) {
-      fillDemoData(newType);
-    } else {
-      updateBilling({ type: newType });
-    }
-  };
-
-  const toggleDemoData = () => {
-    if (!isDemoActive) {
-      fillDemoData(billingData.type);
-      setIsDemoActive(true);
-    } else {
-      // Clear data
-      updateBilling({
-        companyName: '',
-        taxId: '',
-        groupTaxId: '',
-        useGroupTaxId: false,
-        firstName: '',
-        lastName: '',
-        billingAddress: { postcode: '', city: '', streetName: '', streetType: '', houseNum: '', building: '', floor: '', door: '', officeBuilding: '' },
-        shippingAddress: { postcode: '', city: '', streetName: '', streetType: '', houseNum: '', building: '', floor: '', door: '', officeBuilding: '' },
-        isShippingSame: true,
-        contactName: '',
-        contactPhone: '+36',
-        secondaryContactName: '',
-        secondaryContactPhone: '',
-        useSecondaryContact: false,
-        emailCC1: '',
-        emailCC2: '',
-        notifyMinutes: null
-      });
-      setIsDemoActive(false);
-    }
+    updateBilling({ type: newType });
   };
 
   const renderAddressFields = (type: 'billingAddress' | 'shippingAddress') => {
@@ -236,16 +157,6 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
             <button onClick={() => handleTypeChange('private')} className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-balance transition-all ${billingData.type === 'private' ? 'bg-emerald-600 text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}>Magánszemély</button>
           </div>
         )}
-      </div>
-
-      <div 
-        onClick={toggleDemoData}
-        className="mb-8 flex items-center gap-4 group cursor-pointer select-none text-balance text-left"
-      >
-        <div className={`w-12 h-6 rounded-full relative flex items-center px-1 border transition-colors ${isDemoActive ? 'bg-emerald-50 dark:bg-emerald-900/200 border-emerald-500' : 'bg-gray-200 border-gray-200 dark:border-gray-700'}`}>
-          <div className={`w-4 h-4 bg-white dark:bg-gray-900 rounded-full shadow-sm transition-transform ${isDemoActive ? 'translate-x-6' : 'translate-x-0'}`}></div>
-        </div>
-        <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">demo adatok betöltése teszteléshez</span>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8 text-left text-balance">

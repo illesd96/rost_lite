@@ -20,6 +20,14 @@ export async function GET(
     return NextResponse.json({ error: 'Post not found' }, { status: 404 });
   }
 
+  // Hide unpublished posts from non-admin users
+  if (!post[0].published) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+  }
+
   return NextResponse.json(post[0]);
 }
 

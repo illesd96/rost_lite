@@ -110,12 +110,8 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(stats);
   } catch (error) {
-    const isProd = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
-    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      isProd
-        ? { error: 'Failed to fetch analytics' }
-        : { error: 'Failed to fetch analytics', details: message },
+      { error: 'Failed to fetch analytics' },
       { status: 500 }
     );
   }

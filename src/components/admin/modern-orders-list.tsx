@@ -52,7 +52,7 @@ interface ModernOrdersListProps {
 
 export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersListProps) {
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
-  
+
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -98,27 +98,27 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
         const customerName = getCustomerName(order.billingData).toLowerCase();
         const email = order.user?.email?.toLowerCase() || '';
         const orderNumber = order.orderNumber.toLowerCase();
-        
+
         if (!customerName.includes(query) && !email.includes(query) && !orderNumber.includes(query)) {
           return false;
         }
       }
-      
+
       // Status filter
       if (statusFilter !== 'all' && (order.status || 'pending') !== statusFilter) {
         return false;
       }
-      
+
       // Payment plan filter
       if (paymentPlanFilter !== 'all' && order.paymentPlan !== paymentPlanFilter) {
         return false;
       }
-      
+
       // Payment method filter
       if (paymentMethodFilter !== 'all' && order.paymentMethod !== paymentMethodFilter) {
         return false;
       }
-      
+
       // Payment status filter
       if (paymentStatusFilter !== 'all') {
         const paymentStatus = getOrderPaymentStatus(order.paymentGroups);
@@ -126,7 +126,7 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
           return false;
         }
       }
-      
+
       return true;
     });
   }, [orders, searchQuery, statusFilter, paymentPlanFilter, paymentMethodFilter, paymentStatusFilter]);
@@ -160,11 +160,11 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
   const getStatusBadge = (status: string | null) => {
     const s = status || 'pending';
     const statusConfig: Record<string, { bg: string; text: string; label: string }> = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Függőben' },
-      confirmed: { bg: 'bg-green-100', text: 'text-green-800', label: 'Megerősítve' },
-      processing: { bg: 'bg-blue-100', text: 'text-blue-800', label: 'Feldolgozás' },
-      delivered: { bg: 'bg-gray-100', text: 'text-gray-800', label: 'Kiszállítva' },
-      cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: 'Törölve' }
+      pending: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-800 dark:text-yellow-400', label: 'Függőben' },
+      confirmed: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-400', label: 'Megerősítve' },
+      processing: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-800 dark:text-blue-400', label: 'Feldolgozás' },
+      delivered: { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-800 dark:text-gray-200', label: 'Kiszállítva' },
+      cancelled: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-400', label: 'Törölve' }
     };
     const config = statusConfig[s] || statusConfig.pending;
     return (
@@ -178,9 +178,9 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
     const total = paymentGroups.length;
     const paid = paymentGroups.filter(pg => pg.status === 'paid').length;
     if (total === 0) return null;
-    if (paid === total) return { label: 'Fizetve', color: 'text-green-600' };
-    if (paid > 0) return { label: `${paid}/${total} fizetve`, color: 'text-amber-600' };
-    return { label: 'Fizetésre vár', color: 'text-gray-500' };
+    if (paid === total) return { label: 'Fizetve', color: 'text-green-600 dark:text-green-400' };
+    if (paid > 0) return { label: `${paid}/${total} fizetve`, color: 'text-amber-600 dark:text-amber-400' };
+    return { label: 'Fizetésre vár', color: 'text-gray-500 dark:text-gray-400' };
   };
 
   const getNextDelivery = (deliverySchedule: DeliveryScheduleItem[]) => {
@@ -210,10 +210,10 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
 
   if (orders.length === 0) {
     return (
-      <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-        <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-        <p className="text-gray-500 text-lg">Még nincsenek modern shop rendelések.</p>
-        <p className="text-sm text-gray-400 mt-2">
+      <div className="text-center py-12 bg-white dark:bg-gray-900 rounded-lg shadow-sm">
+        <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+        <p className="text-gray-500 dark:text-gray-400 text-lg">Még nincsenek modern shop rendelések.</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
           A rendelések itt jelennek meg, amikor ügyfelek leadják őket.
         </p>
       </div>
@@ -224,10 +224,10 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
     <div className="space-y-4">
       {/* Filters */}
       {showFilters && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Filter className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">Szűrők</span>
+            <Filter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Szűrők</span>
             {hasActiveFilters && (
               <Button
                 type="button"
@@ -241,25 +241,25 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
               </Button>
             )}
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {/* Search */}
             <div className="relative lg:col-span-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
                 placeholder="Keresés..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
-            
+
             {/* Status filter */}
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+              className="px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
             >
               <option value="all">Minden státusz</option>
               <option value="pending">Függőben</option>
@@ -268,35 +268,35 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
               <option value="delivered">Kiszállítva</option>
               <option value="cancelled">Törölve</option>
             </select>
-            
+
             {/* Payment plan filter */}
             <select
               value={paymentPlanFilter}
               onChange={(e) => setPaymentPlanFilter(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+              className="px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
             >
               <option value="all">Minden fizetési terv</option>
               <option value="full">Egyszeri</option>
               <option value="monthly">Havi</option>
               <option value="delivery">Szállításonként</option>
             </select>
-            
+
             {/* Payment method filter */}
             <select
               value={paymentMethodFilter}
               onChange={(e) => setPaymentMethodFilter(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+              className="px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
             >
               <option value="all">Minden fizetési mód</option>
               <option value="transfer">Átutalás</option>
               <option value="cash">Készpénz</option>
             </select>
-            
+
             {/* Payment status filter */}
             <select
               value={paymentStatusFilter}
               onChange={(e) => setPaymentStatusFilter(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+              className="px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-800 dark:text-gray-100"
             >
               <option value="all">Minden fizetési állapot</option>
               <option value="paid">Fizetve</option>
@@ -304,9 +304,9 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
               <option value="pending">Fizetésre vár</option>
             </select>
           </div>
-          
+
           {/* Results count */}
-          <div className="mt-3 text-xs text-gray-500">
+          <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
             {filteredOrders.length} / {orders.length} rendelés
           </div>
         </div>
@@ -314,9 +314,9 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
 
       {/* No results message */}
       {filteredOrders.length === 0 && hasActiveFilters && (
-        <div className="text-center py-8 bg-white rounded-lg shadow-sm border border-gray-200">
-          <Search className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500">Nincs találat a megadott szűrőkkel.</p>
+        <div className="text-center py-8 bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <Search className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+          <p className="text-gray-500 dark:text-gray-400">Nincs találat a megadott szűrőkkel.</p>
           <Button
             type="button"
             variant="outline"
@@ -337,13 +337,13 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
         const customerName = getCustomerName(order.billingData);
 
         return (
-          <div 
-            key={order.id} 
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+          <div
+            key={order.id}
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
           >
             {/* Collapsed Header - Always Visible */}
-            <div 
-              className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+            <div
+              className="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               onClick={() => toggleOrder(order.id)}
             >
               <div className="flex items-center justify-between gap-4">
@@ -351,15 +351,15 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div className="flex-shrink-0">
                     {isExpanded ? (
-                      <ChevronUp className="w-5 h-5 text-gray-400" />
+                      <ChevronUp className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                     ) : (
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                      <ChevronDown className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                     )}
                   </div>
-                  
+
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <span className="font-mono font-semibold text-gray-900">
+                      <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">
                         {order.orderNumber}
                       </span>
                       {getStatusBadge(order.status)}
@@ -367,8 +367,8 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
                         {order.quantity} palack
                       </Badge>
                     </div>
-                    
-                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-600 flex-wrap">
+
+                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-600 dark:text-gray-400 flex-wrap">
                       <span className="flex items-center gap-1">
                         <User className="w-3.5 h-3.5" />
                         {customerName}
@@ -392,18 +392,18 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
                       </span>
                     )}
                     {nextDelivery && (
-                      <span className="flex items-center gap-1 text-blue-600">
+                      <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
                         <Truck className="w-4 h-4" />
                         {new Date(nextDelivery.deliveryDate).toLocaleDateString('hu-HU', { month: 'short', day: 'numeric' })}
                       </span>
                     )}
                   </div>
-                  
+
                   <div className="text-right">
-                    <p className="text-lg font-bold text-gray-900">
+                    <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
                       {formatCurrency(order.totalAmount)}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {getPaymentPlanLabel(order.paymentPlan)}
                     </p>
                   </div>
@@ -413,116 +413,116 @@ export function ModernOrdersList({ orders, showFilters = true }: ModernOrdersLis
 
             {/* Expanded Content */}
             {isExpanded && (
-              <div className="border-t border-gray-200 bg-gray-50">
+              <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                 <div className="p-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     {/* Payment Groups */}
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
                         <CreditCard className="w-4 h-4" />
                         Fizetési csoportok ({order.paymentGroups?.length || 0})
                       </h4>
                       <div className="space-y-2">
                         {order.paymentGroups?.length > 0 ? (
                           order.paymentGroups.map((group) => (
-                            <div key={group.id} className="flex justify-between items-center p-3 bg-white rounded-lg border border-gray-100">
+                            <div key={group.id} className="flex justify-between items-center p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-800">
                               <div>
                                 <p className="font-medium text-sm">Csoport {group.groupNumber}</p>
                                 {group.description && (
-                                  <p className="text-xs text-gray-500">{group.description}</p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">{group.description}</p>
                                 )}
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-gray-400 dark:text-gray-500">
                                   Határidő: {new Date(group.dueDate).toLocaleDateString('hu-HU')}
                                 </p>
                               </div>
                               <div className="text-right">
                                 <p className="font-semibold text-sm">{formatCurrency(group.amount)}</p>
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                  group.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                                  group.status === 'overdue' ? 'bg-red-100 text-red-800' : 
-                                  'bg-yellow-100 text-yellow-800'
+                                  group.status === 'paid' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' :
+                                  group.status === 'overdue' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' :
+                                  'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400'
                                 }`}>
-                                  {group.status === 'paid' ? 'Fizetve' : 
+                                  {group.status === 'paid' ? 'Fizetve' :
                                    group.status === 'overdue' ? 'Késedelmes' : 'Függőben'}
                                 </span>
                               </div>
                             </div>
                           ))
                         ) : (
-                          <p className="text-sm text-gray-500 italic">Nincs fizetési csoport</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">Nincs fizetési csoport</p>
                         )}
                       </div>
                     </div>
 
                     {/* Delivery Schedule */}
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
                         <Truck className="w-4 h-4" />
                         Szállítási ütemezés ({order.deliverySchedule?.length || 0})
                       </h4>
                       <div className="space-y-2 max-h-64 overflow-y-auto">
                         {order.deliverySchedule?.length > 0 ? (
                           order.deliverySchedule.map((delivery) => (
-                            <div key={delivery.id} className="flex justify-between items-center p-3 bg-white rounded-lg border border-gray-100">
+                            <div key={delivery.id} className="flex justify-between items-center p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-800">
                               <div>
                                 <p className="font-medium text-sm">
                                   Csomag {delivery.packageNumber}/{delivery.totalPackages}
                                 </p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
                                   {delivery.quantity} palack
                                 </p>
-                                <p className="text-xs text-gray-400">
-                                  {new Date(delivery.deliveryDate).toLocaleDateString('hu-HU')} 
+                                <p className="text-xs text-gray-400 dark:text-gray-500">
+                                  {new Date(delivery.deliveryDate).toLocaleDateString('hu-HU')}
                                   <span className="ml-1">({delivery.isMonday ? 'Hétfő' : 'Kedd'})</span>
                                 </p>
                               </div>
                               <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                delivery.status === 'delivered' ? 'bg-green-100 text-green-800' : 
-                                delivery.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
-                                'bg-blue-100 text-blue-800'
+                                delivery.status === 'delivered' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' :
+                                delivery.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' :
+                                'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400'
                               }`}>
-                                {delivery.status === 'delivered' ? 'Kiszállítva' : 
+                                {delivery.status === 'delivered' ? 'Kiszállítva' :
                                  delivery.status === 'cancelled' ? 'Törölve' : 'Ütemezett'}
                               </span>
                             </div>
                           ))
                         ) : (
-                          <p className="text-sm text-gray-500 italic">Nincs szállítási ütemezés</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">Nincs szállítási ütemezés</p>
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Order Details Footer */}
-                  <div className="mt-6 pt-4 border-t border-gray-200">
+                  <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
-                        <p className="text-gray-500">Fizetési terv</p>
-                        <p className="font-medium">{getPaymentPlanLabel(order.paymentPlan)}</p>
+                        <p className="text-gray-500 dark:text-gray-400">Fizetési terv</p>
+                        <p className="font-medium">{ getPaymentPlanLabel(order.paymentPlan)}</p>
                       </div>
                       <div>
-                        <p className="text-gray-500">Fizetési mód</p>
+                        <p className="text-gray-500 dark:text-gray-400">Fizetési mód</p>
                         <p className="font-medium">{getPaymentMethodLabel(order.paymentMethod)}</p>
                       </div>
                       <div>
-                        <p className="text-gray-500">Kupon</p>
+                        <p className="text-gray-500 dark:text-gray-400">Kupon</p>
                         <p className="font-medium">{order.appliedCoupon || 'Nincs'}</p>
                       </div>
                       {order.confirmedAt && (
                         <div>
-                          <p className="text-gray-500">Megerősítve</p>
-                          <p className="font-medium text-green-600">{formatDate(order.confirmedAt)}</p>
+                          <p className="text-gray-500 dark:text-gray-400">Megerősítve</p>
+                          <p className="font-medium text-green-600 dark:text-green-400">{formatDate(order.confirmedAt)}</p>
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Billing Info Summary */}
-                    <div className="mt-4 p-3 bg-white rounded-lg border border-gray-100">
-                      <p className="text-xs text-gray-500 mb-1">Számlázási adatok</p>
+                    <div className="mt-4 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-800">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Számlázási adatok</p>
                       <p className="text-sm font-medium">{customerName}</p>
-                      <p className="text-sm text-gray-600">{order.user?.email}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{order.user?.email}</p>
                       {order.billingData?.contactPhone && (
-                        <p className="text-sm text-gray-600">{order.billingData.contactPhone}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{order.billingData.contactPhone}</p>
                       )}
                     </div>
                   </div>

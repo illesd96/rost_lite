@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  getAvailableDeliveryOptions, 
-  calculateDeliveryFee, 
+import {
+  getAvailableDeliveryOptions,
+  calculateDeliveryFee,
   getPickupPoints,
   type DeliveryOption,
-  type PickupPoint 
+  type PickupPoint
 } from '@/lib/delivery';
 import { formatPrice } from '@/lib/utils';
 import { Truck, MapPin, Clock, Info } from 'lucide-react';
@@ -17,10 +17,10 @@ interface DeliverySelectionProps {
   selectedDeliveryId?: string;
 }
 
-export function DeliverySelection({ 
-  subtotal, 
-  onDeliveryChange, 
-  selectedDeliveryId 
+export function DeliverySelection({
+  subtotal,
+  onDeliveryChange,
+  selectedDeliveryId
 }: DeliverySelectionProps) {
   const [selectedDelivery, setSelectedDelivery] = useState(selectedDeliveryId || 'own-delivery');
   const [selectedPickupPoint, setSelectedPickupPoint] = useState<string>('');
@@ -48,7 +48,7 @@ export function DeliverySelection({
       deliveryAddress: selectedDelivery.includes('home') ? deliveryAddress : undefined,
       pickupPointId: selectedPickupPoint || undefined,
     };
-    
+
     onDeliveryChange(selectedDelivery, deliveryFee, deliveryData);
   }, [selectedDelivery, deliveryAddress, selectedPickupPoint, subtotal]);
 
@@ -58,7 +58,7 @@ export function DeliverySelection({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center">
         <Truck className="w-5 h-5 mr-2" />
         Szállítási mód kiválasztása
       </h3>
@@ -67,9 +67,9 @@ export function DeliverySelection({
         {deliveryOptions.map((option) => {
           const deliveryFee = calculateDeliveryFee(subtotal, option.id);
           const isFree = deliveryFee === 0;
-          
+
           return (
-            <div key={option.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+            <div key={option.id} className="border dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               <label className="flex items-start space-x-3 cursor-pointer">
                 <input
                   type="radio"
@@ -79,19 +79,19 @@ export function DeliverySelection({
                   onChange={() => handleDeliveryChange(option.id)}
                   className="mt-1 text-primary-600 focus:ring-primary-500"
                 />
-                
+
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center">
                       {option.logo && (
-                        <img 
-                          src={option.logo} 
+                        <img
+                          src={option.logo}
                           alt={option.name}
                           className="w-6 h-6 mr-2"
                           onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                       )}
-                      <span className="font-medium text-gray-900">{option.name}</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{option.name}</span>
                     </div>
                     <div className="text-right">
                       {isFree ? (
@@ -101,14 +101,14 @@ export function DeliverySelection({
                       )}
                     </div>
                   </div>
-                  
-                  <p className="text-sm text-gray-600 mb-2">{option.description}</p>
-                  
-                  <div className="flex items-center text-xs text-gray-500">
+
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{option.description}</p>
+
+                  <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                     <Clock className="w-3 h-3 mr-1" />
                     {option.estimatedDays}
                   </div>
-                  
+
                   {option.id === 'own-delivery' && subtotal < 15000 && (
                     <div className="mt-2 text-xs text-blue-600 flex items-start">
                       <Info className="w-3 h-3 mr-1 mt-0.5 flex-shrink-0" />
@@ -126,8 +126,8 @@ export function DeliverySelection({
 
       {/* Home Delivery Address */}
       {selectedDelivery.includes('home') && (
-        <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Szállítási cím *
           </label>
           <textarea
@@ -135,7 +135,7 @@ export function DeliverySelection({
             onChange={(e) => setDeliveryAddress(e.target.value)}
             placeholder="Írja be a teljes szállítási címet (név, irányítószám, város, utca, házszám)"
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900"
             required
           />
         </div>
@@ -143,14 +143,14 @@ export function DeliverySelection({
 
       {/* Pickup Point Selection */}
       {showPickupPoints && pickupPoints.length > 0 && (
-        <div className="mt-4 p-4 bg-green-50 rounded-lg">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+        <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
             Átvételi pont kiválasztása *
           </label>
-          
+
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {pickupPoints.map((point) => (
-              <label key={point.id} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-white cursor-pointer">
+              <label key={point.id} className="flex items-start space-x-3 p-3 border dark:border-gray-700 rounded-lg hover:bg-white dark:hover:bg-gray-800 cursor-pointer">
                 <input
                   type="radio"
                   name="pickupPoint"
@@ -160,14 +160,14 @@ export function DeliverySelection({
                   className="mt-1 text-primary-600 focus:ring-primary-500"
                   required
                 />
-                
+
                 <div className="flex-1">
-                  <div className="font-medium text-gray-900">{point.name}</div>
-                  <div className="text-sm text-gray-600 flex items-center mt-1">
+                  <div className="font-medium text-gray-900 dark:text-gray-100">{point.name}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center mt-1">
                     <MapPin className="w-3 h-3 mr-1" />
                     {point.address}, {point.city} {point.postalCode}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <Clock className="w-3 h-3 mr-1 inline" />
                     {point.openingHours}
                   </div>

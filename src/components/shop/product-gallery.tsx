@@ -22,8 +22,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="aspect-square w-full bg-gray-100 rounded-lg flex items-center justify-center">
-        <span className="text-gray-400">No image available</span>
+      <div className="aspect-square w-full bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+        <span className="text-gray-400 dark:text-gray-500">No image available</span>
       </div>
     );
   }
@@ -67,11 +67,11 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
     img.onload = () => {
       const viewportWidth = window.innerWidth * 0.85;
       const viewportHeight = (window.innerHeight - 120) * 0.85;
-      
+
       const scaleX = viewportWidth / img.naturalWidth;
       const scaleY = viewportHeight / img.naturalHeight;
       const fitScale = Math.min(scaleX, scaleY, 1);
-      
+
       setFitToScreenZoom(fitScale);
       setZoomLevel(fitScale);
       setImagePosition({ x: 0, y: 0 });
@@ -148,11 +148,11 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
           // Calculate fit-to-screen for the "Fit" button, but start at 100%
           const viewportWidth = window.innerWidth * 0.85;
           const viewportHeight = (window.innerHeight - 120) * 0.85;
-          
+
           const scaleX = viewportWidth / img.naturalWidth;
           const scaleY = viewportHeight / img.naturalHeight;
           const fitScale = Math.min(scaleX, scaleY, 1);
-          
+
           setFitToScreenZoom(fitScale);
           setZoomLevel(1); // Always start at 100%
           setImagePosition({ x: 0, y: 0 });
@@ -165,7 +165,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
         };
         img.src = images[currentImageIndex].url;
       }, 100);
-      
+
       return () => clearTimeout(timer);
     } else {
       // Reset when closing
@@ -178,8 +178,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-square w-full bg-gray-100 rounded-lg overflow-hidden group">
-        <div 
+      <div className="relative aspect-square w-full bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden group">
+        <div
           className="w-full h-full cursor-zoom-in"
           onClick={() => setShowZoomGallery(true)}
         >
@@ -240,7 +240,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors duration-200 ${
                 index === currentImageIndex
                   ? 'border-primary-500'
-                  : 'border-gray-200 hover:border-gray-300'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
               }`}
             >
               <img
@@ -270,7 +270,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               >
                 <ZoomOut className="w-5 h-5" />
               </button>
-              
+
               <div className="flex items-center space-x-1">
                 <button
                   onClick={fitToScreen}
@@ -287,11 +287,11 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                   100%
                 </button>
               </div>
-              
+
               <span className="text-white text-sm font-medium bg-black/50 px-2 py-1 rounded">
                 {Math.round(zoomLevel * 100)}%
               </span>
-              
+
               <button
                 onClick={handleZoomIn}
                 disabled={zoomLevel >= 4}
@@ -308,7 +308,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                   {currentImageIndex + 1} / {images.length}
                 </div>
               )}
-              
+
               {/* Close Button */}
               <button
                 onClick={() => setShowZoomGallery(false)}

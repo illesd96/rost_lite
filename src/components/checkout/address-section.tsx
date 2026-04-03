@@ -30,14 +30,14 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
 }, ref) => {
   const [useSameAddress, setUseSameAddress] = useState(true);
   const [isCompany, setIsCompany] = useState(false);
-  
+
   // Personal/Company data state
   const [personalData, setPersonalData] = useState({
     fullName: '',
     phone: '',
     email: '',
   });
-  
+
   const [companyData, setCompanyData] = useState({
     companyName: '',
     contactPerson: '',
@@ -45,7 +45,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
     vatNumber: '',
     registrationNumber: '',
   });
-  
+
   // Address data state
   const [deliveryAddressData, setDeliveryAddressData] = useState({
     postalCode: '',
@@ -56,7 +56,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
     door: '',
     notes: '',
   });
-  
+
   const [billingAddressData, setBillingAddressData] = useState({
     postalCode: '',
     city: '',
@@ -66,7 +66,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
     door: '',
     notes: '',
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const [isDeliveryAddressValid, setIsDeliveryAddressValid] = useState(false);
@@ -82,7 +82,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
     if (isCompany) {
       allRequiredFields.push('companyName', 'taxNumber');
     }
-    
+
     setTouchedFields(new Set(allRequiredFields));
   };
 
@@ -99,46 +99,46 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
 
   const validatePersonalData = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (touchedFields.has('fullName') && !personalData.fullName) {
       newErrors.fullName = 'Kötelező mező';
     }
-    
+
     if (touchedFields.has('email') && personalData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalData.email)) {
       newErrors.email = 'Érvénytelen email cím';
     }
-    
+
     return newErrors;
   };
 
   const validateCompanyData = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (touchedFields.has('companyName') && !companyData.companyName) {
       newErrors.companyName = 'Kötelező mező';
     }
-    
+
     if (touchedFields.has('taxNumber') && companyData.taxNumber && !validateTaxNumber(companyData.taxNumber)) {
       newErrors.taxNumber = 'Érvénytelen adószám';
     }
-    
+
     if (touchedFields.has('vatNumber') && companyData.vatNumber && !validateVATNumber(companyData.vatNumber)) {
       newErrors.vatNumber = 'Érvénytelen ÁFA szám';
     }
-    
+
     return newErrors;
   };
 
   const validateAndUpdateAddresses = () => {
     const personalErrors = validatePersonalData();
     const companyErrors = isCompany ? validateCompanyData() : {};
-    
+
     setErrors({ ...personalErrors, ...companyErrors });
-    
+
     const isPersonalValid = Object.keys(personalErrors).length === 0 && personalData.fullName;
     const isCompanyValid = !isCompany || (Object.keys(companyErrors).length === 0 && companyData.companyName);
     const isDataValid = isPersonalValid && isCompanyValid;
-    
+
     if (isDataValid && isDeliveryAddressValid) {
       const fullDeliveryAddress = {
         type: 'delivery',
@@ -151,7 +151,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
         createdAt: new Date(),
         updatedAt: new Date(),
       } as any;
-      
+
       // Add optional properties if they exist
       if (deliveryAddress && 'id' in deliveryAddress && deliveryAddress.id) {
         fullDeliveryAddress.id = deliveryAddress.id;
@@ -162,12 +162,12 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
       if (deliveryAddress && 'createdAt' in deliveryAddress && deliveryAddress.createdAt) {
         fullDeliveryAddress.createdAt = deliveryAddress.createdAt;
       }
-      
+
       onDeliveryAddressChange(fullDeliveryAddress);
     }
-    
+
     onDeliveryValidChange(Boolean(isDataValid && isDeliveryAddressValid));
-    
+
     if (useSameAddress && isDataValid && isDeliveryAddressValid) {
       const fullBillingAddress = {
         type: 'billing',
@@ -180,7 +180,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
         createdAt: new Date(),
         updatedAt: new Date(),
       } as any;
-      
+
       // Add optional properties if they exist
       if (billingAddress && 'id' in billingAddress && billingAddress.id) {
         fullBillingAddress.id = billingAddress.id;
@@ -191,7 +191,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
       if (billingAddress && 'createdAt' in billingAddress && billingAddress.createdAt) {
         fullBillingAddress.createdAt = billingAddress.createdAt;
       }
-      
+
       onBillingAddressChange(fullBillingAddress);
       onBillingValidChange(true);
     } else if (!useSameAddress && isDataValid && isBillingAddressValid) {
@@ -206,7 +206,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
         createdAt: new Date(),
         updatedAt: new Date(),
       } as any;
-      
+
       // Add optional properties if they exist
       if (billingAddress && 'id' in billingAddress && billingAddress.id) {
         fullBillingAddress.id = billingAddress.id;
@@ -217,7 +217,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
       if (billingAddress && 'createdAt' in billingAddress && billingAddress.createdAt) {
         fullBillingAddress.createdAt = billingAddress.createdAt;
       }
-      
+
       onBillingAddressChange(fullBillingAddress);
       onBillingValidChange(Boolean(isDataValid && isBillingAddressValid));
     } else {
@@ -230,10 +230,10 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
   }, [personalData, companyData, deliveryAddressData, billingAddressData, isCompany, useSameAddress, isDeliveryAddressValid, isBillingAddressValid, touchedFields]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
       {/* Company/Personal Selection */}
       <div className="mb-6">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
           <div className="flex items-center space-x-4">
             <label className="flex items-center">
               <input
@@ -243,8 +243,8 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 onChange={() => setIsCompany(false)}
                 className="mr-2 text-blue-600"
               />
-              <User className="w-4 h-4 mr-1 text-gray-600" />
-              <span className="text-gray-900 font-medium">Magánszemély</span>
+              <User className="w-4 h-4 mr-1 text-gray-600 dark:text-gray-400" />
+              <span className="text-gray-900 dark:text-gray-100 font-medium">Magánszemély</span>
             </label>
             <label className="flex items-center">
               <input
@@ -254,8 +254,8 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 onChange={() => setIsCompany(true)}
                 className="mr-2 text-blue-600"
               />
-              <Building className="w-4 h-4 mr-1 text-gray-600" />
-              <span className="text-gray-900 font-medium">Vállalat</span>
+              <Building className="w-4 h-4 mr-1 text-gray-600 dark:text-gray-400" />
+              <span className="text-gray-900 dark:text-gray-100 font-medium">Vállalat</span>
             </label>
           </div>
         </div>
@@ -263,12 +263,12 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
 
       {/* Company Information */}
       {isCompany && (
-        <div className="space-y-4 bg-blue-50 rounded-lg p-4 mb-6">
-          <h4 className="font-medium text-blue-900">Vállalati adatok</h4>
-          
+        <div className="space-y-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
+          <h4 className="font-medium text-blue-900 dark:text-blue-300">Vállalati adatok</h4>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Cégnév *
               </label>
               <input
@@ -276,8 +276,8 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 value={companyData.companyName}
                 onChange={(e) => setCompanyData(prev => ({ ...prev, companyName: e.target.value }))}
                 onBlur={() => handleFieldTouch('companyName')}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-                  errors.companyName ? 'border-red-300' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+                  errors.companyName ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 placeholder="Vállalat Kft."
               />
@@ -285,16 +285,16 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 <p className="text-sm text-red-600 mt-1">{errors.companyName}</p>
               )}
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Kapcsolattartó
               </label>
               <input
                 type="text"
                 value={companyData.contactPerson}
                 onChange={(e) => setCompanyData(prev => ({ ...prev, contactPerson: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900"
                 placeholder="Kovács János"
               />
             </div>
@@ -302,7 +302,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Adószám *
               </label>
               <input
@@ -310,8 +310,8 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 value={companyData.taxNumber}
                 onChange={(e) => setCompanyData(prev => ({ ...prev, taxNumber: e.target.value }))}
                 onBlur={() => handleFieldTouch('taxNumber')}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-                  errors.taxNumber ? 'border-red-300' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+                  errors.taxNumber ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 placeholder="12345678"
                 maxLength={8}
@@ -320,9 +320,9 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 <p className="text-sm text-red-600 mt-1">{errors.taxNumber}</p>
               )}
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 ÁFA szám
               </label>
               <input
@@ -330,8 +330,8 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 value={companyData.vatNumber}
                 onChange={(e) => setCompanyData(prev => ({ ...prev, vatNumber: e.target.value }))}
                 onBlur={() => handleFieldTouch('vatNumber')}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-                  errors.vatNumber ? 'border-red-300' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+                  errors.vatNumber ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
                 }`}
                 placeholder="HU12345678"
                 maxLength={10}
@@ -340,16 +340,16 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
                 <p className="text-sm text-red-600 mt-1">{errors.vatNumber}</p>
               )}
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Cégjegyzékszám
               </label>
               <input
                 type="text"
                 value={companyData.registrationNumber}
                 onChange={(e) => setCompanyData(prev => ({ ...prev, registrationNumber: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900"
                 placeholder="01-09-1234"
               />
             </div>
@@ -359,11 +359,11 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
 
       {/* Personal Information */}
       <div className="space-y-4 mb-6">
-        <h4 className="font-medium text-gray-900">Személyes adatok</h4>
-        
+        <h4 className="font-medium text-gray-900 dark:text-gray-100">Személyes adatok</h4>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Teljes név *
             </label>
             <input
@@ -371,8 +371,8 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
               value={personalData.fullName}
               onChange={(e) => setPersonalData(prev => ({ ...prev, fullName: e.target.value }))}
               onBlur={() => handleFieldTouch('fullName')}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-                errors.fullName ? 'border-red-300' : 'border-gray-300'
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+                errors.fullName ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
               }`}
               placeholder="Kovács János"
             />
@@ -380,34 +380,34 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
               <p className="text-sm text-red-600 mt-1">{errors.fullName}</p>
             )}
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Telefon
             </label>
             <input
               type="tel"
               value={personalData.phone}
               onChange={(e) => setPersonalData(prev => ({ ...prev, phone: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900"
               placeholder="+36 1 234 5678"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Email cím
           </label>
           <div className="relative">
-            <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+            <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400 dark:text-gray-500" />
             <input
               type="email"
               value={personalData.email}
               onChange={(e) => setPersonalData(prev => ({ ...prev, email: e.target.value }))}
               onBlur={() => handleFieldTouch('email')}
-              className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white ${
-                errors.email ? 'border-red-300' : 'border-gray-300'
+              className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 ${
+                errors.email ? 'border-red-300' : 'border-gray-300 dark:border-gray-600'
               }`}
               placeholder="kovacs.janos@email.com"
             />
@@ -430,12 +430,12 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
       </div>
 
       {/* Billing Address Section */}
-      <div className="border-t pt-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+      <div className="border-t dark:border-gray-700 pt-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
           <Building className="w-5 h-5 mr-2" />
           Számlázási cím
         </h3>
-        
+
         {/* Same Address Checkbox */}
         <div className="mb-6">
           <label className="flex items-center">
@@ -445,7 +445,7 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
               onChange={(e) => setUseSameAddress(e.target.checked)}
               className="mr-2 text-blue-600"
             />
-            <span className="text-sm text-gray-900 font-medium">
+            <span className="text-sm text-gray-900 dark:text-gray-100 font-medium">
               Számlázási cím megegyezik a szállítási címmel
             </span>
           </label>
@@ -464,11 +464,11 @@ export const AddressSection = forwardRef<AddressSectionRef, AddressSectionProps>
           />
         </div>
       )}
-      
+
       {useSameAddress && deliveryAddress && (
-        <div className="bg-gray-50 rounded-lg p-4">
-          <p className="text-sm text-gray-600 mb-2">Számlázási cím:</p>
-          <p className="text-sm text-gray-900 whitespace-pre-line">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Számlázási cím:</p>
+          <p className="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-line">
             {deliveryAddress.isCompany && deliveryAddress.companyName && `${deliveryAddress.companyName}\n`}
             {deliveryAddress.fullName}
             {deliveryAddress.streetAddress} {deliveryAddress.houseNumber}
