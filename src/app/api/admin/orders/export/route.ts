@@ -91,7 +91,6 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('CSV export error:', error);
     return NextResponse.json(
       { error: 'Failed to export orders' },
       { status: 500 }

@@ -12,7 +12,7 @@ export function AdminNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-950/50 border-b dark:border-gray-800">
       <div className="max-w-full mx-auto px-6">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -25,22 +25,22 @@ export function AdminNavbar() {
           <div className="flex items-center space-x-4">
             <Link
               href="/modern-shop"
-              className="flex items-center text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+              className="flex items-center text-gray-700 dark:text-gray-300 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
             >
               <Home className="w-4 h-4 mr-1" />
               View Shop
             </Link>
             
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 {session?.user.email}
               </span>
-              <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+              <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full">
                 Admin
               </span>
               <button
                 onClick={handleSignOut}
-                className="text-gray-700 hover:text-red-600 p-1 rounded-md"
+                className="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 p-1 rounded-md"
                 title="Sign out"
               >
                 <LogOut className="w-4 h-4" />

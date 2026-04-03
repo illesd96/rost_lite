@@ -48,7 +48,6 @@ export default function ProductPage({ params }: ProductPageProps) {
       const data = await response.json();
       setProduct(data.product);
     } catch (err) {
-      console.error('Error fetching product:', err);
       setError('Failed to load product');
     } finally {
       setIsLoading(false);

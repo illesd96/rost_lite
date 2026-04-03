@@ -9,7 +9,6 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
   const orderId = session.metadata?.orderId;
 
   if (!orderId) {
-    console.error('Missing orderId in Stripe session metadata:', session.id);
     return;
   }
 
@@ -30,7 +29,6 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
     .set({ status: 'paid' })
     .where(eq(orderPaymentGroups.orderId, orderId));
 
-  console.log(`Order ${orderId} confirmed via Stripe webhook (session: ${session.id})`);
 }
 
 export async function POST(req: NextRequest) {
@@ -50,7 +48,6 @@ export async function POST(req: NextRequest) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err: any) {
-    console.error('Webhook signature verification failed:', err.message);
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 

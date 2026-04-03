@@ -68,22 +68,12 @@ export default function ModernShopPage() {
         const orderCompleted = localStorage.getItem('modern-shop-order-completed');
         const completedOrderNumber = localStorage.getItem('modern-shop-completed-order-number');
         const lastOrderTime = localStorage.getItem('modern-shop-last-order-time');
-        
+
         // If order was completed recently (within 2 minutes), show success screen
         const now = Date.now();
         const twoMinutesAgo = now - (2 * 60 * 1000);
-        
-        console.log('Checking order completion:', {
-          orderCompleted,
-          completedOrderNumber,
-          lastOrderTime,
-          now,
-          twoMinutesAgo,
-          isRecent: lastOrderTime && parseInt(lastOrderTime) > twoMinutesAgo
-        });
-        
+
         if (orderCompleted === 'true' && completedOrderNumber && lastOrderTime && parseInt(lastOrderTime) > twoMinutesAgo) {
-          console.log('Showing success screen for recent order:', completedOrderNumber);
           // Show success screen with completed order
           setCreatedOrderNumber(completedOrderNumber);
           setScreen('success');
@@ -95,24 +85,23 @@ export default function ModernShopPage() {
           setIsLoading(false);
           return;
         }
-        
+
         // If order completion flags exist but are old, clear them
         if (orderCompleted === 'true') {
-          console.log('Clearing old order completion flags');
           localStorage.removeItem('modern-shop-order-completed');
           localStorage.removeItem('modern-shop-completed-order-number');
           localStorage.removeItem('modern-shop-last-order-time');
         }
-        
+
         // Load from localStorage
         const savedState = localStorage.getItem('modern-shop-state');
         const savedScreen = localStorage.getItem('modern-shop-screen');
-        
+
         if (savedState) {
           const parsedState = JSON.parse(savedState);
           setOrderState(prev => ({ ...prev, ...parsedState }));
         }
-        
+
         if (savedScreen && ['selection', 'billing', 'summary'].includes(savedScreen)) {
           setScreen(savedScreen as ScreenType);
         }
@@ -140,19 +129,17 @@ export default function ModernShopPage() {
               if (response.ok) {
                 const { billingData } = await response.json();
                 if (billingData) {
-                  setOrderState(prev => ({ 
-                    ...prev, 
+                  setOrderState(prev => ({
+                    ...prev,
                     billingData: { ...prev.billingData, ...billingData }
                   }));
                 }
               }
             } catch (error) {
-              console.error('Failed to load billing data:', error);
             }
           }
         }
       } catch (error) {
-        console.error('Failed to load state:', error);
       } finally {
         setIsLoading(false);
       }
@@ -179,7 +166,7 @@ export default function ModernShopPage() {
       ...prev,
       billingData: newBillingData
     }));
-    
+
     // Save to backend
     saveBillingData(newBillingData);
   };
@@ -192,10 +179,10 @@ export default function ModernShopPage() {
   const handleStepClick = (step: number) => {
     const stepToScreen: Record<number, ScreenType> = {
       1: 'selection',
-      2: 'billing', 
+      2: 'billing',
       3: 'summary'
     };
-    
+
     const targetScreen = stepToScreen[step];
     if (targetScreen) {
       // Only allow navigation if user is logged in for billing/summary
@@ -219,7 +206,6 @@ export default function ModernShopPage() {
           body: JSON.stringify({ billingData })
         });
       } catch (error) {
-        console.error('Failed to save billing data:', error);
       }
     }
   };
@@ -259,7 +245,6 @@ export default function ModernShopPage() {
         setOrderCreationError(result.message || 'Hiba történt a rendelés létrehozása során.');
       }
     } catch (error) {
-      console.error('Order creation failed:', error);
       setOrderCreationError('Hiba történt a rendelés létrehozása során.');
     } finally {
       // Only reset on failure so the user can retry
@@ -286,9 +271,9 @@ export default function ModernShopPage() {
     switch (screen) {
       case 'selection':
         return (
-          <SelectionScreen 
-            orderState={orderState} 
-            updateOrder={updateOrder} 
+          <SelectionScreen
+            orderState={orderState}
+            updateOrder={updateOrder}
             onNext={() => {
               if (orderState.isLoggedIn) {
                 navigateTo('billing');
@@ -304,28 +289,28 @@ export default function ModernShopPage() {
         );
       case 'billing':
         return (
-          <BillingScreen 
-            orderState={orderState} 
-            updateBilling={updateBilling} 
-            onBack={() => navigateTo('selection')} 
-            onNext={() => navigateTo('summary')} 
+          <BillingScreen
+            orderState={orderState}
+            updateBilling={updateBilling}
+            onBack={() => navigateTo('selection')}
+            onNext={() => navigateTo('summary')}
           />
         );
       case 'summary':
         return (
-          <SummaryScreen 
-            orderState={orderState} 
-            updateOrder={updateOrder} 
-            onBack={() => navigateTo('billing')} 
-            onSubmit={handleOrderSubmit} 
+          <SummaryScreen
+            orderState={orderState}
+            updateOrder={updateOrder}
+            onBack={() => navigateTo('billing')}
+            onSubmit={handleOrderSubmit}
             isSubmitting={isOrderCreating}
             submitError={orderCreationError}
           />
         );
       case 'success':
         return (
-          <SuccessScreen 
-            orderState={completedOrderState || orderState} 
+          <SuccessScreen
+            orderState={completedOrderState || orderState}
             orderNumber={createdOrderNumber}
             onReset={() => {
               setOrderState(INITIAL_STATE);
@@ -333,7 +318,7 @@ export default function ModernShopPage() {
               setCompletedOrderState(null);
               clearAllModernShopStorage();
               navigateTo('selection');
-            }} 
+            }}
           />
         );
       default:
@@ -343,7 +328,7 @@ export default function ModernShopPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-600"></div>
       </div>
     );
@@ -353,15 +338,15 @@ export default function ModernShopPage() {
     <div className="min-h-screen flex flex-col font-sans">
       <PromoBar />
       <SiteNavbar relative hasPromoBar hideOrderCta />
-      
+
       {showProgressBar && (
-        <ProgressBar 
-          currentStep={currentStep} 
+        <ProgressBar
+          currentStep={currentStep}
           onStepClick={handleStepClick}
           canNavigate={true}
         />
       )}
-      
+
       {renderScreen()}
     </div>
   );

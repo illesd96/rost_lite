@@ -41,7 +41,6 @@ export function QRAnalyticsDashboard() {
         setAnalytics(data);
       }
     } catch (error) {
-      console.error('Failed to fetch analytics:', error);
     } finally {
       setLoading(false);
     }

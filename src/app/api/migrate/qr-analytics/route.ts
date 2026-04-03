@@ -37,7 +37,6 @@ export async function POST() {
       message: 'QR Analytics table created successfully' 
     });
   } catch (error) {
-    console.error('Migration error:', error);
     return NextResponse.json(
       { error: 'Failed to create QR Analytics table' },
       { status: 500 }

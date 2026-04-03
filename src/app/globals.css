@@ -88,9 +88,11 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-/* Dark mode override removed - app uses light theme only.
-   The previous dark foreground (white text) caused white-on-white
-   in inputs that don't set an explicit text color. */
+.dark {
+  --foreground-rgb: 229, 231, 235;
+  --background-start-rgb: 17, 24, 39;
+  --background-end-rgb: 17, 24, 39;
+}
 
 body {
   color: rgb(var(--foreground-rgb));
@@ -114,13 +116,13 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply bg-gray-100 dark:bg-gray-800;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 rounded-full;
+  @apply bg-gray-400 dark:bg-gray-600 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500;
+  @apply bg-gray-500 dark:bg-gray-500;
 }

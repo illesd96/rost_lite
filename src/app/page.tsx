@@ -172,7 +172,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
         <SiteNavbar />
 
         {/* Hero Section */}
@@ -180,17 +180,17 @@ export default function HomePage() {
           <div className="container mx-auto max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-left space-y-8 relative z-10 order-2 lg:order-1">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-full text-[#0B5D3F] text-[10px] font-black uppercase tracking-widest">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 rounded-full text-[#0B5D3F] text-[10px] font-black uppercase tracking-widest">
                   <Leaf size={12} fill="currentColor" />
                   <span>100% Természetes</span>
                 </div>
 
-                <h1 className="text-[40px] sm:text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1] tracking-tight">
+                <h1 className="text-[40px] sm:text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-gray-100 leading-[1.1] tracking-tight">
                   Egészség az irodában. <br />
                   <span className="text-[#0B5D3F]">Végre finom.</span>
                 </h1>
 
-                <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed max-w-lg">
+                <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-lg">
                   5 féle nyers zöldség és friss citrom.<br />Egyetlen prémium smoothie-ban.
                 </p>
 
@@ -214,7 +214,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 text-sm font-bold text-gray-400">
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 text-sm font-bold text-gray-400 dark:text-gray-500">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 size={16} className="text-[#0B5D3F]" />
                     <span>Adalékmentes</span>
@@ -232,7 +232,7 @@ export default function HomePage() {
 
               <div className="relative z-10 lg:h-[650px] flex items-center justify-center order-1 lg:order-2">
                 {/* Background Blob */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-100/40 to-transparent rounded-full filter blur-[60px]"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-100/40 dark:from-emerald-900/20 to-transparent rounded-full filter blur-[60px]"></div>
 
                 {/* Bottle Image */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -246,36 +246,36 @@ export default function HomePage() {
                 />
 
                 {/* Floating Cards */}
-                <div className="absolute top-[15%] left-0 lg:left-4 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 animate-bounce delay-700 hidden md:block z-30">
+                <div className="absolute top-[15%] left-0 lg:left-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 animate-bounce delay-700 hidden md:block z-30">
                   <div className="flex items-center gap-3">
-                    <div className="bg-emerald-100 p-2 rounded-full text-[#0B5D3F] relative">
+                    <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-full text-[#0B5D3F] relative">
                       <Leaf size={20} fill="currentColor" />
                       <Sparkles size={10} className="absolute -top-1 -right-1 text-emerald-500" fill="currentColor" />
                     </div>
                     <div>
-                      <div className="text-sm font-black text-gray-900">Frissen készül</div>
+                      <div className="text-sm font-black text-gray-900 dark:text-gray-100">Frissen készül</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute top-[35%] -right-4 lg:right-0 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 animate-bounce delay-100 hidden md:block z-30">
+                <div className="absolute top-[35%] -right-4 lg:right-0 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 animate-bounce delay-100 hidden md:block z-30">
                   <div className="flex items-center gap-3">
-                    <div className="bg-orange-100 p-2 rounded-full text-orange-600">
+                    <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-full text-orange-600">
                       <NaturalFiberIcon size={28} className="rotate-[22deg]" />
                     </div>
                     <div>
-                      <div className="text-sm font-black text-gray-900">Természetes rost</div>
+                      <div className="text-sm font-black text-gray-900 dark:text-gray-100">Természetes rost</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute bottom-[20%] -left-4 lg:left-0 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 animate-bounce hidden md:block z-30">
+                <div className="absolute bottom-[20%] -left-4 lg:left-0 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 animate-bounce hidden md:block z-30">
                   <div className="flex items-center gap-3">
-                    <div className="bg-red-100 p-2 rounded-full text-red-600">
+                    <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded-full text-red-600">
                       <Heart size={20} fill="currentColor" />
                     </div>
                     <div>
-                      <div className="text-sm font-black text-gray-900">Vitaminbomba</div>
+                      <div className="text-sm font-black text-gray-900 dark:text-gray-100">Vitaminbomba</div>
                     </div>
                   </div>
                 </div>
@@ -284,46 +284,46 @@ export default function HomePage() {
           </div>
 
           {/* Background Decorative Elements */}
-          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-50/50 to-transparent -z-10"></div>
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-50/50 dark:from-emerald-900/20 to-transparent -z-10"></div>
         </section>
 
         {/* Features Grid */}
-        <section className="pt-10 pb-10 bg-gray-50 px-6">
+        <section className="pt-10 pb-10 bg-gray-50 dark:bg-gray-800 px-6">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Miért fogja imádni a csapatod?</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">Miért fogja imádni a csapatod?</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl transition-shadow text-left">
-                <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-[#0B5D3F] mb-6 relative">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-shadow text-left">
+                <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center text-[#0B5D3F] mb-6 relative">
                   <Leaf size={28} />
                 </div>
-                <h3 className="text-xl font-black text-gray-900 mb-3">5 féle zöldség</h3>
-                <p className="text-gray-500 leading-relaxed font-medium">
+                <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3">5 féle zöldség</h3>
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
                   Friss és nyers, de a legfinomabb formában. Valódi alapanyagokból, semmi más.
                 </p>
               </div>
 
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl transition-shadow text-left">
-                <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 mb-6 relative">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-shadow text-left">
+                <div className="w-14 h-14 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center text-orange-600 mb-6 relative">
                   <Heart size={28} />
                   <div className="absolute inset-0 flex items-center justify-center pt-0.5">
                     <NaturalFiberIcon size={12} className="text-orange-600 fill-current" />
                   </div>
                 </div>
-                <h3 className="text-xl font-black text-gray-900 mb-3">Természetes rostban gazdag</h3>
-                <p className="text-gray-500 leading-relaxed font-medium">
+                <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3">Természetes rostban gazdag</h3>
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
                   A rost marad. A lényeg marad. Teltségérzet és kiegyensúlyozott felszívódás, kompromisszum nélkül.
                 </p>
               </div>
 
-              <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl transition-shadow text-left">
-                <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-shadow text-left">
+                <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
                   <Activity size={28} />
                 </div>
-                <h3 className="text-xl font-black text-gray-900 mb-3">Mikrobiom & bélflóra</h3>
-                <p className="text-gray-500 leading-relaxed font-medium">
+                <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3">Mikrobiom & bélflóra</h3>
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
                   A növényi rost a mikrobiom alapja. Természetes támogatás a bélrendszer egyensúlyához.
                 </p>
               </div>
@@ -354,7 +354,7 @@ export default function HomePage() {
         <section className="pt-10 pb-20 px-6">
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col items-center mb-12">
-              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center">A nap fénypontja, amiért hálás a csapat</h2>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100 text-center">A nap fénypontja, amiért hálás a csapat</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
@@ -380,8 +380,8 @@ export default function HomePage() {
 
             <div className="mt-10 max-w-5xl mx-auto">
               <div className="text-center mb-12">
-                <h3 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">Vágj rendet az egészség-zajban</h3>
-                <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                <h3 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight mb-4">Vágj rendet az egészség-zajban</h3>
+                <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
                   A táplálkozási tanácsok gyakran ellentmondásosak, de a tények nem.<br className="hidden md:block" />
                   Tegyél különbséget a trendek és a valóság között.
                 </p>
@@ -390,11 +390,11 @@ export default function HomePage() {
               <div className="grid md:grid-cols-2 gap-6 mb-10">
                 <Link
                   href="/blog"
-                  className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+                  className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                  <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">Juice vagy smoothie: mi a különbség?</h4>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                  <h4 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">Juice vagy smoothie: mi a különbség?</h4>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
                     Még a 100%-os gyümölcs juice is hirtelen vércukorszint-emelkedést okozhat. A zöldségekből készült, rostban gazdag smoothie azonban lassítja a felszívódást...
                   </p>
                   <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
@@ -404,11 +404,11 @@ export default function HomePage() {
 
                 <Link
                   href="/blog"
-                  className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+                  className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                  <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">3 ok, amiért a testnek rostra van szüksége</h4>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                  <h4 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">3 ok, amiért a testnek rostra van szüksége</h4>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
                     Sokan úgy nőttek fel, hogy a rostfogyasztás egyetlen célja az emésztés &ldquo;rendben tartása&rdquo;. A modern orvostudomány szerint a rost a bélflóra igazi védőpajzsa...
                   </p>
                   <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
@@ -420,7 +420,7 @@ export default function HomePage() {
               <div className="flex justify-center">
                 <Link
                   href="/blog"
-                  className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-50 border border-gray-200 rounded-full text-gray-600 hover:bg-white hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-md"
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-900 hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-md"
                 >
                   <span className="font-black text-xs uppercase tracking-widest">
                     Tudomány, közhelyek nélkül
@@ -433,7 +433,7 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 mt-auto relative">
+        <footer className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8 px-6 mt-auto relative">
           <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center gap-6 relative">
             {/* Logo */}
             <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
@@ -448,7 +448,7 @@ export default function HomePage() {
 
             {/* Legal & Copyright */}
             <div className="flex flex-col items-center md:items-end gap-2">
-              <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap">
                 <Link
                   href="/gyik"
                   className="hover:text-[#0B5D3F] transition-colors"
@@ -481,7 +481,7 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <p className="text-xs text-gray-400 font-medium text-center md:text-right leading-relaxed">
+              <p className="text-xs text-gray-400 dark:text-gray-500 font-medium text-center md:text-right leading-relaxed">
                 © 2026 Rosti. Minden jog fenntartva.
               </p>
             </div>

@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Waitlist application error:', error);
     return NextResponse.json(
       { error: 'Hiba történt a jelentkezés során' },
       { status: 500 }

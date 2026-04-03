@@ -50,7 +50,6 @@ export async function PATCH(
     return NextResponse.json(updatedOrder[0]);
 
   } catch (error) {
-    console.error('Order update error:', error);
     return NextResponse.json(
       { error: 'Failed to update order' },
       { status: 500 }

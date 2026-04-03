@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { users, companies } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const companyId = params.id;
 
     // Verify company exists
@@ -57,7 +64,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       accountsCreated: createdAccounts.length,
     }, { status: 201 });
   } catch (error) {
-    console.error('User registration error:', error);
     return NextResponse.json({ error: 'Hiba történt a fiókok létrehozása során.' }, { status: 500 });
   }
 }

@@ -48,8 +48,6 @@ export function DeliveryDateSelector({
       return normalizedSelected.getTime() === dateTime;
     });
     
-    console.log('Toggle date:', normalizedDate, 'isSelected:', isSelected, 'selectedDates:', selectedDates);
-    
     if (isSelected) {
       // If already selected, remove it (deselect)
       const newDates = selectedDates.filter(d => {
@@ -79,7 +77,6 @@ export function DeliveryDateSelector({
       });
     });
     
-    console.log('Quick select:', type, 'availableQuickDates:', availableQuickDates);
     onDatesChange(availableQuickDates);
   };
 

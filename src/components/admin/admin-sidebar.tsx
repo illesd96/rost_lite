@@ -30,7 +30,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-white shadow-sm border-r min-h-screen">
+    <div className="w-64 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-950/50 border-r dark:border-gray-800 min-h-screen">
       <nav className="mt-6 px-4">
         <ul className="space-y-2">
           {navigation.map((item) => {
@@ -42,7 +42,7 @@ export function AdminSidebar() {
                   className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
                     isActive
                       ? 'bg-emerald-600 text-white'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
                   }`}
                 >
                   <item.icon className="w-5 h-5 mr-3" />

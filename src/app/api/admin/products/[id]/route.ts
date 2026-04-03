@@ -59,7 +59,6 @@ export async function PATCH(
     return NextResponse.json(updatedProduct[0]);
 
   } catch (error) {
-    console.error('Product update error:', error);
     return NextResponse.json(
       { error: 'Failed to update product' },
       { status: 500 }
@@ -96,7 +95,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('Product deletion error:', error);
     return NextResponse.json(
       { error: 'Failed to delete product' },
       { status: 500 }

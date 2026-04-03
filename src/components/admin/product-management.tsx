@@ -33,7 +33,6 @@ export function ProductManagement({ products: initialProducts }: ProductManageme
         prev.map(p => p.id === productId ? updatedProduct : p)
       );
     } catch (error) {
-      console.error('Error updating product:', error);
       alert('Failed to update product');
     } finally {
       setIsLoading(null);
@@ -57,7 +56,6 @@ export function ProductManagement({ products: initialProducts }: ProductManageme
 
       setProducts(prev => prev.filter(p => p.id !== productId));
     } catch (error) {
-      console.error('Error deleting product:', error);
       alert('Failed to delete product');
     } finally {
       setIsLoading(null);

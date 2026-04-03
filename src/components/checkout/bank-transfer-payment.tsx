@@ -59,7 +59,6 @@ export function BankTransferPayment({
         setQrCodeUrl(result.qrCodeUrl);
       }
     } catch (error) {
-      console.error('Failed to generate QR code:', error);
     }
   };
 
@@ -69,7 +68,6 @@ export function BankTransferPayment({
       setCopiedField(field);
       setTimeout(() => setCopiedField(''), 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
     }
   };
 

@@ -23,7 +23,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, onStepClick, can
       <div className="relative flex justify-between items-center">
         
         {/* Background Line (Gray) */}
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2 z-0 rounded-full" />
+        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 dark:bg-gray-700 -translate-y-1/2 z-0 rounded-full" />
 
         {/* Active Line (Green) */}
         <div 
@@ -48,7 +48,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, onStepClick, can
                     ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg scale-110 shadow-emerald-200' 
                     : isCompleted
                         ? 'bg-emerald-600 border-emerald-600 text-white hover:scale-105 hover:shadow-emerald-200'
-                        : 'bg-white border-gray-100 text-gray-300'
+                        : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-gray-300 dark:text-gray-600'
                   }
                 `}
               >
@@ -56,7 +56,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, onStepClick, can
               </div>
               
               <div className={`absolute top-10 text-[9px] font-black uppercase tracking-widest transition-colors duration-500 whitespace-nowrap
-                ${isActive ? 'text-emerald-800' : isCompleted ? 'text-emerald-600 group-hover:text-emerald-700' : 'text-gray-300'}
+                ${isActive ? 'text-emerald-800' : isCompleted ? 'text-emerald-600 group-hover:text-emerald-700' : 'text-gray-300 dark:text-gray-600'}
               `}>
                 {step.label}
               </div>

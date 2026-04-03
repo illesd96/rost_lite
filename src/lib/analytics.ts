@@ -98,8 +98,6 @@ export function trackQRCodeVisit(page: '/osszetevok' | '/') {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(trackingData),
-  }).catch(error => {
-    console.error('Failed to track QR code visit:', error);
-  });
+  }).catch(() => {});
 }
 

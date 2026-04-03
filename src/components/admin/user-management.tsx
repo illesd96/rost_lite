@@ -53,7 +53,6 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
         )
       );
     } catch (error) {
-      console.error('Error updating user role:', error);
       alert('Failed to update user role');
     } finally {
       setIsLoading(null);
@@ -77,7 +76,6 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
 
       setUsers(prev => prev.filter(user => user.id !== userId));
     } catch (error) {
-      console.error('Error deleting user:', error);
       alert('Failed to delete user');
     } finally {
       setIsLoading(null);

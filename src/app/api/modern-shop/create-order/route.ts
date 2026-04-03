@@ -239,7 +239,6 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error creating order:', error);
     return NextResponse.json(
       { message: 'Hiba történt a rendelés létrehozása során.' },
       { status: 500 }

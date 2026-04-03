@@ -135,27 +135,27 @@ END:VEVENT
       <div className="flex flex-col lg:flex-row gap-8 w-full max-w-5xl items-start justify-center">
           
           {/* Main Success Card */}
-          <div className="w-full lg:w-2/3 bg-white rounded-[3rem] border border-gray-200 shadow-2xl p-10 md:p-16 relative overflow-hidden text-balance text-left order-2 lg:order-1">
+          <div className="w-full lg:w-2/3 bg-white dark:bg-gray-900 rounded-[3rem] border border-gray-200 dark:border-gray-700 shadow-2xl p-10 md:p-16 relative overflow-hidden text-balance text-left order-2 lg:order-1">
             <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
                 <Check className="w-10 h-10" strokeWidth={3} />
             </div>
             
-            <h2 className="text-4xl font-black text-gray-900 mb-4 tracking-tight uppercase text-center">Sikeres rendelés!</h2>
-            <p className="text-gray-500 text-lg mb-10 text-center">A friss Rostik a választott napokon érkeznek hozzátok.</p>
+            <h2 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-4 tracking-tight uppercase text-center">Sikeres rendelés!</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-lg mb-10 text-center">A friss Rostik a választott napokon érkeznek hozzátok.</p>
             
-            <div className="bg-gray-50 rounded-3xl p-8 mb-8 text-left border border-gray-100 text-balance">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 mb-8 text-left border border-gray-100 dark:border-gray-800 text-balance">
                 {/* Delivery Count with Dropdown */}
-                <div className="border-b border-gray-200 mb-4 pb-4 transition-all">
+                <div className="border-b border-gray-200 dark:border-gray-700 mb-4 pb-4 transition-all">
                     <button 
                         onClick={() => setShowDates(!showDates)}
                         className="w-full flex justify-between items-center group focus:outline-none"
                     >
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest group-hover:text-emerald-600 transition-colors text-left">
+                        <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest group-hover:text-emerald-600 transition-colors text-left">
                             Szállítások száma
                         </span>
                         <div className="flex items-center gap-2">
-                            <span className="text-sm font-bold text-gray-900">{orderState.schedule.length} alkalom</span>
-                            <div className={`text-gray-400 group-hover:text-emerald-600 transition-colors bg-gray-200 group-hover:bg-emerald-100 rounded-full p-0.5`}>
+                            <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{orderState.schedule.length} alkalom</span>
+                            <div className={`text-gray-400 dark:text-gray-500 group-hover:text-emerald-600 transition-colors bg-gray-200 group-hover:bg-emerald-100 rounded-full p-0.5`}>
                                 {showDates ? <ChevronUp size={14} strokeWidth={2.5} /> : <ChevronDown size={14} strokeWidth={2.5} />}
                             </div>
                         </div>
@@ -170,12 +170,12 @@ END:VEVENT
                                     <>
                                         {mondays.length > 0 && (
                                             <div>
-                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Hétfők</span>
+                                                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 block">Hétfők</span>
                                                 <div className="flex flex-col gap-1.5">
                                                     {mondays.map(idx => {
                                                         const d = getDateFromIndex(CONSTANTS.START_DATE, idx);
                                                         return (
-                                                            <div key={idx} className="bg-white border border-gray-200 rounded-lg py-2 px-3 text-xs font-bold text-gray-600 text-center shadow-sm">
+                                                            <div key={idx} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-2 px-3 text-xs font-bold text-gray-600 dark:text-gray-400 text-center shadow-sm">
                                                                 {d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}
                                                             </div>
                                                         );
@@ -185,12 +185,12 @@ END:VEVENT
                                         )}
                                         {tuesdays.length > 0 && (
                                             <div>
-                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 block">Keddek</span>
+                                                <span className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 block">Keddek</span>
                                                 <div className="flex flex-col gap-1.5">
                                                     {tuesdays.map(idx => {
                                                         const d = getDateFromIndex(CONSTANTS.START_DATE, idx);
                                                         return (
-                                                            <div key={idx} className="bg-white border border-gray-200 rounded-lg py-2 px-3 text-xs font-bold text-gray-600 text-center shadow-sm">
+                                                            <div key={idx} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-2 px-3 text-xs font-bold text-gray-600 dark:text-gray-400 text-center shadow-sm">
                                                                 {d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' })}
                                                             </div>
                                                         );
@@ -206,31 +206,31 @@ END:VEVENT
                 </div>
 
                 {/* Total Quantity */}
-                <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Összesített mennyiség</span>
+                <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Összesített mennyiség</span>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-sm text-gray-500 font-bold">{orderState.schedule.length} x</span>
-                        <span className="text-2xl font-black text-gray-900">{orderState.quantity}</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400 font-bold">{orderState.schedule.length} x</span>
+                        <span className="text-2xl font-black text-gray-900 dark:text-gray-100">{orderState.quantity}</span>
                         <span className="text-sm font-black text-green-700 uppercase">Rosti</span>
                     </div>
                 </div>
 
                 {/* Order ID */}
-                <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rendelési szám</span>
-                    <span className="text-sm font-bold text-gray-900">
+                <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Rendelési szám</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
                       {orderNumber ? `#${orderNumber}` : '#ROSTI-2026-0119'}
                     </span>
                 </div>
 
                 {/* Emails Section */}
                 <div>
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 leading-relaxed">
+                    <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 leading-relaxed">
                         Visszaigazolás és számla 24 órán belül megküldésre kerül
                     </p>
                     <div className="flex flex-wrap gap-x-6 gap-y-1.5">
                         {emails.map((email, index) => (
-                            <span key={index} className="text-sm font-bold text-gray-900">
+                            <span key={index} className="text-sm font-bold text-gray-900 dark:text-gray-100">
                                 {email}
                             </span>
                         ))}
@@ -239,7 +239,7 @@ END:VEVENT
             </div>
 
             {/* Disclaimer Text */}
-            <p className="text-xs text-gray-400 font-medium mb-10 text-center leading-relaxed px-4">
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mb-10 text-center leading-relaxed px-4">
                 Adott heti szállítás módosítására legkésőbb a szállítást megelőző péntek 15:00-ig van lehetőség a <a href="mailto:rendeles@rosti.hu" className="text-emerald-600 font-bold hover:underline">rendeles@rosti.hu</a> e-mail címen jelezve.
             </p>
 
@@ -252,19 +252,19 @@ END:VEVENT
           <div className="w-full lg:w-1/3 order-1 lg:order-2 lg:sticky lg:top-24 space-y-6">
              
              {/* Social Share Card */}
-             <div className="bg-gradient-to-br from-indigo-50 to-white p-8 rounded-[2.5rem] border border-indigo-100 shadow-xl relative text-left">
+             <div className="bg-gradient-to-br from-indigo-50 to-white p-8 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-800 shadow-xl relative text-left">
                 <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
                     <MessageSquare size={100} />
                 </div>
                 
-                <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight mb-2">Szólj a csapatnak!</h3>
-                <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
+                <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight mb-2">Szólj a csapatnak!</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-6 font-medium leading-relaxed">
                     Mindenki szereti a jó híreket. Másold ki ezt az üzenetet és dobd be a közös Slack vagy Teams csatornába!
                 </p>
 
-                <div className="bg-white rounded-2xl p-5 border border-indigo-100 shadow-sm mb-6 relative">
-                    <div className="absolute -left-2 top-6 w-2 h-4 bg-indigo-500 rounded-r-full"></div>
-                    <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 leading-relaxed">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-indigo-100 dark:border-indigo-800 shadow-sm mb-6 relative">
+                    <div className="absolute -left-2 top-6 w-2 h-4 bg-indigo-50 dark:bg-indigo-900/200 rounded-r-full"></div>
+                    <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                         {shareMessage}
                     </pre>
                 </div>
@@ -293,25 +293,25 @@ END:VEVENT
              </div>
 
              {/* Calendar Card */}
-             <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-[2.5rem] border border-orange-100 shadow-xl relative text-left">
+             <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-[2.5rem] border border-orange-100 dark:border-orange-800 shadow-xl relative text-left">
                 <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
                     <Calendar size={100} />
                 </div>
                 
-                <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight mb-2">Tedd be naptárba!</h3>
-                <p className="text-xs text-gray-500 mb-6 font-medium leading-relaxed">
+                <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight mb-2">Tedd be naptárba!</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-6 font-medium leading-relaxed">
                     Töltsd le a szállítási időpontokat tartalmazó fájlt, és add hozzá a naptáradhoz egy kattintással.
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="px-2 py-1 bg-white border border-orange-100 rounded-md text-[9px] font-bold text-gray-500 uppercase">Outlook</span>
-                    <span className="px-2 py-1 bg-white border border-orange-100 rounded-md text-[9px] font-bold text-gray-500 uppercase">Google Calendar</span>
-                    <span className="px-2 py-1 bg-white border border-orange-100 rounded-md text-[9px] font-bold text-gray-500 uppercase">Apple</span>
+                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-orange-100 dark:border-orange-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Outlook</span>
+                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-orange-100 dark:border-orange-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Google Calendar</span>
+                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-orange-100 dark:border-orange-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Apple</span>
                 </div>
 
                 <button 
                     onClick={handleDownloadCalendar}
-                    className="w-full py-4 rounded-xl font-bold text-sm bg-orange-500 text-white hover:bg-orange-600 hover:shadow-orange-500/20 shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-xl font-bold text-sm bg-orange-50 dark:bg-orange-900/200 text-white hover:bg-orange-600 hover:shadow-orange-500/20 shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                     <Download size={18} />
                     <span>Mentés naptárba (.ics)</span>

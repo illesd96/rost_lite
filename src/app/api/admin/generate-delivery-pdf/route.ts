@@ -187,7 +187,6 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error generating delivery list:', error);
     return NextResponse.json(
       { message: 'Failed to generate delivery list' },
       { status: 500 }

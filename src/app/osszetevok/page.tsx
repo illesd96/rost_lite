@@ -77,7 +77,7 @@ const desktopOrders = [
 
 export default function OsszetevokPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <SiteNavbar />
 
       <main className="pt-28 pb-12 flex-grow">
@@ -87,10 +87,10 @@ export default function OsszetevokPage() {
             {/* Left Content */}
             <div className="space-y-12">
               <div>
-                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                <h2 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
                   AMIT MOST A KEZEDBEN TARTASZ
                 </h2>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] xl:text-[4.25rem] font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-2 md:mb-6">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] xl:text-[4.25rem] font-extrabold text-gray-900 dark:text-gray-100 tracking-tight leading-[1.1] mb-2 md:mb-6">
                   5 Zöldség.<br />
                   <span className="text-[#0B5D3F] whitespace-nowrap">Friss és nyers.</span>
                 </h1>
@@ -105,7 +105,7 @@ export default function OsszetevokPage() {
                   />
                 </div>
 
-                <div className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed max-w-xl mb-8 text-justify space-y-4">
+                <div className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-xl mb-8 text-justify space-y-4">
                   <p>
                     A legdurvább munkanapokon senkinek sincs ideje zöldségeket darabolni. Ezért mi elvégeztük a nehezét.
                   </p>
@@ -123,13 +123,13 @@ export default function OsszetevokPage() {
                   <React.Fragment key={index}>
                     {index === 5 && (
                       <div className="col-span-1 md:col-span-2 py-2 mt-2 md:order-6">
-                        <div className="h-px bg-gray-200 w-full"></div>
+                        <div className="h-px bg-gray-200 dark:bg-gray-700 w-full"></div>
                       </div>
                     )}
                     <div
-                      className={`group flex items-center gap-5 p-5 rounded-3xl border border-gray-100 bg-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${desktopOrders[index]}`}
+                      className={`group flex items-center gap-5 p-5 rounded-3xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${desktopOrders[index]}`}
                     >
-                      <div className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center bg-[#EDF7F3] overflow-hidden">
+                      <div className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center bg-[#EDF7F3] dark:bg-emerald-900/20 overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={item.icon}
@@ -166,8 +166,8 @@ export default function OsszetevokPage() {
           {/* Blog Section */}
           <div className="mt-10 max-w-5xl mx-auto">
             <div className="text-center mb-12">
-              <h3 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">Vágj rendet az egészség-zajban</h3>
-              <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              <h3 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight mb-4">Vágj rendet az egészség-zajban</h3>
+              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
                 A táplálkozási tanácsok gyakran ellentmondásosak, de a tények nem.<br className="hidden md:block" />
                 Tegyél különbséget a trendek és a valóság között.
               </p>
@@ -176,11 +176,11 @@ export default function OsszetevokPage() {
             <div className="grid md:grid-cols-2 gap-6 mb-10">
               <Link
                 href="/blog"
-                className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+                className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">Juice vagy smoothie: mi a különbség?</h4>
-                <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                <h4 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">Juice vagy smoothie: mi a különbség?</h4>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
                   Még a 100%-os gyümölcs juice is hirtelen vércukorszint-emelkedést okozhat. A zöldségekből készült, rostban gazdag smoothie azonban lassítja a felszívódást...
                 </p>
                 <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
@@ -190,11 +190,11 @@ export default function OsszetevokPage() {
 
               <Link
                 href="/blog"
-                className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+                className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">3 ok, amiért a testnek rostra van szüksége</h4>
-                <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                <h4 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">3 ok, amiért a testnek rostra van szüksége</h4>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
                   Sokan úgy nőttek fel, hogy a rostfogyasztás egyetlen célja az emésztés &ldquo;rendben tartása&rdquo;. A modern orvostudomány szerint a rost a bélflóra igazi védőpajzsa...
                 </p>
                 <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
@@ -206,7 +206,7 @@ export default function OsszetevokPage() {
             <div className="flex justify-center">
               <Link
                 href="/blog"
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-50 border border-gray-200 rounded-full text-gray-600 hover:bg-white hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-md"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-900 hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-md"
               >
                 <span className="font-black text-xs uppercase tracking-widest">
                   Tudomány, közhelyek nélkül
@@ -239,7 +239,7 @@ export default function OsszetevokPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 mt-auto relative">
+      <footer className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8 px-6 mt-auto relative">
         <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center gap-6 relative">
           <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
             <Image
@@ -252,14 +252,14 @@ export default function OsszetevokPage() {
           </div>
 
           <div className="flex flex-col items-center md:items-end gap-2">
-            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap">
               <Link href="/gyik" className="hover:text-[#0B5D3F] transition-colors">GYIK</Link>
               <Link href="/blog" className="hover:text-[#0B5D3F] transition-colors">Blog</Link>
               <Link href="/osszetevok" className="hover:text-[#0B5D3F] transition-colors">Összetevők</Link>
               <Link href="/adatkezeles" className="hover:text-[#0B5D3F] transition-colors">Adatkezelés</Link>
               <Link href="/altalanos-szerzodesi-feltetelek" className="hover:text-[#0B5D3F] transition-colors">ÁSZF</Link>
             </div>
-            <p className="text-xs text-gray-400 font-medium text-center md:text-right leading-relaxed">
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium text-center md:text-right leading-relaxed">
               © 2026 Rosti. Minden jog fenntartva.
             </p>
           </div>

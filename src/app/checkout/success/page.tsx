@@ -9,7 +9,7 @@ function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const [orderDetails, setOrderDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const orderId = searchParams.get('orderId');
   const paymentId = searchParams.get('paymentId');
 
@@ -29,7 +29,6 @@ function CheckoutSuccessContent() {
         setOrderDetails(data.order);
       }
     } catch (error) {
-      console.error('Error fetching order details:', error);
     } finally {
       setIsLoading(false);
     }
@@ -37,33 +36,33 @@ function CheckoutSuccessContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading order details...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading order details...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header */}
         <div className="text-center mb-8">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Payment Successful!
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 dark:text-gray-400">
             Thank you for your order. We've received your payment.
           </p>
         </div>
 
         {/* Order Summary */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
               Order Summary
             </h2>
             {orderDetails && (
@@ -76,30 +75,30 @@ function CheckoutSuccessContent() {
           <div className="space-y-3">
             {orderId && (
               <div className="flex justify-between">
-                <span className="text-gray-600">Order ID:</span>
-                <span className="font-medium text-gray-900">#{orderId.slice(0, 8)}</span>
+                <span className="text-gray-600 dark:text-gray-400">Order ID:</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">#{orderId.slice(0, 8)}</span>
               </div>
             )}
-            
+
             {paymentId && (
               <div className="flex justify-between">
-                <span className="text-gray-600">Payment ID:</span>
-                <span className="font-medium text-gray-900">{paymentId.slice(0, 12)}...</span>
+                <span className="text-gray-600 dark:text-gray-400">Payment ID:</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">{paymentId.slice(0, 12)}...</span>
               </div>
             )}
 
             {orderDetails && (
               <>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Total Amount:</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-gray-600 dark:text-gray-400">Total Amount:</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     {orderDetails.totalPriceHuf?.toLocaleString()} Ft
                   </span>
                 </div>
-                
+
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Delivery:</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-gray-600 dark:text-gray-400">Delivery:</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     {orderDetails.deliveryMethod || 'Standard Delivery'}
                   </span>
                 </div>
@@ -137,17 +136,17 @@ function CheckoutSuccessContent() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           )}
-          
+
           <Link
             href="/orders"
             className="inline-flex items-center justify-center px-6 py-3 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors"
           >
             View All Orders
           </Link>
-          
+
           <Link
             href="/"
-            className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 transition-colors"
           >
             Continue Shopping
           </Link>
@@ -155,7 +154,7 @@ function CheckoutSuccessContent() {
 
         {/* Support */}
         <div className="text-center mt-8">
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             Need help? Contact us at{' '}
             <a href="mailto:support@webshop.com" className="text-primary-600 hover:underline">
               support@webshop.com
@@ -170,10 +169,10 @@ function CheckoutSuccessContent() {
 export default function CheckoutSuccessPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
     }>

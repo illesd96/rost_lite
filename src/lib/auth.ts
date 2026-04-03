@@ -50,7 +50,6 @@ export const authOptions: NextAuthOptions = {
             role: foundUser.role,
           };
         } catch (error) {
-          console.error('Auth error:', error);
           return null;
         }
       },

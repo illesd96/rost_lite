@@ -69,7 +69,6 @@ function SuccessPageContent() {
         const parsedOrderState = JSON.parse(completedOrderState);
         setOrderState(parsedOrderState);
       } catch (error) {
-        console.error('Failed to parse completed order state:', error);
       }
     }
   }, [searchParams, router]);

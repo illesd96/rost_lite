@@ -82,7 +82,6 @@ export async function PATCH(
     return NextResponse.json(updatedPaymentGroup[0]);
 
   } catch (error) {
-    console.error('Billing update error:', error);
     return NextResponse.json(
       { error: 'Failed to update billing status' },
       { status: 500 }
@@ -130,7 +129,6 @@ export async function GET(
     return NextResponse.json(paymentGroup);
 
   } catch (error) {
-    console.error('Get payment group error:', error);
     return NextResponse.json(
       { error: 'Failed to get payment group' },
       { status: 500 }

@@ -23,7 +23,6 @@ export function ShopSettings() {
         setSettings(data);
       }
     } catch (error) {
-      console.error('Error fetching settings:', error);
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +49,6 @@ export function ShopSettings() {
         ));
       }
     } catch (error) {
-      console.error('Error updating setting:', error);
     } finally {
       setUpdatingKey(null);
     }

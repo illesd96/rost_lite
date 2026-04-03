@@ -32,15 +32,12 @@ export async function GET() {
       isActive: setting.isActive
     });
   } catch (error) {
-    console.error('Error fetching delivery settings:', error);
-    
     // If table doesn't exist yet, return default settings
     if (error instanceof Error && (
       error.message.includes('relation "delivery_settings" does not exist') ||
       error.message.includes('table') ||
       error.message.includes('column')
     )) {
-      console.log('Delivery settings table not found, returning defaults');
       return NextResponse.json({
         deliveryDays: ['monday', 'wednesday'],
         weeksInAdvance: 4,
@@ -101,7 +98,6 @@ export async function POST(request: Request) {
       }
     });
   } catch (error) {
-    console.error('Error updating delivery settings:', error);
     return NextResponse.json(
       { error: 'Failed to update delivery settings' },
       { status: 500 }

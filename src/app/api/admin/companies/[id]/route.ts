@@ -1,0 +1,103 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { db } from '@/lib/db';
+import { companies, companyContacts } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const [company] = await db.select().from(companies).where(eq(companies.id, params.id)).limit(1);
+
+    if (!company) {
+      return NextResponse.json({ error: 'Cég nem található.' }, { status: 404 });
+    }
+
+    const contacts = await db.select().from(companyContacts).where(eq(companyContacts.companyId, company.id));
+
+    return NextResponse.json({ company, contacts });
+  } catch (error) {
+    return NextResponse.json({ error: 'Hiba történt.' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { company, contacts } = body;
+
+    // Verify company exists
+    const [existing] = await db.select().from(companies).where(eq(companies.id, params.id)).limit(1);
+    if (!existing) {
+      return NextResponse.json({ error: 'Cég nem található.' }, { status: 404 });
+    }
+
+    // Update company
+    await db.update(companies).set({
+      companyName: company.companyName,
+      taxId: company.taxId || null,
+      groupTaxId: company.groupTaxId || null,
+      useGroupTaxId: company.useGroupTaxId || false,
+
+      billingPostcode: company.billingPostcode || null,
+      billingCity: company.billingCity || null,
+      billingStreetName: company.billingStreetName || null,
+      billingStreetType: company.billingStreetType || null,
+      billingHouseNum: company.billingHouseNum || null,
+      billingBuilding: company.billingBuilding || null,
+      billingFloor: company.billingFloor || null,
+      billingDoor: company.billingDoor || null,
+      billingOfficeBuilding: company.billingOfficeBuilding || null,
+
+      isShippingSame: company.isShippingSame ?? true,
+      shippingPostcode: company.shippingPostcode || null,
+      shippingCity: company.shippingCity || null,
+      shippingStreetName: company.shippingStreetName || null,
+      shippingStreetType: company.shippingStreetType || null,
+      shippingHouseNum: company.shippingHouseNum || null,
+      shippingBuilding: company.shippingBuilding || null,
+      shippingFloor: company.shippingFloor || null,
+      shippingDoor: company.shippingDoor || null,
+      shippingOfficeBuilding: company.shippingOfficeBuilding || null,
+
+      emailCC1: company.emailCC1 || null,
+      emailCC2: company.emailCC2 || null,
+      internalShippingNote: company.internalShippingNote || null,
+      notifyMinutes: company.notifyMinutes ?? 60,
+
+      updatedAt: new Date(),
+    }).where(eq(companies.id, params.id));
+
+    // Replace contacts: delete existing, insert new
+    if (contacts) {
+      await db.delete(companyContacts).where(eq(companyContacts.companyId, params.id));
+
+      const validContacts = contacts.filter((c: { name: string }) => c.name?.trim());
+      if (validContacts.length > 0) {
+        await db.insert(companyContacts).values(
+          validContacts.map((c: { name: string; phone?: string; email?: string; isPrimary?: boolean }) => ({
+            companyId: params.id,
+            name: c.name,
+            phone: c.phone || null,
+            email: c.email || null,
+            isPrimary: c.isPrimary || false,
+          }))
+        );
+      }
+    }
+
+    return NextResponse.json({ message: 'Cég sikeresen frissítve.' });
+  } catch (error) {
+    return NextResponse.json({ error: 'Hiba történt a mentés során.' }, { status: 500 });
+  }
+}

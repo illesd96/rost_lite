@@ -33,7 +33,6 @@ export function DeliverySettings() {
         setDeliveryDateSettings(data);
       }
     } catch (error) {
-      console.error('Failed to fetch delivery settings:', error);
     }
   };
 
@@ -52,7 +51,6 @@ export function DeliverySettings() {
         alert('Failed to save delivery settings');
       }
     } catch (error) {
-      console.error('Failed to save delivery settings:', error);
       alert('Failed to save delivery settings');
     } finally {
       setIsLoading(false);

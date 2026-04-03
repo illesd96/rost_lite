@@ -55,27 +55,27 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const inputClass = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900";
-  const labelClass = "flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 ml-1";
+  const inputClass = "w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:bg-white focus:dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100";
+  const labelClass = "flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 ml-1";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white rounded-t-3xl p-6 pb-4 border-b border-gray-100 z-10">
+      <div className="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white dark:bg-gray-900 rounded-t-3xl p-6 pb-4 border-b border-gray-100 dark:border-gray-800 z-10">
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute top-5 right-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <h2 className="text-2xl font-extrabold text-gray-900 leading-tight">
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-tight">
             Csatlakozás a<br />
             <span className="text-green-600">Rosti közösséghez</span>
           </h2>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
             Add meg az alábbi adatokat, és értesítünk, amint tudunk szállítani nektek.
           </p>
         </div>
@@ -87,8 +87,8 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Köszönjük a jelentkezést!</h3>
-            <p className="text-gray-500 text-sm mb-6">Hamarosan felvesszük veled a kapcsolatot.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Köszönjük a jelentkezést!</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">Hamarosan felvesszük veled a kapcsolatot.</p>
             <button
               onClick={onClose}
               className="bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl hover:bg-emerald-700 transition-colors"
@@ -99,7 +99,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
         ) : (
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 rounded-xl p-3">
                 <p className="text-red-700 text-sm font-medium">{error}</p>
               </div>
             )}
@@ -204,7 +204,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
                   placeholder="min"
                   className={`${inputClass} w-24 text-center`}
                 />
-                <span className="text-gray-400">—</span>
+                <span className="text-gray-400 dark:text-gray-500">—</span>
                 <input
                   name="quantityMax"
                   type="number"
@@ -214,7 +214,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
                   placeholder="max"
                   className={`${inputClass} w-24 text-center`}
                 />
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-500">palack</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">palack</span>
               </div>
             </div>
 
@@ -224,15 +224,15 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
                   type="checkbox"
                   checked={acceptedTerms}
                   onChange={e => setAcceptedTerms(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                  className="mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-emerald-600 focus:ring-emerald-500"
                 />
-                <span className="text-xs text-gray-500 leading-relaxed">
+                <span className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                   A Jelentkezés elküldésére kattintva beleegyezel az{' '}
-                  <a href="/dokumentumok/adatvedelmi" target="_blank" className="font-bold text-gray-700 underline underline-offset-2 hover:text-emerald-700">
+                  <a href="/dokumentumok/adatvedelmi" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-emerald-700">
                     adatkezelési tájékoztatóban
                   </a>{' '}
                   foglaltakhoz és az{' '}
-                  <a href="/dokumentumok/aszf" target="_blank" className="font-bold text-gray-700 underline underline-offset-2 hover:text-emerald-700">
+                  <a href="/dokumentumok/aszf" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-emerald-700">
                     általános szerződési feltételekhez
                   </a>.
                 </span>

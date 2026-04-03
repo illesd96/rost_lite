@@ -71,7 +71,6 @@ export default function NewProductPage() {
       // Success - redirect to products page
       router.push('/admin/products');
     } catch (error) {
-      console.error('❌ Error creating product:', error);
       setError(error instanceof Error ? error.message : 'Failed to create product');
     } finally {
       setIsLoading(false);

@@ -8,7 +8,6 @@ export async function POST() {
       timestamp: new Date().toISOString() 
     });
   } catch (error) {
-    console.error('Ping error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

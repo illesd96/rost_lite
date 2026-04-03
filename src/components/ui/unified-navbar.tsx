@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { WebshopIcon } from './webshop-icon';
 import { Home } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 interface UnifiedNavbarProps {
   showBackButton?: boolean;
@@ -12,22 +13,22 @@ interface UnifiedNavbarProps {
   backText?: string;
 }
 
-export function UnifiedNavbar({ 
-  showBackButton = false, 
-  backHref = "/", 
-  backText = "Vissza" 
+export function UnifiedNavbar({
+  showBackButton = false,
+  backHref = "/",
+  backText = "Vissza"
 }: UnifiedNavbarProps) {
   const pathname = usePathname();
   const showHomeIcon = pathname?.includes('/osszetevok');
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-950/50">
       <div className=" mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left side - Cart icon linking to /shop */}
           <div className="flex items-center">
             <Link
               href="/modern-shop"
-              className="text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 p-2 rounded-lg transition-colors"
               aria-label="Shop"
               title="Shop"
             >
@@ -48,21 +49,22 @@ export function UnifiedNavbar({
             </Link>
           </div>
 
-          {/* Right side - Home icon (only on /osszetevok pages) */}
-          {showHomeIcon ? (
-            <div className="flex items-center justify-end w-10">
+          {/* Right side - Theme toggle + Home icon */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {showHomeIcon ? (
               <Link
                 href="/"
-                className="text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
+                className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 p-2 rounded-lg transition-colors"
                 aria-label="Home"
                 title="Home"
               >
                 <Home className="w-5 h-5" />
               </Link>
-            </div>
-          ) : (
-            <div className="w-10" />
-          )}
+            ) : (
+              <div className="w-10" />
+            )}
+          </div>
         </div>
       </div>
     </nav>

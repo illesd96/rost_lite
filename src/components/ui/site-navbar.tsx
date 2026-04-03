@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { ArrowRight, User, LogOut, ChevronDown } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 interface SiteNavbarProps {
   /** If true, navbar is not fixed/sticky (for pages that manage their own scroll) */
@@ -22,7 +23,7 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
   const isLoggedIn = !!session?.user;
 
   return (
-    <nav className={`${relative ? 'sticky top-0' : 'fixed top-0 left-0 right-0'} z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all`}>
+    <nav className={`${relative ? 'sticky top-0' : 'fixed top-0 left-0 right-0'} z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all`}>
       <div className="container mx-auto px-6 h-20 flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -36,12 +37,14 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
         </Link>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
+
           {/* User menu / Guest login */}
           {isLoggedIn && session?.user ? (
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium select-none transition-all bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium select-none transition-all bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <User className="w-3.5 h-3.5" />
                 <span className="max-w-24 truncate hidden sm:inline text-xs">{session.user.email}</span>
@@ -51,14 +54,14 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
               {showUserMenu && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">{session.user.email}</p>
-                      <p className="text-xs text-gray-500">Bejelentkezve</p>
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{session.user.email}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Bejelentkezve</p>
                     </div>
                     <button
                       onClick={() => signOut({ callbackUrl: '/' })}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
                       Kijelentkezés
@@ -70,7 +73,7 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
           ) : (
             <Link
               href="/auth/signin"
-              className="flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-bold uppercase tracking-widest select-none cursor-pointer transition-all shadow-sm bg-gray-100 border-gray-200 text-gray-900 hover:bg-gray-200 hover:border-gray-300"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-bold uppercase tracking-widest select-none cursor-pointer transition-all shadow-sm bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
             >
               <span className="w-2.5 h-2.5 rounded-full shadow-sm bg-red-500"></span>
               <span>Vendég</span>

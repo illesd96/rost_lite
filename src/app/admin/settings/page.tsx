@@ -6,34 +6,34 @@ export default function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <Settings className="w-6 h-6 text-gray-400" />
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
+        <Settings className="w-6 h-6 text-gray-400 dark:text-gray-500" />
       </div>
 
       <div className="grid gap-6">
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Webshop beállítások
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Funkciók be- és kikapcsolása a webshopban
             </p>
           </div>
-          
+
           <ShopSettings />
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Delivery Settings
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Manage delivery options, fees, and providers
             </p>
           </div>
-          
+
           <DeliverySettings />
         </div>
       </div>

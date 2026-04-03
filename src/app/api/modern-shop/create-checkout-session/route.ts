@@ -151,7 +151,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const origin = req.headers.get('origin') || 'https://www.rosti.hu';
+    const ALLOWED_ORIGINS = [
+      'https://www.rosti.hu',
+      'https://rosti.hu',
+      process.env.NEXTAUTH_URL,
+    ].filter(Boolean);
+    const requestOrigin = req.headers.get('origin');
+    const origin = ALLOWED_ORIGINS.includes(requestOrigin!) ? requestOrigin! : 'https://www.rosti.hu';
 
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -169,7 +175,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ sessionId: checkoutSession.id, url: checkoutSession.url });
   } catch (error) {
-    console.error('Error creating checkout session:', error);
     return NextResponse.json(
       { message: 'Hiba történt a fizetési munkamenet létrehozása során.' },
       { status: 500 }

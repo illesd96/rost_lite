@@ -18,7 +18,11 @@
       "Bash(grep -o '.\\\\{0,500\\\\}Egészség az irodában.\\\\{0,1500\\\\}' /tmp/demo-bundle.js)",
       "Bash(git ls-tree:*)",
       "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")",
-      "Bash(grep -rn \"className=.*{.*text.*white\\\\|className=.*\\\\`.*text.*white\" /c/Projects/cursor/WebShop/src --include=\"*.tsx\")"
+      "Bash(grep -rn \"className=.*{.*text.*white\\\\|className=.*\\\\`.*text.*white\" /c/Projects/cursor/WebShop/src --include=\"*.tsx\")",
+      "Bash(xargs -I {} bash -c \"echo '=== {} ===' && head -30 {}\")",
+      "Bash(grep -l \"dark:\" c:/Projects/cursor/WebShop/src/components/modern-shop/*.tsx c:/Projects/cursor/WebShop/src/app/page.tsx c:/Projects/cursor/WebShop/src/app/gyik/page.tsx c:/Projects/cursor/WebShop/src/app/blog/page.tsx c:/Projects/cursor/WebShop/src/app/osszetevok/page.tsx c:/Projects/cursor/WebShop/src/app/adatkezeles/page.tsx c:/Projects/cursor/WebShop/src/app/altalanos-szerzodesi-feltetelek/page.tsx c:/Projects/cursor/WebShop/src/app/auth/signin/page.tsx c:/Projects/cursor/WebShop/src/app/auth/signup/page.tsx c:/Projects/cursor/WebShop/src/app/modern-shop/page.tsx)",
+      "Bash(grep -rL \"dark:\" c:/Projects/cursor/WebShop/src/components/admin/*.tsx)",
+      "Bash(grep -rL \"dark:\" c:/Projects/cursor/WebShop/src/components/checkout/*.tsx c:/Projects/cursor/WebShop/src/components/cart/*.tsx c:/Projects/cursor/WebShop/src/components/shop/*.tsx)"
     ],
     "additionalDirectories": [
       "C:\\Projects\\cursor\\WebShop\\src\\app\\admin\\companies\\[id]",

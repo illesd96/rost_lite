@@ -75,7 +75,6 @@ export async function GET(req: NextRequest) {
       paymentStatus: checkoutSession.payment_status,
     });
   } catch (error) {
-    console.error('Error verifying payment:', error);
     return NextResponse.json(
       { success: false, message: 'Hiba a fizetés ellenőrzése során.' },
       { status: 500 }

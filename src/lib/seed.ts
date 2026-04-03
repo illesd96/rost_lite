@@ -4,8 +4,6 @@ import bcrypt from 'bcryptjs';
 
 export async function seedDatabase() {
   try {
-    console.log('🌱 Seeding database with users only...');
-
     // Create admin user
     const adminPassword = await bcrypt.hash('admin123', 12);
     
@@ -33,12 +31,7 @@ export async function seedDatabase() {
       role: 'customer',
     }).onConflictDoNothing();
 
-    console.log('✅ Database seeded successfully with users only!');
-    console.log('👤 Admin login: dani.illes96@gmail.com / admin123');
-    console.log('👤 Customer 1 login: customer1@example.com / customer123');
-    console.log('👤 Customer 2 login: customer2@example.com / customer456');
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
     throw error;
   }
 }

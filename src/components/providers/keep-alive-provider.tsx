@@ -20,7 +20,6 @@ export function KeepAliveProvider({ children }: { children: React.ReactNode }) {
         channelRef.current.postMessage({ type: 'ping', timestamp: Date.now() });
       }
     } catch (error) {
-      console.warn('Keep-alive ping failed:', error);
     }
   };
 

@@ -163,20 +163,20 @@ export default function AdminBlogPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => { setEditingPost(null); setEditingId(null); }}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
           >
             <ArrowLeft size={20} />
             Vissza
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {editingId ? 'Bejegyzés szerkesztése' : 'Új bejegyzés'}
           </h1>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6 space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Cím *</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cím *</label>
             <input
               type="text"
               value={editingPost.title}
@@ -188,31 +188,31 @@ export default function AdminBlogPage() {
                   slug: prev.slug || generateSlug(title),
                 } : null);
               }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-100"
               placeholder="Bejegyzés címe"
             />
           </div>
 
           {/* Slug */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Slug (URL)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug (URL)</label>
             <input
               type="text"
               value={editingPost.slug}
               onChange={e => setEditingPost(prev => prev ? { ...prev, slug: e.target.value } : null)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-100"
               placeholder="bejegyzes-url-neve"
             />
           </div>
 
           {/* Excerpt */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Kivonat (rövid leírás a listában)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kivonat (rövid leírás a listában)</label>
             <textarea
               value={editingPost.excerpt}
               onChange={e => setEditingPost(prev => prev ? { ...prev, excerpt: e.target.value } : null)}
               rows={2}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-100"
               placeholder="Rövid összefoglaló a bejegyzéshez..."
             />
           </div>
@@ -220,7 +220,7 @@ export default function AdminBlogPage() {
           {/* Month & Reading Time row */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hónap</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hónap</label>
               <select
                 value={editingPost.month}
                 onChange={e => {
@@ -231,7 +231,7 @@ export default function AdminBlogPage() {
                     monthLabel: (selectedMonth && 'monthLabel' in selectedMonth ? selectedMonth.monthLabel : '') || '',
                   } : null);
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-100"
               >
                 {MONTH_OPTIONS.map(m => (
                   <option key={m.value} value={m.value}>{m.label}</option>
@@ -239,22 +239,22 @@ export default function AdminBlogPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Olvasási idő</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Olvasási idő</label>
               <input
                 type="text"
                 value={editingPost.readingTime}
                 onChange={e => setEditingPost(prev => prev ? { ...prev, readingTime: e.target.value } : null)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-100"
                 placeholder="2,5 perc olvasás"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Szerző</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Szerző</label>
               <input
                 type="text"
                 value={editingPost.authorName}
                 onChange={e => setEditingPost(prev => prev ? { ...prev, authorName: e.target.value } : null)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-100"
                 placeholder="Szerző neve"
               />
             </div>
@@ -262,26 +262,26 @@ export default function AdminBlogPage() {
 
           {/* Cover Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Borítókép URL</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Borítókép URL</label>
             <input
               type="text"
               value={editingPost.coverImage}
               onChange={e => setEditingPost(prev => prev ? { ...prev, coverImage: e.target.value } : null)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-100"
               placeholder="https://..."
             />
           </div>
 
           {/* Content */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Tartalom (HTML) *
             </label>
             <textarea
               value={editingPost.content}
               onChange={e => setEditingPost(prev => prev ? { ...prev, content: e.target.value } : null)}
               rows={20}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono text-sm"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono text-sm dark:bg-gray-800 dark:text-gray-100"
               placeholder="<h2>Cím</h2><p>Tartalom...</p>"
             />
           </div>
@@ -295,9 +295,9 @@ export default function AdminBlogPage() {
                 onChange={e => setEditingPost(prev => prev ? { ...prev, published: e.target.checked } : null)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 dark:after:border-gray-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
             </label>
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               {editingPost.published ? 'Publikálva' : 'Piszkozat'}
             </span>
           </div>
@@ -314,7 +314,7 @@ export default function AdminBlogPage() {
             </button>
             <button
               onClick={() => { setEditingPost(null); setEditingId(null); }}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 px-6 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-6 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               <X size={18} />
               Mégse
@@ -330,8 +330,8 @@ export default function AdminBlogPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Blog kezelés</h1>
-          <p className="text-gray-500 mt-1">Bejegyzések kezelése és szerkesztése</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Blog kezelés</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Bejegyzések kezelése és szerkesztése</p>
         </div>
         <button
           onClick={handleNew}
@@ -343,12 +343,12 @@ export default function AdminBlogPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-20 text-gray-400">Betöltés...</div>
+        <div className="text-center py-20 text-gray-400 dark:text-gray-500">Betöltés...</div>
       ) : posts.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-          <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-600 mb-2">Még nincs bejegyzés</h3>
-          <p className="text-gray-400 mb-6">Hozd létre az első blog bejegyzésedet.</p>
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-12 text-center">
+          <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">Még nincs bejegyzés</h3>
+          <p className="text-gray-400 dark:text-gray-500 mb-6">Hozd létre az első blog bejegyzésedet.</p>
           <button
             onClick={handleNew}
             className="inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
@@ -358,32 +358,32 @@ export default function AdminBlogPage() {
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cím</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hónap</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Státusz</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Létrehozva</th>
-                <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Műveletek</th>
+              <tr className="border-b bg-gray-50 dark:bg-gray-800">
+                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cím</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Hónap</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Státusz</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Létrehozva</th>
+                <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Műveletek</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {posts.map(post => (
-                <tr key={post.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={post.id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{post.title}</div>
-                    <div className="text-sm text-gray-400">/{post.slug}</div>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">{post.title}</div>
+                    <div className="text-sm text-gray-400 dark:text-gray-500">/{post.slug}</div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
+                  <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                     {post.monthLabel || '-'}
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       post.published
                         ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-gray-100 text-gray-600'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                     }`}>
                       {post.published ? (
                         <><Eye size={12} /> Publikálva</>
@@ -392,21 +392,21 @@ export default function AdminBlogPage() {
                       )}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {new Date(post.createdAt).toLocaleDateString('hu-HU')}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleTogglePublish(post)}
-                        className="p-2 text-gray-400 hover:text-emerald-600 transition-colors"
+                        className="p-2 text-gray-400 dark:text-gray-500 hover:text-emerald-600 transition-colors"
                         title={post.published ? 'Elrejtés' : 'Publikálás'}
                       >
                         {post.published ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                       <button
                         onClick={() => handleEdit(post)}
-                        className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                        className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 transition-colors"
                         title="Szerkesztés"
                       >
                         <Edit2 size={16} />
@@ -421,7 +421,7 @@ export default function AdminBlogPage() {
                           </button>
                           <button
                             onClick={() => setDeleteConfirm(null)}
-                            className="px-2 py-1 bg-gray-200 text-gray-600 text-xs rounded hover:bg-gray-300"
+                            className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded hover:bg-gray-300 dark:hover:bg-gray-600"
                           >
                             Mégse
                           </button>
@@ -429,7 +429,7 @@ export default function AdminBlogPage() {
                       ) : (
                         <button
                           onClick={() => setDeleteConfirm(post.id)}
-                          className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                          className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 transition-colors"
                           title="Törlés"
                         >
                           <Trash2 size={16} />

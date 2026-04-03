@@ -46,7 +46,6 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
         setSelectedDeliveryDates(dates);
       }
     } catch (error) {
-      console.error('Failed to load delivery dates:', error);
     }
   }, []);
 
@@ -145,8 +144,6 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
         total: finalTotal,
       };
 
-      console.log('🛒 Creating bank transfer order...');
-      
       const response = await fetch('/api/checkout/bank-transfer', {
         method: 'POST',
         headers: {
@@ -161,8 +158,6 @@ export function CheckoutForm({ userEmail }: CheckoutFormProps) {
         throw new Error(result.error || 'Checkout failed');
       }
 
-      console.log('✅ Bank transfer order created:', result.orderId);
-      
       // Clear cart and redirect to order success page
       emptyCart();
       router.push(`/orders/${result.orderId}`);

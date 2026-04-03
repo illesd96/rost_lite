@@ -36,7 +36,7 @@ export function CartContent() {
     fetch('/api/delivery-settings')
       .then(res => res.json())
       .then(data => setDeliverySettings(data))
-      .catch(err => console.error('Failed to fetch delivery settings:', err));
+      .catch(() => {});
   }, []);
 
   const deliveryFee = calculateDeliveryFee(cartTotal);

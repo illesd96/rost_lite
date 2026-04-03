@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { companies, companyContacts, users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { company, contacts, accounts } = body;
 
@@ -98,17 +105,20 @@ export async function POST(request: NextRequest) {
       accountsCreated: createdAccounts.length,
     }, { status: 201 });
   } catch (error) {
-    console.error('Company creation error:', error);
     return NextResponse.json({ error: 'Hiba történt a cég létrehozása során.' }, { status: 500 });
   }
 }
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const allCompanies = await db.select().from(companies).orderBy(companies.createdAt);
     return NextResponse.json(allCompanies);
   } catch (error) {
-    console.error('Companies fetch error:', error);
     return NextResponse.json({ error: 'Hiba történt.' }, { status: 500 });
   }
 }

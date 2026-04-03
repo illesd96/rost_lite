@@ -15,18 +15,18 @@ interface AccordionItemProps {
 
 function AccordionItem({ question, answer, isOpen, onClick }: AccordionItemProps) {
   return (
-    <div className="border-b border-gray-200">
+    <div className="border-b border-gray-200 dark:border-gray-700">
       <button
-        className="w-full py-5 flex justify-between items-center text-left focus:outline-none hover:text-gray-600 transition-colors"
+        className="w-full py-5 flex justify-between items-center text-left focus:outline-none hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
         onClick={onClick}
       >
-        <span className="text-lg font-medium text-gray-900">{question}</span>
-        <span className="ml-6 flex-shrink-0 text-gray-400">
+        <span className="text-lg font-medium text-gray-900 dark:text-gray-100">{question}</span>
+        <span className="ml-6 flex-shrink-0 text-gray-400 dark:text-gray-500">
           {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </span>
       </button>
       {isOpen && (
-        <div className="pb-5 pr-12 text-gray-600 leading-relaxed">
+        <div className="pb-5 pr-12 text-gray-600 dark:text-gray-400 leading-relaxed">
           {answer}
         </div>
       )}
@@ -92,16 +92,16 @@ export default function GyikPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <SiteNavbar />
 
       <main className="pt-28 pb-12 flex-grow">
         <div className="container mx-auto max-w-3xl px-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-10 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-10 tracking-tight">
             Gyakran ismételt kérdések
           </h1>
 
-          <div className="border-t border-gray-200">
+          <div className="border-t border-gray-200 dark:border-gray-700">
             {faqs.map((faq, index) => (
               <AccordionItem
                 key={index}
@@ -113,7 +113,7 @@ export default function GyikPage() {
             ))}
           </div>
 
-          <div className="mt-12 pt-8 pb-12 text-gray-700">
+          <div className="mt-12 pt-8 pb-12 text-gray-700 dark:text-gray-300">
             Nem találtad meg a választ a kérdésedre? Írj nekünk a{' '}
             <a href="mailto:rendeles@rosti.hu" className="text-[#0B5D3F] hover:underline font-bold">rendeles@rosti.hu</a> címre.
           </div>
@@ -141,7 +141,7 @@ export default function GyikPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 mt-auto relative">
+      <footer className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8 px-6 mt-auto relative">
         <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center gap-6 relative">
           <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
             <Image
@@ -154,14 +154,14 @@ export default function GyikPage() {
           </div>
 
           <div className="flex flex-col items-center md:items-end gap-2">
-            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap">
               <Link href="/gyik" className="hover:text-[#0B5D3F] transition-colors">GYIK</Link>
               <Link href="/blog" className="hover:text-[#0B5D3F] transition-colors">Blog</Link>
               <Link href="/osszetevok" className="hover:text-[#0B5D3F] transition-colors">Összetevők</Link>
               <Link href="/adatkezeles" className="hover:text-[#0B5D3F] transition-colors">Adatkezelés</Link>
               <Link href="/altalanos-szerzodesi-feltetelek" className="hover:text-[#0B5D3F] transition-colors">ÁSZF</Link>
             </div>
-            <p className="text-xs text-gray-400 font-medium text-center md:text-right leading-relaxed">
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium text-center md:text-right leading-relaxed">
               © 2026 Rosti. Minden jog fenntartva.
             </p>
           </div>

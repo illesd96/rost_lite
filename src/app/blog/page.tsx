@@ -47,7 +47,7 @@ export default function BlogPage() {
   const monthsWithPosts = new Set(posts.map(p => p.month).filter(Boolean));
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 font-sans">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans">
       <SiteNavbar />
       <div className="container mx-auto max-w-4xl px-6 pt-28 pb-12">
         <Link
@@ -59,8 +59,8 @@ export default function BlogPage() {
         </Link>
 
         <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Rosti Blog</h1>
-          <p className="text-lg text-gray-500 font-medium">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">Rosti Blog</h1>
+          <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
             Tudományos háttér, tippek és érdekességek az egészséges irodai élethez.
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function BlogPage() {
             className={`px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all whitespace-nowrap
               ${selectedMonth === null
                 ? 'bg-[#0B5D3F] text-white shadow-md transform scale-105'
-                : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300'
               }`}
           >
             Összes
@@ -86,8 +86,8 @@ export default function BlogPage() {
                 ${selectedMonth === m.key
                   ? 'bg-[#0B5D3F] text-white shadow-md transform scale-105'
                   : monthsWithPosts.has(m.key)
-                    ? 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'
-                    : 'bg-gray-50 text-gray-300 cursor-not-allowed border border-gray-100'
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300'
+                    : 'bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed border border-gray-100 dark:border-gray-800'
                 }`}
             >
               {m.label}
@@ -97,11 +97,11 @@ export default function BlogPage() {
 
         {/* Posts Grid */}
         {loading ? (
-          <div className="text-center py-20 text-gray-400">Betöltés...</div>
+          <div className="text-center py-20 text-gray-400 dark:text-gray-500">Betöltés...</div>
         ) : filteredPosts.length === 0 ? (
           <div className="text-center py-20">
-            <h2 className="text-2xl font-bold text-gray-300 mb-2">Hamarosan érkezik...</h2>
-            <p className="text-gray-400">Még nincs bejegyzés ebben a hónapban.</p>
+            <h2 className="text-2xl font-bold text-gray-300 dark:text-gray-600 mb-2">Hamarosan érkezik...</h2>
+            <p className="text-gray-400 dark:text-gray-500">Még nincs bejegyzés ebben a hónapban.</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -109,10 +109,10 @@ export default function BlogPage() {
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
-                className="group block bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-1"
+                className="group block bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-1"
               >
                 <div className="p-8">
-                  <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                  <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
                     {post.monthLabel && (
                       <div className="flex items-center gap-1.5">
                         <Calendar size={14} className="text-[#0B5D3F]" />
@@ -126,11 +126,11 @@ export default function BlogPage() {
                       </div>
                     )}
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors">
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p className="text-gray-500 font-medium leading-relaxed line-clamp-3">
+                    <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed line-clamp-3">
                       {post.excerpt}
                     </p>
                   )}

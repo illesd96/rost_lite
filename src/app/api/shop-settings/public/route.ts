@@ -18,7 +18,6 @@ export async function GET() {
 
     return NextResponse.json(settingsMap);
   } catch (error) {
-    console.error('Error fetching public shop settings:', error);
     return NextResponse.json({});
   }
 }

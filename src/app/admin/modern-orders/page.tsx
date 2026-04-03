@@ -7,7 +7,7 @@ import { ModernOrdersList } from '@/components/admin/modern-orders-list';
 
 export default async function ModernOrdersPage() {
   const session = await getServerSession(authOptions);
-  
+
   if (!session || session.user.role !== 'admin') {
     redirect('/auth/signin');
   }
@@ -45,38 +45,38 @@ export default async function ModernOrdersPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Modern Shop Rendelések</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Modern Shop Rendelések</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Rendelések kezelése fizetési csoportokkal és szállítási ütemezéssel
           </p>
         </div>
-        <Package className="w-8 h-8 text-gray-400" />
+        <Package className="w-8 h-8 text-gray-400 dark:text-gray-500" />
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-gray-400">
-          <div className="text-sm text-gray-500">Összes rendelés</div>
-          <div className="text-2xl font-bold text-gray-900">{totalOrders}</div>
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-gray-400">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Összes rendelés</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{totalOrders}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-yellow-500">
-          <div className="text-sm text-gray-500">Függőben</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-yellow-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Függőben</div>
           <div className="text-2xl font-bold text-yellow-600">{pendingOrders}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500">
-          <div className="text-sm text-gray-500">Megerősített</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-green-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Megerősített</div>
           <div className="text-2xl font-bold text-green-600">{confirmedOrders}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
-          <div className="text-sm text-gray-500">Összes palack</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Összes palack</div>
           <div className="text-2xl font-bold text-blue-600">{totalBottles}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-emerald-500">
-          <div className="text-sm text-gray-500">Összes bevétel</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-emerald-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Összes bevétel</div>
           <div className="text-2xl font-bold text-emerald-600">{formatCurrency(totalRevenue)}</div>
         </div>
       </div>

@@ -24,7 +24,7 @@ export default async function AdminUsersPage() {
         .select({ count: count() })
         .from(orders)
         .where(eq(orders.userId, user.id));
-      
+
       const totalSpent = await db
         .select({ total: count() })
         .from(orders)
@@ -45,8 +45,8 @@ export default async function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-        <div className="flex items-center space-x-2 text-sm text-gray-500">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">User Management</h1>
+        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
           <Users className="w-4 h-4" />
           <span>{totalUsers} total users</span>
         </div>
@@ -54,11 +54,11 @@ export default async function AdminUsersPage() {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900">{totalUsers}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{totalUsers}</p>
             </div>
             <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
               <Users className="w-6 h-6 text-blue-600" />
@@ -66,23 +66,23 @@ export default async function AdminUsersPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Customers</p>
-              <p className="text-2xl font-bold text-gray-900">{customerUsers}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Customers</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{customerUsers}</p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
               <UserPlus className="w-6 h-6 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Admins</p>
-              <p className="text-2xl font-bold text-gray-900">{adminUsers}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Admins</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{adminUsers}</p>
             </div>
             <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
               <Users className="w-6 h-6 text-purple-600" />
@@ -91,13 +91,13 @@ export default async function AdminUsersPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             All Users ({totalUsers})
           </h2>
         </div>
-        
+
         <UserManagement users={userStats} />
       </div>
     </div>

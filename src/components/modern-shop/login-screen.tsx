@@ -64,66 +64,66 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
                 <ChevronDown size={24} strokeWidth={2.5} className="drop-shadow-md" />
             </div>
 
-            <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-100 text-left w-full max-w-lg">
-              <h2 className="text-3xl sm:text-4xl font-extrabold mb-3 text-gray-900 tracking-tight leading-tight">
+            <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 text-left w-full max-w-lg">
+              <h2 className="text-3xl sm:text-4xl font-extrabold mb-3 text-gray-900 dark:text-gray-100 tracking-tight leading-tight">
                 Minőség <span className="text-green-600">elsőként.</span>
               </h2>
 
-              <div className="h-1.5 w-16 bg-emerald-500 rounded-full mb-5"></div>
+              <div className="h-1.5 w-16 bg-emerald-50 dark:bg-emerald-900/200 rounded-full mb-5"></div>
               
-              <div className="text-lg leading-relaxed text-gray-700">
+              <div className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
                   <p>
                       Kézműves, nem tömegtermékkel dolgozunk. <br className="hidden sm:inline" />
                       <span className="text-green-600 font-bold">A prémium minőség garantálásához <br className="hidden sm:inline" />a Rosti vásárlói közösséget fokozatosan bővítjük.</span>
                   </p>
               </div>
 
-              <div className="border-t border-gray-100 my-5"></div>
+              <div className="border-t border-gray-100 dark:border-gray-800 my-5"></div>
 
-              <p className="text-sm text-gray-500 mb-3">Még nincs fiókod?</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Még nincs fiókod?</p>
 
               <button
                 type="button"
                 onClick={() => setShowWaitlist(true)}
-                className="flex items-center gap-4 border border-gray-200 rounded-2xl p-4 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all cursor-pointer group w-full text-left"
+                className="flex items-center gap-4 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all cursor-pointer group w-full text-left"
               >
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
-                  <Users className="w-6 h-6 text-gray-500 group-hover:text-emerald-600 transition-colors" />
+                <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+                  <Users className="w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-emerald-600 transition-colors" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Új partnereknek</p>
-                  <p className="text-sm font-semibold text-gray-900">Várólistára jelentkezem</p>
+                  <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Új partnereknek</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Várólistára jelentkezem</p>
                 </div>
               </button>
 
-              <p className="text-sm text-gray-500 mt-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
                 vagy <a href="mailto:rendeles@rosti.hu" className="font-bold text-green-600 hover:text-green-700 transition-colors no-underline">írj nekünk emailt</a>
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-md mx-auto border border-gray-100 relative text-left">
-            <button onClick={onBack} className="inline-flex items-center text-sm font-medium text-gray-400 hover:text-emerald-700 mb-8 transition-colors group focus:outline-none">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-md mx-auto border border-gray-100 dark:border-gray-800 relative text-left">
+            <button onClick={onBack} className="inline-flex items-center text-sm font-medium text-gray-400 dark:text-gray-500 hover:text-emerald-700 mb-8 transition-colors group focus:outline-none">
               <ChevronLeft className="h-4 w-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
               Vissza a főoldalra
             </button>
     
             <header className="mb-8 text-left">
-              <h1 className="text-3xl sm:text-5xl font-extrabold mb-3 text-gray-900 tracking-tight leading-tight whitespace-nowrap">
+              <h1 className="text-3xl sm:text-5xl font-extrabold mb-3 text-gray-900 dark:text-gray-100 tracking-tight leading-tight whitespace-nowrap">
                 <span className="text-green-600">Rosti</span> rendelés
               </h1>
-              <p className="text-gray-500 mt-2 text-sm text-left">Jelentkezz be a következő rendelésed leadásához</p>
+              <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm text-left">Jelentkezz be a következő rendelésed leadásához</p>
             </header>
     
             <form onSubmit={handleSubmit} className="space-y-5 text-left">
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 rounded-xl p-4">
                   <p className="text-red-700 text-sm font-medium">{error}</p>
                 </div>
               )}
               
               <div>
-                <label htmlFor="login-email" className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1 ml-1 text-left">Email cím</label>
+                <label htmlFor="login-email" className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1 ml-1 text-left">Email cím</label>
                 <input 
                   id="login-email" 
                   type="email" 
@@ -132,12 +132,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="írd be az email címed" 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 text-left disabled:opacity-50"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:bg-white focus:dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100 text-left disabled:opacity-50"
                 />
               </div>
     
               <div>
-                <label htmlFor="login-password" className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1 ml-1 text-left">Jelszó</label>
+                <label htmlFor="login-password" className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1 ml-1 text-left">Jelszó</label>
                 <div className="relative group">
                   <input 
                     id="login-password" 
@@ -147,14 +147,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="írd be a jelszavad" 
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900 disabled:opacity-50"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:bg-white focus:dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100 disabled:opacity-50"
                   />
                   
                   <button 
                     type="button" 
                     onClick={() => setShowPassword(!showPassword)} 
                     disabled={isLoading}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-emerald-600 transition-colors focus:outline-none disabled:opacity-50"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 dark:text-gray-500 hover:text-emerald-600 transition-colors focus:outline-none disabled:opacity-50"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
@@ -172,17 +172,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBack }) => {
               </div>
             </form>
     
-            <footer className="mt-10 text-center border-t border-gray-100 pt-8">
-              <p className="text-sm text-gray-500">
+            <footer className="mt-10 text-center border-t border-gray-100 dark:border-gray-800 pt-8">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Probléma a belépéssel?{' '}
-                <a href="mailto:rendeles@rosti.hu" className="font-bold text-gray-900 hover:text-emerald-700 transition-colors underline underline-offset-2">
+                <a href="mailto:rendeles@rosti.hu" className="font-bold text-gray-900 dark:text-gray-100 hover:text-emerald-700 transition-colors underline underline-offset-2">
                   Írj nekünk
                 </a>
               </p>
 
               <div
                 onClick={handleScrollDown}
-                className="mt-8 flex flex-col items-center justify-center text-gray-400 lg:hidden animate-bounce cursor-pointer hover:text-emerald-600 transition-colors"
+                className="mt-8 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 lg:hidden animate-bounce cursor-pointer hover:text-emerald-600 transition-colors"
               >
                   <span className="text-[10px] font-bold uppercase tracking-widest mb-1">Miért a Rosti?</span>
                   <ChevronDown size={20} strokeWidth={2.5} />

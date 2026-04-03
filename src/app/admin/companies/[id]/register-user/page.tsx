@@ -89,13 +89,13 @@ export default function RegisterUserPage() {
   };
 
   if (loading) {
-    return <div className="text-center py-20 text-gray-400">Betöltés...</div>;
+    return <div className="text-center py-20 text-gray-400 dark:text-gray-500">Betöltés...</div>;
   }
 
   if (!company) {
     return (
       <div className="text-center py-20">
-        <h2 className="text-xl font-bold text-gray-400 mb-4">Cég nem található</h2>
+        <h2 className="text-xl font-bold text-gray-400 dark:text-gray-500 mb-4">Cég nem található</h2>
         <Link href="/admin/companies" className="text-[#0B5D3F] font-bold hover:underline">Vissza a cégekhez</Link>
       </div>
     );
@@ -108,8 +108,8 @@ export default function RegisterUserPage() {
           <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check size={32} className="text-emerald-600" />
           </div>
-          <h2 className="text-2xl font-black text-gray-900 mb-2">Fiókok sikeresen létrehozva!</h2>
-          <p className="text-gray-500">Átirányítás...</p>
+          <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-2">Fiókok sikeresen létrehozva!</h2>
+          <p className="text-gray-500 dark:text-gray-400">Átirányítás...</p>
         </div>
       </div>
     );
@@ -122,12 +122,12 @@ export default function RegisterUserPage() {
           <ArrowLeft className="h-4 w-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
           Vissza a cégekhez
         </Link>
-        <h1 className="text-2xl font-black text-gray-900">Felhasználó regisztrálása</h1>
-        <p className="text-gray-500 mt-1">Cég: <span className="font-bold text-gray-900">{company.companyName}</span></p>
+        <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100">Felhasználó regisztrálása</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Cég: <span className="font-bold text-gray-900 dark:text-gray-100">{company.companyName}</span></p>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium flex items-center gap-2">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 text-sm font-medium flex items-center gap-2">
           <X size={16} /> {error}
         </div>
       )}
@@ -185,7 +185,7 @@ export default function RegisterUserPage() {
       {/* SUBMIT */}
       <div className="flex items-center justify-between pt-2">
         <button onClick={() => router.push('/admin/companies')}
-          className="px-6 py-3 text-gray-500 hover:text-gray-700 font-bold text-sm transition-colors">
+          className="px-6 py-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-bold text-sm transition-colors">
           Mégse
         </button>
         <button onClick={handleSubmit} disabled={saving}

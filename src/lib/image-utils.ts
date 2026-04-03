@@ -34,8 +34,6 @@ export function parseProductImages(imagesJson: string | null, imageUrl: string |
       });
     }
   } catch (error) {
-    console.error('Error parsing product images:', error);
-    
     // Fallback to legacy imageUrl on error
     if (imageUrl) {
       images.push({

@@ -96,7 +96,6 @@ export function BillingList({ paymentGroupsByDate }: BillingListProps) {
         // Refresh the page to show updated data
         window.location.reload();
       } catch (error) {
-        console.error('Error updating billing status:', error);
         alert('Failed to update billing status');
       }
     });

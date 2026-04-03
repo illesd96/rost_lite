@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import Link from 'next/link';
 import {
-  Building2, User, Plus, Lock, X, Check, ChevronDown, Save
+  Building2, User, Plus, Lock, X, Check, ChevronDown, Save, ArrowLeft
 } from 'lucide-react';
 
 interface Address {
@@ -105,8 +106,12 @@ function AddressForm({ data, onChange }: { data: Address; onChange: (field: keyo
   );
 }
 
-export default function NewCompanyPage() {
+export default function EditCompanyPage() {
   const router = useRouter();
+  const params = useParams();
+  const companyId = params.id as string;
+
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -125,9 +130,66 @@ export default function NewCompanyPage() {
   const [notifyMinutes, setNotifyMinutes] = useState<number>(60);
 
   // Contacts
-  const [contacts, setContacts] = useState<Contact[]>([
-    { name: '', phone: '+36', email: '', isPrimary: true },
-  ]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+
+  // Load company data
+  useEffect(() => {
+    fetch(`/api/admin/companies/${companyId}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then(({ company, contacts: dbContacts }) => {
+        setCompanyName(company.companyName || '');
+        setTaxId(company.taxId || '');
+        setGroupTaxId(company.groupTaxId || '');
+        setUseGroupTaxId(company.useGroupTaxId || false);
+        setBillingAddress({
+          postcode: company.billingPostcode || '',
+          city: company.billingCity || '',
+          streetName: company.billingStreetName || '',
+          streetType: company.billingStreetType || '',
+          houseNum: company.billingHouseNum || '',
+          building: company.billingBuilding || '',
+          floor: company.billingFloor || '',
+          door: company.billingDoor || '',
+          officeBuilding: company.billingOfficeBuilding || '',
+        });
+        setIsShippingSame(company.isShippingSame ?? true);
+        setShippingAddress({
+          postcode: company.shippingPostcode || '',
+          city: company.shippingCity || '',
+          streetName: company.shippingStreetName || '',
+          streetType: company.shippingStreetType || '',
+          houseNum: company.shippingHouseNum || '',
+          building: company.shippingBuilding || '',
+          floor: company.shippingFloor || '',
+          door: company.shippingDoor || '',
+          officeBuilding: company.shippingOfficeBuilding || '',
+        });
+        setEmailCC1(company.emailCC1 || '');
+        setEmailCC2(company.emailCC2 || '');
+        setInternalShippingNote(company.internalShippingNote || '');
+        setNotifyMinutes(company.notifyMinutes ?? 60);
+
+        if (dbContacts && dbContacts.length > 0) {
+          setContacts(dbContacts.map((c: { name: string; phone: string | null; email: string | null; isPrimary: boolean }) => ({
+            name: c.name || '',
+            phone: c.phone || '+36',
+            email: c.email || '',
+            isPrimary: c.isPrimary || false,
+          })));
+        } else {
+          setContacts([{ name: '', phone: '+36', email: '', isPrimary: true }]);
+        }
+
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Cég nem található.');
+        setLoading(false);
+      });
+  }, [companyId]);
 
   const updateBillingAddress = (field: keyof Address, value: string) => {
     setBillingAddress(prev => ({ ...prev, [field]: value }));
@@ -150,13 +212,10 @@ export default function NewCompanyPage() {
     setContacts(prev => prev.map((c, i) => i === index ? { ...c, [field]: value } : c));
   };
 
-  const handleTaxIdChange = (val: string) => {
-    setTaxId(val.replace(/[^0-9-]/g, ''));
-  };
-
   const handleSubmit = async () => {
     setSaving(true);
     setError(null);
+    setSuccess(false);
 
     const payload = {
       company: {
@@ -189,12 +248,11 @@ export default function NewCompanyPage() {
         notifyMinutes,
       },
       contacts: contacts.filter(c => c.name.trim()),
-      accounts: [],
     };
 
     try {
-      const response = await fetch('/api/admin/companies', {
-        method: 'POST',
+      const response = await fetch(`/api/admin/companies/${companyId}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -208,34 +266,46 @@ export default function NewCompanyPage() {
       }
 
       setSuccess(true);
-      setTimeout(() => router.push('/admin/companies'), 1500);
+      setSaving(false);
+      setTimeout(() => setSuccess(false), 3000);
     } catch {
       setError('Hiba történt a mentés során.');
       setSaving(false);
     }
   };
 
-  if (success) {
+  if (loading) {
+    return <div className="text-center py-20 text-gray-400 dark:text-gray-500">Betöltés...</div>;
+  }
+
+  if (error && !companyName) {
     return (
-      <div className="flex items-center justify-center py-32">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check size={32} className="text-emerald-600" />
-          </div>
-          <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-2">Cég sikeresen létrehozva!</h2>
-          <p className="text-gray-500 dark:text-gray-400">Átirányítás...</p>
-        </div>
+      <div className="text-center py-20">
+        <h2 className="text-xl font-bold text-gray-400 dark:text-gray-500 mb-4">{error}</h2>
+        <Link href="/admin/companies" className="text-[#0B5D3F] font-bold hover:underline">Vissza a cégekhez</Link>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 space-y-8">
-      <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100">Új cég regisztrációja</h1>
+      <div>
+        <Link href="/admin/companies" className="inline-flex items-center text-sm font-medium text-gray-400 hover:text-[#0B5D3F] mb-4 transition-colors group">
+          <ArrowLeft className="h-4 w-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
+          Vissza a cégekhez
+        </Link>
+        <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100">Cég szerkesztése</h1>
+      </div>
 
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 text-sm font-medium flex items-center gap-2">
           <X size={16} /> {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-700 text-sm font-medium flex items-center gap-2">
+          <Check size={16} /> Változások sikeresen mentve!
         </div>
       )}
 
@@ -254,7 +324,7 @@ export default function NewCompanyPage() {
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">Adószám</label>
-            <input type="text" value={taxId} onChange={e => handleTaxIdChange(e.target.value)} placeholder="12345678-1-42"
+            <input type="text" value={taxId} onChange={e => setTaxId(e.target.value.replace(/[^0-9-]/g, ''))} placeholder="12345678-1-42"
               className="w-full p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20" />
             <div className="mt-2 flex items-center gap-2">
               <input type="checkbox" id="groupTax" checked={useGroupTaxId}
@@ -324,7 +394,7 @@ export default function NewCompanyPage() {
           </div>
         </div>
 
-        {/* KAPCSOLATTARTÓK nested inside Cégadatok */}
+        {/* KAPCSOLATTARTÓK */}
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
             <div className="flex items-center justify-between mb-6">
@@ -377,12 +447,12 @@ export default function NewCompanyPage() {
         </div>
       </div>
 
-      {/* SUBMIT - Cég létrehozása */}
+      {/* SUBMIT */}
       <div className="flex items-center justify-between pt-2">
-        <button onClick={() => router.push('/admin/companies')}
+        <Link href="/admin/companies"
           className="px-6 py-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-bold text-sm transition-colors">
-          Mégse
-        </button>
+          Vissza
+        </Link>
         <button onClick={handleSubmit} disabled={saving || !companyName.trim()}
           className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all transform active:scale-95 ${
             saving || !companyName.trim()
@@ -397,7 +467,7 @@ export default function NewCompanyPage() {
           ) : (
             <>
               <Save size={20} />
-              Cég létrehozása
+              Változások mentése
             </>
           )}
         </button>

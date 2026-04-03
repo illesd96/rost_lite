@@ -1,17 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql, desc } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { qrCodeVisits } from '@/lib/db/schema';
 import { getClientIP } from '@/lib/analytics';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
+
+const VALID_PAGES = ['/', '/osszetevok'];
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 30 requests per minute per IP to prevent DB spam
+    const rateLimitResponse = rateLimit(`qr-analytics:${getClientIp(request)}`, { limit: 30, windowSeconds: 60 });
+    if (rateLimitResponse) return rateLimitResponse;
+
     const data = await request.json();
-    
+
     const { page, referrer, userAgent, timestamp, sessionId, isDirectVisit } = data;
-    
-    // Validate required fields
-    if (!page || !sessionId) {
+
+    // Validate required fields and page value
+    if (!page || !sessionId || !VALID_PAGES.includes(page)) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -34,7 +43,6 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error tracking QR code visit:', error);
     return NextResponse.json(
       { error: 'Failed to track visit' },
       { status: 500 }
@@ -44,8 +52,14 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
-    const days = parseInt(searchParams.get('days') || '30');
+    const rawDays = parseInt(searchParams.get('days') || '30', 10);
+    const days = Math.min(Math.max(isNaN(rawDays) ? 30 : rawDays, 1), 365);
     
     // Calculate date range
     const startDate = new Date();
@@ -62,7 +76,6 @@ export async function GET(request: NextRequest) {
         .orderBy(desc(qrCodeVisits.timestamp));
     } catch (innerError) {
       // If there is any driver/date binding issue, return without the filter as a fallback
-      console.warn('QR analytics query with date filter failed, retrying without filter:', innerError);
       visits = await db
         .select()
         .from(qrCodeVisits)
@@ -97,7 +110,6 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(stats);
   } catch (error) {
-    console.error('Error fetching QR analytics:', error);
     const isProd = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(

@@ -9,7 +9,7 @@ import { FileText } from 'lucide-react';
 
 export default async function BillingPage() {
   const session = await getServerSession(authOptions);
-  
+
   if (!session || session.user.role !== 'admin') {
     redirect('/auth/signin');
   }
@@ -19,7 +19,7 @@ export default async function BillingPage() {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const pastDateStr = thirtyDaysAgo.toISOString().split('T')[0];
-  
+
   const paymentGroups = await db.query.orderPaymentGroups.findMany({
     where: or(
       // Upcoming or current due dates (not paid/cancelled)
@@ -66,34 +66,34 @@ export default async function BillingPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Számlázás</h1>
-        <FileText className="w-6 h-6 text-gray-400" />
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Számlázás</h1>
+        <FileText className="w-6 h-6 text-gray-400 dark:text-gray-500" />
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-gray-400">
-          <div className="text-sm text-gray-500">Összes függőben</div>
-          <div className="text-2xl font-bold text-gray-900">{totalPending}</div>
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-gray-400">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Összes függőben</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{totalPending}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-orange-500">
-          <div className="text-sm text-gray-500">Számla létrehozandó</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-orange-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Számla létrehozandó</div>
           <div className="text-2xl font-bold text-orange-600">{billsToCreate}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
-          <div className="text-sm text-gray-500">Számla küldendő</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Számla küldendő</div>
           <div className="text-2xl font-bold text-blue-600">{billsToSend}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-amber-500">
-          <div className="text-sm text-gray-500">Fizetésre vár</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-amber-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Fizetésre vár</div>
           <div className="text-2xl font-bold text-amber-600">{awaitingPayment}</div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-emerald-500">
-          <div className="text-sm text-gray-500">Összérték (függőben)</div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 border-l-4 border-emerald-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Összérték (függőben)</div>
           <div className="text-2xl font-bold text-emerald-600">
             {new Intl.NumberFormat('hu-HU', { style: 'currency', currency: 'HUF', maximumFractionDigits: 0 }).format(totalAmount)}
           </div>

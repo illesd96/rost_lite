@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json<CouponValidationResult>(result);
 
   } catch (error) {
-    console.error('Coupon validation error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

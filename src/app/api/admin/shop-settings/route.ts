@@ -18,7 +18,6 @@ export async function GET() {
     const settings = await db.select().from(shopSettings);
     return NextResponse.json(settings);
   } catch (error) {
-    console.error('Error fetching shop settings:', error);
     return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
   }
 }
@@ -54,7 +53,6 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json(updated[0]);
   } catch (error) {
-    console.error('Error updating shop setting:', error);
     return NextResponse.json({ error: 'Failed to update setting' }, { status: 500 });
   }
 }

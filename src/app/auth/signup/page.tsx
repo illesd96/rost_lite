@@ -14,8 +14,8 @@ export default function SignUpRedirectPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">Átirányítás a bejelentkezési oldalra...</p>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+        <p className="text-gray-600 dark:text-gray-400">Átirányítás a bejelentkezési oldalra...</p>
       </div>
     </div>
   );

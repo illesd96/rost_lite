@@ -108,23 +108,23 @@ function PaymentSuccessContent() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800">
         <Loader2 className="w-16 h-16 text-emerald-600 animate-spin mb-6" />
-        <h2 className="text-xl font-bold text-gray-700">Fizetés ellenőrzése...</h2>
-        <p className="text-gray-500 mt-2">Kérjük, ne zárd be az ablakot.</p>
+        <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300">Fizetés ellenőrzése...</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-2">Kérjük, ne zárd be az ablakot.</p>
       </div>
     );
   }
 
   if (status === 'error') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
-        <div className="bg-white p-10 rounded-3xl shadow-lg max-w-md w-full text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 px-6">
+        <div className="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-lg max-w-md w-full text-center">
           <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <span className="text-3xl">⚠️</span>
           </div>
-          <h2 className="text-2xl font-black text-gray-900 mb-3">Fizetés feldolgozás alatt</h2>
-          <p className="text-gray-500 mb-6">
+          <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-3">Fizetés feldolgozás alatt</h2>
+          <p className="text-gray-500 dark:text-gray-400 mb-6">
             A fizetésed feldolgozás alatt van. Ha a fizetés sikeres volt, a rendelésed hamarosan megjelenik.
             Kérjük, ellenőrizd az e-mail fiókod.
           </p>

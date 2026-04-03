@@ -16,13 +16,6 @@ if (!connectionString) {
   );
 }
 
-console.log('Database connection environment:', {
-  NODE_ENV: process.env.NODE_ENV,
-  VERCEL_ENV: process.env.VERCEL_ENV,
-  hasDatabase: !!connectionString,
-  databaseHost: connectionString.includes('localhost') ? 'localhost' : 'remote'
-});
-
 // Configure postgres client based on environment
 const clientConfig: postgres.Options<{}> = {
   prepare: false, // Disable prefetch as it is not supported for "Transaction" pool mode

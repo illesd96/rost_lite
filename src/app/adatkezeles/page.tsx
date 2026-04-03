@@ -7,30 +7,30 @@ import { SiteNavbar } from '@/components/ui/site-navbar';
 
 export default function AdatkezelesPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <SiteNavbar />
 
       <main className="pt-28 pb-12 flex-grow">
         <div className="container mx-auto max-w-4xl px-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900">ADATKEZELÉSI TÁJÉKOZTATÓ</h1>
-              <p className="text-sm text-gray-500 mt-2">a Rosti B2B online felületének használatához<br />(2026. április 2. napjától hatályos)</p>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100">ADATKEZELÉSI TÁJÉKOZTATÓ</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">a Rosti B2B online felületének használatához<br />(2026. április 2. napjától hatályos)</p>
             </div>
             <a
               href="/documents/ROSTI – ADATKEZELÉSI.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#0B5D3F] hover:text-white transition-all shadow-sm shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#0B5D3F] hover:text-white transition-all shadow-sm shrink-0"
             >
               <Download size={14} strokeWidth={2.5} />
               PDF letöltés
             </a>
           </div>
 
-          <div className="space-y-8 leading-relaxed text-gray-700">
+          <div className="space-y-8 leading-relaxed text-gray-700 dark:text-gray-300">
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">I. Az Adatkezelő és elérhetőségei</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">I. Az Adatkezelő és elérhetőségei</h2>
               <ul className="list-disc pl-5 space-y-2">
                 <li><strong>Cégnév:</strong> DAB Tanácsadó Kft. (&ldquo;Adatkezelő&rdquo;)</li>
                 <li><strong>Székhely:</strong> 8200 Veszprém, Egry József utca 27. 1. em. 7. ajtó</li>
@@ -40,25 +40,25 @@ export default function AdatkezelesPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">II. Az adatvédelmi tisztviselő</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">II. Az adatvédelmi tisztviselő</h2>
               <p>Az Általános Adatvédelmi Rendelet (GDPR) 37. cikke szerint az Adatkezelő nem köteles külön adatvédelmi tisztviselőt kijelölni. Az adatvédelemmel kapcsolatos megkereséseket az I. pontban megadott e-mail címen fogadjuk.</p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">III. Az Adatkezelési Tájékoztató célja és hatálya</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">III. Az Adatkezelési Tájékoztató célja és hatálya</h2>
               <p className="mb-2">3.1. Jelen Adatkezelési Tájékoztató célja, hogy rögzítse az Adatkezelő által alkalmazott adatvédelmi és -kezelési elveket a Rosti webáruház (a továbbiakban: Weboldal) B2B (vállalkozások közötti) értékesítési folyamata során.</p>
               <p className="mb-2">3.2. Jelen tájékoztató kizárólag a természetes személyek (egyéni vállalkozók és céges kapcsolattartók) adatainak kezelésére vonatkozik, a jogi személyek (cégek) hivatalos adatai nem esnek a GDPR hatálya alá.</p>
               <p>3.3. Ellenkező tájékoztatás hiányában a Tájékoztató hatálya nem terjed ki olyan weboldalak, szolgáltatók adatkezeléseire, melyekre a Weboldalon található hivatkozás vezet. Az ilyen szolgáltatásokért az Adatkezelő semmilyen felelősséget nem vállal.</p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">IV. Az adatkezelés elvei és biztonsága</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">IV. Az adatkezelés elvei és biztonsága</h2>
               <p className="mb-2">4.1. Az Adatkezelő a személyes adatokat a jóhiszeműség, a tisztesség és az átláthatóság elveinek, valamint a hatályos jogszabályoknak megfelelően, kizárólag célhoz kötötten kezeli. A megadott adatok megfelelőségéért kizárólag az azt megadó személy (a Vállalkozás kapcsolattartója) felel.</p>
               <p>4.2. Az Adatkezelő gondoskodik a személyes adatok biztonságáról, megteszi azokat a technikai és szervezési intézkedéseket, amelyek megakadályozzák az adatok véletlen elvesztését, jogtalan megsemmisülését, jogosulatlan hozzáférését vagy megváltoztatását.</p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">V. A kezelt adatok köre, célja és jogalapja</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">V. A kezelt adatok köre, célja és jogalapja</h2>
 
               <div className="mb-6">
                 <h3 className="font-bold mb-2">1. Várólistára jelentkezés és Regisztráció</h3>
@@ -110,7 +110,7 @@ export default function AdatkezelesPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">VI. Adatfeldolgozók és Adattovábbítás</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">VI. Adatfeldolgozók és Adattovábbítás</h2>
               <p className="mb-4">Az Adatkezelő a szolgáltatások biztosításához az alábbi külsős partnereket (adatfeldolgozókat) veszi igénybe. Az Adatfeldolgozók önálló döntést nem hoznak, kizárólag az Adatkezelővel kötött szerződés és utasítások szerint jogosultak eljárni.</p>
               <ul className="list-disc pl-5 space-y-2">
                 <li><strong>1. Rackhost Zrt.</strong> (Székhely: 6722 Szeged, Tisza Lajos körút 41.) – Tárhelyszolgáltatás, a weboldal adatainak szerveres tárolása.</li>
@@ -124,17 +124,17 @@ export default function AdatkezelesPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">VII. Sütik (Cookies) kezelése</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">VII. Sütik (Cookies) kezelése</h2>
               <p>A Weboldal kizárólag olyan munkamenet és technikai sütiket (cookie-kat) használ, amelyek a webshop alapvető működéséhez, a biztonságos bejelentkezés fenntartásához és a kosár kezeléséhez elengedhetetlenek. A cookie-t a Felhasználó képes törölni saját számítógépéről, illetve beállíthatja böngészőjét a tiltásukra, azonban tudomásul veszi, hogy cookie nélkül a Weboldal működése nem teljes értékű. Analitikai vagy marketing célú (követő) sütiket a Weboldal jelenleg nem alkalmaz.</p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">VIII. Az Adatkezelési Tájékoztató módosítása</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">VIII. Az Adatkezelési Tájékoztató módosítása</h2>
               <p>Az Adatkezelő fenntartja magának a jogot, hogy a jelen Adatkezelési Tájékoztatót egyoldalú döntésével bármikor módosítsa. A módosításokról a Felhasználókat a Weboldalon történő közzététellel, vagy rendszerüzenetben tájékoztatja.</p>
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">IX. Információ az érintettek jogairól és jogorvoslatról</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">IX. Információ az érintettek jogairól és jogorvoslatról</h2>
               <p className="mb-4">Érintettként Ön a következő jogokkal rendelkezik a személyes adatai kezelésének tekintetében, amelyeket az I. pontban megadott e-mail címen (<a href="mailto:dab.tanacsado.kft@gmail.com" className="text-[#0B5D3F] hover:underline font-bold">dab.tanacsado.kft@gmail.com</a>) gyakorolhat:</p>
               <ul className="list-disc pl-5 space-y-2">
                 <li><strong>Hozzáférési jog (GDPR 15. cikk):</strong> Jogosult visszajelzést és részletes tájékoztatást kapni arról, hogy személyes adatainak kezelése folyamatban van-e, és ha igen, milyen adatokat, milyen célból kezelünk.</li>
@@ -176,20 +176,20 @@ export default function AdatkezelesPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 mt-auto relative">
+      <footer className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8 px-6 mt-auto relative">
         <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center gap-6 relative">
           <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
             <Image src="/images/logo.png" alt="Rosti" width={96} height={24} className="h-6 w-auto object-contain" />
           </div>
           <div className="flex flex-col items-center md:items-end gap-2">
-            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap">
               <Link href="/gyik" className="hover:text-[#0B5D3F] transition-colors">GYIK</Link>
               <Link href="/blog" className="hover:text-[#0B5D3F] transition-colors">Blog</Link>
               <Link href="/osszetevok" className="hover:text-[#0B5D3F] transition-colors">Összetevők</Link>
               <Link href="/adatkezeles" className="hover:text-[#0B5D3F] transition-colors">Adatkezelés</Link>
               <Link href="/altalanos-szerzodesi-feltetelek" className="hover:text-[#0B5D3F] transition-colors">ÁSZF</Link>
             </div>
-            <p className="text-xs text-gray-400 font-medium text-center md:text-right leading-relaxed">© 2026 Rosti. Minden jog fenntartva.</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium text-center md:text-right leading-relaxed">© 2026 Rosti. Minden jog fenntartva.</p>
           </div>
         </div>
       </footer>

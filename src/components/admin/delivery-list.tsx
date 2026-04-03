@@ -75,7 +75,6 @@ export function DeliveryList({ deliveriesByDate }: DeliveryListProps) {
         alert('Failed to generate delivery list');
       }
     } catch (error) {
-      console.error('Error generating delivery list:', error);
       alert('Error generating delivery list');
     } finally {
       setGeneratingDate(null);
