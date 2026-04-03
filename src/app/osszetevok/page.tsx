@@ -1,243 +1,266 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect } from 'react';
-import { Mail } from 'lucide-react';
-import { UnifiedNavbar } from '@/components/ui/unified-navbar';
-import { trackQRCodeVisit } from '@/lib/analytics';
+import { ArrowRight } from 'lucide-react';
+import { SiteNavbar } from '@/components/ui/site-navbar';
 
-
-// Ingredient data matching the photos
 const ingredients = [
   {
-    id: 'cekla',
     name: 'Cékla',
-    icon: '/images/emoji/beetroot.png', 
-    color: 'ingredient-beetroot',
-    description: 'Étrendi nitrátokkal és betalain antioxidánsokkal a vérkeringés támogatásáért'
+    benefit: 'Pörgeti a vérkeringést és az állóképességet.',
+    science: 'Étrendi nitrátokkal és betalain antioxidánsokkal.',
+    textColor: 'text-[#8F1A37]',
+    icon: 'https://raw.githubusercontent.com/bal1nt/rosti-img/4adef1f46a8eade083d70001cabf8a2f767f585b/tr_png_ce%CC%81kla.png',
+    scale: 'scale-[1.50] group-hover:scale-[1.60]',
   },
   {
-    id: 'sargarep',
     name: 'Sárgarépa',
-    icon: '/images/emoji/carrot.png',
-    color: 'ingredient-carrot',
-    description: 'Magas béta-karotin (A-vitamin) és élelmi rost tartalom a szép bőrért és jó látásért'
+    benefit: 'Ragyogó bőr és éles látás.',
+    science: 'Magas béta-karotin (A-vitamin) és élelmi rost tartalom.',
+    textColor: 'text-[#D28360]',
+    icon: 'https://raw.githubusercontent.com/bal1nt/rosti-img/4adef1f46a8eade083d70001cabf8a2f767f585b/tr_png_re%CC%81pa.png',
+    scale: 'scale-[1.70] group-hover:scale-[1.80]',
   },
   {
-    id: 'uborka',
     name: 'Uborka',
-    icon: '/images/emoji/cucumber.png',
-    color: 'ingredient-cucumber',
-    description: 'Elektrolitokban és természetes káliumban gazdag a megfelelő hidratációért'
+    benefit: 'Azonnali, mély sejtszintű hidratáció.',
+    science: 'Elektrolitokban és természetes káliumban gazdag.',
+    textColor: 'text-emerald-700',
+    icon: 'https://raw.githubusercontent.com/bal1nt/rosti-img/4adef1f46a8eade083d70001cabf8a2f767f585b/tr_png_uborka.png',
+    scale: 'scale-[1.25] group-hover:scale-[1.35]',
   },
   {
-    id: 'lilakaposzta',
-    name: 'Lilakáposzta',
-    icon: '/images/emoji/red-cabbage.png',
-    color: 'ingredient-berry',
-    description: 'Antociánok, C és K-vitamin, valamint glükozinolátok az erek és a szív védelméért'
-  },
-  {
-    id: 'citrom',
-    name: 'Citrom',
-    icon: '/images/emoji/lemon.png',
-    color: 'ingredient-citrus',
-    description: 'Magas C-vitaminnal támogatja az immunrendszert és segíti a növényi vas felszívódását'
-  },
-  {
-    id: 'zellergum',
     name: 'Zellergumó',
-    icon: '/images/emoji/celery.png',
-    color: 'ingredient-mint',
-    description: 'Természetes kálium-, K-vitamin- és élelmirost-forrás a csontok egészségéért'
+    benefit: 'Erős csontok és optimális vérnyomás.',
+    science: 'Természetes kálium-, K-vitamin- és élelmirost-forrás.',
+    textColor: 'text-[#ACAD50]',
+    icon: 'https://raw.githubusercontent.com/bal1nt/rosti-img/4adef1f46a8eade083d70001cabf8a2f767f585b/tr_png_zellergumo.png',
+    scale: 'group-hover:scale-110',
   },
   {
-    id: 'alma',
+    name: 'Lilakáposzta',
+    benefit: 'Páncél a szívnek és az ereknek.',
+    science: 'Antociánok, C és K-vitamin, valamint glükozinolátok.',
+    textColor: 'text-[#8C56B1]',
+    icon: 'https://raw.githubusercontent.com/bal1nt/rosti-img/4adef1f46a8eade083d70001cabf8a2f767f585b/tr_png_kaposzta.png',
+    scale: 'group-hover:scale-110',
+  },
+  {
+    name: 'Citrom',
+    benefit: 'Immun-löket és vas-felszívódás turbó.',
+    science: 'Magas C-vitaminnal támogatja az immunrendszert.',
+    textColor: 'text-[#DDAA00]',
+    icon: 'https://raw.githubusercontent.com/bal1nt/rosti-img/4adef1f46a8eade083d70001cabf8a2f767f585b/tr_png_citrom.png',
+    scale: 'group-hover:scale-110',
+  },
+  {
     name: 'Alma',
-    icon: '/images/emoji/red-apple.png',
-    color: 'ingredient-apple',
-    description: 'Antioxidánsai támogatják az immunrendszert, polifenoljai pedig a szív egészségét védik'
-  }
+    benefit: 'Természetes energia és szívvédelem.',
+    science: 'Antioxidánsai és polifenoljai védik a sejteket.',
+    textColor: 'text-[#E06666]',
+    icon: 'https://raw.githubusercontent.com/bal1nt/rosti-img/4adef1f46a8eade083d70001cabf8a2f767f585b/tr_png_alma.png',
+    scale: 'scale-[1.55] group-hover:scale-[1.65]',
+  },
+];
+
+const desktopOrders = [
+  'md:order-1',
+  'md:order-3',
+  'md:order-2',
+  'md:order-5',
+  'md:order-4',
+  'md:order-7',
+  'md:order-8',
 ];
 
 export default function OsszetevokPage() {
-  // Track QR code visits on page load
-  useEffect(() => {
-    trackQRCodeVisit('/osszetevok');
-  }, []);
-
   return (
-    <div className="min-h-screen bg-rosti-cream">
-      {/* Unified Navigation with Back Button */}
-      <UnifiedNavbar showBackButton={true} backHref="/" backText="Vissza" />
+    <div className="min-h-screen bg-white flex flex-col">
+      <SiteNavbar />
 
-      {/* Main Content */}
-      <main className="py-12 pt-28">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Title Section */}
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              A mai friss összetevők 
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Ezek a vibráló, friss és nyers összetevők a kezedben tartott Rostiban
-            </p>
-          </div>
+      <main className="pt-28 pb-12 flex-grow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
-          {/* Ingredients Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-            {ingredients.map((ingredient) => (
-              <div 
-                key={ingredient.id}
-                className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className={`p-3 rounded-full bg-${ingredient.color}/10 flex-shrink-0 flex items-center justify-center`}>
-                    {ingredient.icon.startsWith('/') ? (
-                      <Image
-                        src={ingredient.icon}
-                        alt={ingredient.name}
-                        width={48}
-                        height={48}
-                        className="w-12 h-12 object-contain"
-                      />
-                    ) : (
-                      <span className="text-4xl">{ingredient.icon}</span>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                      {ingredient.name}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      {ingredient.description}
-                    </p>
-                  </div>
+            {/* Left Content */}
+            <div className="space-y-12">
+              <div>
+                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                  AMIT MOST A KEZEDBEN TARTASZ
+                </h2>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] xl:text-[4.25rem] font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-2 md:mb-6">
+                  5 Zöldség.<br />
+                  <span className="text-[#0B5D3F] whitespace-nowrap">Friss és nyers.</span>
+                </h1>
+
+                {/* Mobile Bottle Image */}
+                <div className="lg:hidden mt-2 mb-6 flex justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://raw.githubusercontent.com/bal1nt/rosti-img/main/Rosti%20HomePage%20bottle_P_tr.png"
+                    alt="Rosti 5 zöldséges friss, nyers zöldség-smoothie"
+                    className="w-full max-w-[220px] sm:max-w-[260px] h-auto object-contain drop-shadow-2xl"
+                  />
+                </div>
+
+                <div className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed max-w-xl mb-8 text-justify space-y-4">
+                  <p>
+                    A legdurvább munkanapokon senkinek sincs ideje zöldségeket darabolni. Ezért mi elvégeztük a nehezét.
+                  </p>
+                  <p>
+                    Ha valódi táplálékra vágysz a szuperfeldolgozott üres kalóriák helyett, megtaláltad.
+                  </p>
+                  <p>
+                    Ez nem egy híg, szűrt juice, hanem egy tartalmas, rostokkal teli zöldség-smoothie.
+                  </p>
                 </div>
               </div>
-            ))}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                {ingredients.map((item, index) => (
+                  <React.Fragment key={index}>
+                    {index === 5 && (
+                      <div className="col-span-1 md:col-span-2 py-2 mt-2 md:order-6">
+                        <div className="h-px bg-gray-200 w-full"></div>
+                      </div>
+                    )}
+                    <div
+                      className={`group flex items-center gap-5 p-5 rounded-3xl border border-gray-100 bg-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${desktopOrders[index]}`}
+                    >
+                      <div className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center bg-[#EDF7F3] overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={item.icon}
+                          alt={item.name}
+                          className={`w-[95%] h-[95%] object-contain drop-shadow-md transition-transform duration-300 ${item.scale}`}
+                        />
+                      </div>
+                      <div>
+                        <h3 className={`text-xl font-black tracking-tight ${item.textColor}`}>
+                          {item.name}
+                        </h3>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Content - Sticky Bottle (desktop only) */}
+            <div className="hidden lg:flex sticky top-32 h-[calc(100vh-8rem)] items-center justify-center">
+              <div className="relative w-full h-full max-h-[800px] flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://raw.githubusercontent.com/bal1nt/rosti-img/main/Rosti%20HomePage%20bottle_P_tr.png"
+                  alt="Rosti 5 zöldséges friss, nyers zöldség-smoothie"
+                  className="relative z-10 w-auto h-full max-h-[800px] object-contain"
+                  style={{ filter: 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))' }}
+                />
+              </div>
+            </div>
+
           </div>
 
-          {/* Why Fiber is Important Section */}
-          <div className="bg-rosti-gold rounded-3xl p-8 md:p-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-              MIÉRT FONTOS A <span className="text-rosti-fiber-green">ROST?</span>
-            </h2>
-            
-            <div className="max-w-4xl mx-auto mb-8">
-              <p className="text-lg md:text-xl text-white leading-relaxed mb-6">
-                A rost hozzájárul a <strong>jóllakottság</strong> érzéséhez, támogatja az <strong>egészséges emésztést</strong> és létfontosságú 
-                szerepet játszik a <strong>bélrendszer</strong>, valamint a <strong>vércukorszint</strong> megfelelő működésében.
-              </p>
-              
-              <p className="text-lg md:text-xl text-rosti-cream leading-relaxed mb-8">
-                A tudomány jelenlegi állása szerint a <strong className="text-rosti-fiber-green">megfelelő rostbevitel</strong><br />
-                az egyik legerősebb prevenciós tényező a <strong className="text-rosti-disease-red">krónikus betegségek ellen.</strong>
+          {/* Blog Section */}
+          <div className="mt-10 max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h3 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-4">Vágj rendet az egészség-zajban</h3>
+              <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                A táplálkozási tanácsok gyakran ellentmondásosak, de a tények nem.<br className="hidden md:block" />
+                Tegyél különbséget a trendek és a valóság között.
               </p>
             </div>
 
-            {/* Scientific Sources */}
-            <div className="mt-6 text-sm text-center text-rosti-fiber-green">
-              <h4 className="font-semibold mb-2 text-rosti-fiber-green">Tudományos források:</h4>
-              <div className="flex flex-wrap justify-center items-center gap-x-2 text-rosti-fiber-green">
-                <span className="text-rosti-fiber-green">Frontiers in Nutrition</span>
-                <a
-                  href="https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2024.1510564/full"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [1]
-                </a>
-                <span className="text-rosti-fiber-green">|</span>
-                <span className="text-rosti-fiber-green">Cell Host & Microbe</span>
-                <a
-                  href="https://www.cell.com/cell-host-microbe/fulltext/S193131281830266X"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [2]
-                </a>
-                <span className="text-rosti-fiber-green">|</span>
-                <span className="text-rosti-fiber-green">News-Medical.net</span>
-                <a
-                  href="https://www.news-medical.net/health/The-Role-of-Fiber-in-Preventing-Chronic-Disease.aspx"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [3]
-                </a>
-              </div>
-              <div className="flex flex-wrap justify-center items-center gap-x-2 mt-2 text-rosti-fiber-green">
-                <span className="text-rosti-fiber-green">National Library of Medicine</span>
-                <a
-                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10498976"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [4]
-                </a>
-                <a
-                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9268622"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [5]
-                </a>
-                <span className="text-rosti-fiber-green">|</span>
-                <span className="text-rosti-fiber-green">PubMed</span>
-                <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/35471164/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [6]
-                </a>
-                <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/36193993/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [7]
-                </a>
-                <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/32142510/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-rosti-fiber-green underline hover:no-underline"
-                >
-                  [8]
-                </a>
-              </div>
+            <div className="grid md:grid-cols-2 gap-6 mb-10">
+              <Link
+                href="/blog"
+                className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">Juice vagy smoothie: mi a különbség?</h4>
+                <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                  Még a 100%-os gyümölcs juice is hirtelen vércukorszint-emelkedést okozhat. A zöldségekből készült, rostban gazdag smoothie azonban lassítja a felszívódást...
+                </p>
+                <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
+                  ELOLVASOM <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+
+              <Link
+                href="/blog"
+                className="group bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                <h4 className="text-xl font-black text-gray-900 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">3 ok, amiért a testnek rostra van szüksége</h4>
+                <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                  Sokan úgy nőttek fel, hogy a rostfogyasztás egyetlen célja az emésztés &ldquo;rendben tartása&rdquo;. A modern orvostudomány szerint a rost a bélflóra igazi védőpajzsa...
+                </p>
+                <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
+                  ELOLVASOM <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            </div>
+
+            <div className="flex justify-center">
+              <Link
+                href="/blog"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-50 border border-gray-200 rounded-full text-gray-600 hover:bg-white hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-md"
+              >
+                <span className="font-black text-xs uppercase tracking-widest">
+                  Tudomány, közhelyek nélkül
+                </span>
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </div>
+        </div>
 
-          {/* Call to Action */}
-          <div className="text-center mt-16">
-            <a
-              href="mailto:hello@rosti.hu?subject=Kérdés/Vélemény a Rosti termékekről&body=Kedves Rosti csapat!%0D%0A%0D%0AKérdésem/véleményem:%0D%0A%0D%0A[Itt írd le a kérdésed vagy véleményed]%0D%0A%0D%0AKöszönettel,%0D%0A[Név]"
-              className="inline-flex items-center px-8 py-4 bg-rosti-brown text-white font-semibold rounded-xl hover:bg-rosti-brown-dark transition-colors duration-200 shadow-lg"
-            >
-              <Mail className="w-5 h-5 mr-2" />
-              Kérdésem vagy véleményem van
-            </a>
-          </div>
+        {/* CTA */}
+        <div className="py-10 flex flex-col items-center text-center">
+          <Link
+            href="/modern-shop"
+            className="group flex flex-col sm:flex-row items-center gap-4"
+          >
+            <span className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
+              <span>FELTÖLTÖM A HŰTŐT</span>
+              <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://i.imgur.com/h8taJcy.png"
+              alt="Friss zöldségek"
+              className="h-16 sm:h-20 w-auto object-contain transition-transform duration-300 drop-shadow-sm group-hover:scale-110 group-hover:-rotate-3"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          </Link>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-rosti-brown-dark text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-gray-300 text-sm">
-              &copy; 2025 Rosti. Minden jog fenntartva.
+      <footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 mt-auto relative">
+        <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center gap-6 relative">
+          <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+            <Image
+              src="/images/logo.png"
+              alt="Rosti"
+              width={96}
+              height={24}
+              className="h-6 w-auto object-contain"
+            />
+          </div>
+
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+              <Link href="/gyik" className="hover:text-[#0B5D3F] transition-colors">GYIK</Link>
+              <Link href="/blog" className="hover:text-[#0B5D3F] transition-colors">Blog</Link>
+              <Link href="/osszetevok" className="hover:text-[#0B5D3F] transition-colors">Összetevők</Link>
+              <Link href="/dokumentumok/adatvedelmi" className="hover:text-[#0B5D3F] transition-colors">Adatkezelés</Link>
+              <Link href="/dokumentumok/aszf" className="hover:text-[#0B5D3F] transition-colors">ÁSZF</Link>
+            </div>
+            <p className="text-xs text-gray-400 font-medium text-center md:text-right leading-relaxed">
+              © 2026 Rosti. Minden jog fenntartva.
             </p>
           </div>
         </div>
