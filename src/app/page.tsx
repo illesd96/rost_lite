@@ -468,13 +468,13 @@ export default function HomePage() {
                   Összetevők
                 </Link>
                 <Link
-                  href="/dokumentumok/adatvedelmi"
+                  href="/adatkezeles"
                   className="hover:text-[#0B5D3F] transition-colors"
                 >
                   Adatkezelés
                 </Link>
                 <Link
-                  href="/dokumentumok/aszf"
+                  href="/altalanos-szerzodesi-feltetelek"
                   className="hover:text-[#0B5D3F] transition-colors"
                 >
                   ÁSZF

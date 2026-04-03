@@ -158,8 +158,8 @@ export default function GyikPage() {
               <Link href="/gyik" className="hover:text-[#0B5D3F] transition-colors">GYIK</Link>
               <Link href="/blog" className="hover:text-[#0B5D3F] transition-colors">Blog</Link>
               <Link href="/osszetevok" className="hover:text-[#0B5D3F] transition-colors">Összetevők</Link>
-              <Link href="/dokumentumok/adatvedelmi" className="hover:text-[#0B5D3F] transition-colors">Adatkezelés</Link>
-              <Link href="/dokumentumok/aszf" className="hover:text-[#0B5D3F] transition-colors">ÁSZF</Link>
+              <Link href="/adatkezeles" className="hover:text-[#0B5D3F] transition-colors">Adatkezelés</Link>
+              <Link href="/altalanos-szerzodesi-feltetelek" className="hover:text-[#0B5D3F] transition-colors">ÁSZF</Link>
             </div>
             <p className="text-xs text-gray-400 font-medium text-center md:text-right leading-relaxed">
               © 2026 Rosti. Minden jog fenntartva.
