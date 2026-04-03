@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Building2, User, Plus, Save, Lock, UserPlus, X, Check, ChevronDown
+  Building2, User, Plus, Lock, X, Check, ChevronDown, Save
 } from 'lucide-react';
 
 interface Address {
@@ -23,11 +23,6 @@ interface Contact {
   phone: string;
   email: string;
   isPrimary: boolean;
-}
-
-interface Account {
-  email: string;
-  password: string;
 }
 
 const EMPTY_ADDRESS: Address = {
@@ -134,11 +129,6 @@ export default function NewCompanyPage() {
     { name: '', phone: '+36', email: '', isPrimary: true },
   ]);
 
-  // Accounts
-  const [accounts, setAccounts] = useState<Account[]>([
-    { email: '', password: '' },
-  ]);
-
   const updateBillingAddress = (field: keyof Address, value: string) => {
     setBillingAddress(prev => ({ ...prev, [field]: value }));
   };
@@ -160,27 +150,8 @@ export default function NewCompanyPage() {
     setContacts(prev => prev.map((c, i) => i === index ? { ...c, [field]: value } : c));
   };
 
-  const addAccount = () => {
-    setAccounts(prev => [...prev, { email: '', password: '' }]);
-  };
-
-  const removeAccount = (index: number) => {
-    if (accounts.length <= 1) return;
-    setAccounts(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const updateAccount = (index: number, field: keyof Account, value: string) => {
-    setAccounts(prev => prev.map((a, i) => i === index ? { ...a, [field]: value } : a));
-  };
-
-  // Auto-set password from taxId
   const handleTaxIdChange = (val: string) => {
-    const formatted = val.replace(/[^0-9-]/g, '');
-    setTaxId(formatted);
-    // Update first account password if it's still empty or was auto-generated
-    if (accounts.length > 0 && (!accounts[0].password || accounts[0].password === taxId)) {
-      updateAccount(0, 'password', formatted);
-    }
+    setTaxId(val.replace(/[^0-9-]/g, ''));
   };
 
   const handleSubmit = async () => {
@@ -218,7 +189,7 @@ export default function NewCompanyPage() {
         notifyMinutes,
       },
       contacts: contacts.filter(c => c.name.trim()),
-      accounts: accounts.filter(a => a.email.trim() && a.password.trim()),
+      accounts: [],
     };
 
     try {
@@ -406,76 +377,26 @@ export default function NewCompanyPage() {
         </div>
       </div>
 
-      {/* FIÓK LÉTREHOZÁSA */}
-      <div className="bg-gray-900 p-8 rounded-3xl border border-gray-800 shadow-xl text-white">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-black flex items-center gap-3">
-            <Lock className="text-emerald-400" />
-            Fiók létrehozása
-          </h2>
-          <button onClick={addAccount}
-            className="flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:bg-emerald-400/10 px-3 py-2 rounded-lg transition-colors">
-            <Plus size={14} /> Új fiók
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {accounts.map((account, i) => (
-            <div key={i} className="bg-gray-800 p-5 rounded-xl border border-gray-700 relative">
-              {accounts.length > 1 && (
-                <button onClick={() => removeAccount(i)}
-                  className="absolute top-3 right-3 p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors">
-                  <X size={14} />
-                </button>
-              )}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Bejelentkezési Email</label>
-                  <input type="email" value={account.email}
-                    onChange={e => updateAccount(i, 'email', e.target.value)}
-                    className="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white outline-none focus:border-emerald-500" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Jelszó (Kezdeti)</label>
-                  <div className="relative">
-                    <input type="text" value={account.password}
-                      onChange={e => updateAccount(i, 'password', e.target.value)}
-                      className="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white font-mono tracking-wider outline-none focus:border-emerald-500" />
-                    {taxId && (
-                      <button onClick={() => updateAccount(i, 'password', taxId)}
-                        className="absolute right-2 top-2.5 p-1 text-[10px] bg-gray-700 hover:bg-gray-600 rounded text-gray-300 font-bold">
-                        Adószám
-                      </button>
-                    )}
-                  </div>
-                  <p className="text-[10px] text-gray-500 mt-2">Az ügyfél az első bejelentkezéskor köteles módosítani.</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* SUBMIT */}
-      <div className="flex items-center justify-end gap-4 pt-4">
+      {/* SUBMIT - Cég létrehozása */}
+      <div className="flex items-center justify-between pt-2">
         <button onClick={() => router.push('/admin/companies')}
           className="px-6 py-3 text-gray-500 hover:text-gray-700 font-bold text-sm transition-colors">
           Mégse
         </button>
         <button onClick={handleSubmit} disabled={saving || !companyName.trim()}
-          className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold shadow-lg transition-all transform active:scale-95 ${
+          className={`flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all transform active:scale-95 ${
             saving || !companyName.trim()
               ? 'bg-gray-300 text-gray-400 cursor-not-allowed'
               : 'bg-[#0B5D3F] hover:bg-[#147A55] text-white'
           }`}>
           {saving ? (
             <>
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
               Mentés...
             </>
           ) : (
             <>
-              <UserPlus size={18} />
+              <Save size={20} />
               Cég létrehozása
             </>
           )}

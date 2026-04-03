@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Building2, Plus } from 'lucide-react';
+import { Building2, Plus, UserPlus } from 'lucide-react';
 
 interface Company {
   id: string;
@@ -61,6 +61,13 @@ export default function CompaniesPage() {
                   <span>{new Date(company.createdAt).toLocaleDateString('hu-HU')}</span>
                 </div>
               </div>
+              <Link
+                href={`/admin/companies/${company.id}/register-user`}
+                className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#0B5D3F] hover:bg-[#0B5D3F]/10 px-3 py-2 rounded-lg transition-colors"
+              >
+                <UserPlus size={14} />
+                Felhasználó regisztrálása
+              </Link>
             </div>
           ))}
         </div>

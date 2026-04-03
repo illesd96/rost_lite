@@ -17,6 +17,10 @@
       "Bash(grep -oP '.{0,500}Egészség az irodában.{0,500}' /tmp/demo-bundle.js)",
       "Bash(grep -o '.\\\\{0,500\\\\}Egészség az irodában.\\\\{0,1500\\\\}' /tmp/demo-bundle.js)",
       "Bash(git ls-tree:*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Projects\\cursor\\WebShop\\src\\app\\admin\\companies\\[id]",
+      "C:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\companies\\[id]"
     ]
   }
 }
