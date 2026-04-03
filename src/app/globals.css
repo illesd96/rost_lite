@@ -88,13 +88,9 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
+/* Dark mode override removed - app uses light theme only.
+   The previous dark foreground (white text) caused white-on-white
+   in inputs that don't set an explicit text color. */
 
 body {
   color: rgb(var(--foreground-rgb));

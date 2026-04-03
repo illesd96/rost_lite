@@ -16,7 +16,9 @@
       "Bash(grep -oE '\"[^\"]{5,300}\"' /tmp/demo-bundle.js)",
       "Bash(grep -oP '.{0,500}Egészség az irodában.{0,500}' /tmp/demo-bundle.js)",
       "Bash(grep -o '.\\\\{0,500\\\\}Egészség az irodában.\\\\{0,1500\\\\}' /tmp/demo-bundle.js)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")",
+      "Bash(grep -rn \"className=.*{.*text.*white\\\\|className=.*\\\\`.*text.*white\" /c/Projects/cursor/WebShop/src --include=\"*.tsx\")"
     ],
     "additionalDirectories": [
       "C:\\Projects\\cursor\\WebShop\\src\\app\\admin\\companies\\[id]",
