@@ -66,7 +66,7 @@ export default function WaitlistPage() {
     try {
       const res = await fetch('/api/admin/waitlist');
       const data = await res.json();
-      setEntries(data);
+      if (Array.isArray(data)) setEntries(data);
     } catch { /* ignore */ } finally {
       setLoading(false);
     }

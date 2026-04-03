@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Calendar, Clock } from 'lucide-react';
 import { SiteNavbar } from '@/components/ui/site-navbar';
@@ -47,7 +48,7 @@ export default function BlogPage() {
   const monthsWithPosts = new Set(posts.map(p => p.month).filter(Boolean));
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans flex flex-col">
       <SiteNavbar />
       <div className="container mx-auto max-w-4xl px-6 pt-28 pb-12">
         <Link
@@ -164,6 +165,34 @@ export default function BlogPage() {
           </Link>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8 px-6 mt-auto relative">
+        <div className="container mx-auto max-w-6xl flex flex-col md:flex-row justify-between items-center gap-6 relative">
+          <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer">
+            <Image
+              src="/images/logo.png"
+              alt="Rosti"
+              width={96}
+              height={24}
+              className="h-6 w-auto object-contain"
+            />
+          </div>
+
+          <div className="flex flex-col items-center md:items-end gap-2">
+            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest whitespace-nowrap">
+              <Link href="/gyik" className="hover:text-[#0B5D3F] transition-colors">GYIK</Link>
+              <Link href="/blog" className="hover:text-[#0B5D3F] transition-colors">Blog</Link>
+              <Link href="/osszetevok" className="hover:text-[#0B5D3F] transition-colors">Összetevők</Link>
+              <Link href="/adatkezeles" className="hover:text-[#0B5D3F] transition-colors">Adatkezelés</Link>
+              <Link href="/altalanos-szerzodesi-feltetelek" className="hover:text-[#0B5D3F] transition-colors">ÁSZF</Link>
+            </div>
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium text-center md:text-right leading-relaxed">
+              © 2026 Rosti. Minden jog fenntartva.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

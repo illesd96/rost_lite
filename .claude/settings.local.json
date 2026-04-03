@@ -12,7 +12,9 @@
       "Bash(ls -lht /c/Projects/cursor/WebShop/drizzle/*.sql)",
       "Bash(xargs ls:*)",
       "Bash(ls drizzle/*.sql)",
-      "Bash(ls -la /c/Projects/cursor/WebShop/src/app/admin/*/page.tsx)"
+      "Bash(ls -la /c/Projects/cursor/WebShop/src/app/admin/*/page.tsx)",
+      "Bash(ls -la /c/Projects/cursor/WebShop/src/app/blog/[slug]/)",
+      "Bash(grep -l \"footer\" /c/Projects/cursor/WebShop/src/app/**/page.tsx)"
     ],
     "additionalDirectories": [
       "c:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\waitlist"
