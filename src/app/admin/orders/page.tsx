@@ -24,7 +24,7 @@ export default async function AdminOrdersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Order Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Order Management</h1>
         <a
           href="/api/admin/orders/export"
           className="inline-flex items-center px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors duration-200"
@@ -34,13 +34,13 @@ export default async function AdminOrdersPage() {
         </a>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-950/50">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             All Orders ({allOrders.length})
           </h2>
         </div>
-        
+
         <OrderManagement orders={allOrders} />
       </div>
     </div>

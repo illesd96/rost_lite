@@ -24,7 +24,7 @@ export function Navbar() {
   if (!session) return null;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200/20 transition-all duration-300">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm dark:shadow-gray-950/50 border-b border-gray-200/20 dark:border-gray-700/20 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -42,20 +42,20 @@ export function Navbar() {
           <div className="flex items-center space-x-6">
             <Link
               href="/modern-shop"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               Shop
             </Link>
             <Link
               href="/orders"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+              className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               Orders
             </Link>
-            
+
             <Link
               href="/cart"
-              className="relative text-gray-700 hover:text-gray-900 p-1 rounded-lg transition-colors"
+              className="relative text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 p-1 rounded-lg transition-colors"
             >
               <WebshopIcon className="w-6 h-6" />
               {isClient && totalItems > 0 && (
@@ -68,18 +68,18 @@ export function Navbar() {
             {session.user.role === 'admin' && (
               <Link
                 href="/admin"
-                className="text-gray-700 hover:text-gray-900 p-2 rounded-lg transition-colors"
+                className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 p-2 rounded-lg transition-colors"
               >
                 <Settings className="w-5 h-5" />
               </Link>
             )}
 
-            <div className="flex items-center space-x-3 bg-gray-100 rounded-lg px-3 py-2">
-              <User className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-700 font-medium">{session.user.email}</span>
+            <div className="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 rounded-lg px-3 py-2">
+              <User className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{session.user.email}</span>
               <button
                 onClick={handleSignOut}
-                className="text-gray-500 hover:text-red-600 p-1 rounded-md transition-colors"
+                className="text-gray-500 dark:text-gray-400 hover:text-red-600 p-1 rounded-md transition-colors"
                 title="Sign out"
               >
                 <LogOut className="w-4 h-4" />

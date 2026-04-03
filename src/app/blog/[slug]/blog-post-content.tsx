@@ -21,12 +21,12 @@ interface BlogPost {
 
 export function BlogPostContent({ post }: { post: BlogPost }) {
   return (
-    <div className="min-h-screen bg-white text-gray-800 font-sans">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans">
       <SiteNavbar />
       <div className="container mx-auto max-w-4xl px-6 pt-28 pb-12">
         <Link
           href="/blog"
-          className="flex items-center gap-2 text-[#0B5D3F] font-bold mb-8 hover:underline"
+          className="flex items-center gap-2 text-[#0B5D3F] dark:text-emerald-400 font-bold mb-8 hover:underline"
         >
           <ArrowLeft size={20} />
           Vissza a blogra
@@ -34,24 +34,24 @@ export function BlogPostContent({ post }: { post: BlogPost }) {
 
         <article className="prose prose-lg max-w-none">
           <header className="mb-10">
-            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
               {post.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-gray-500 uppercase tracking-wide">
+            <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
               {post.monthLabel && (
                 <div className="flex items-center gap-2">
-                  <Calendar size={16} className="text-[#0B5D3F]" />
+                  <Calendar size={16} className="text-[#0B5D3F] dark:text-emerald-400" />
                   <span>2026. {post.monthLabel}</span>
                 </div>
               )}
               {post.readingTime && (
                 <div className="flex items-center gap-2">
-                  <Clock size={16} className="text-[#0B5D3F]" />
+                  <Clock size={16} className="text-[#0B5D3F] dark:text-emerald-400" />
                   <span>{post.readingTime}</span>
                 </div>
               )}
               {post.authorName && (
-                <div className="text-gray-400">
+                <div className="text-gray-400 dark:text-gray-500">
                   Írta: {post.authorName}
                 </div>
               )}
@@ -59,7 +59,7 @@ export function BlogPostContent({ post }: { post: BlogPost }) {
           </header>
 
           <div
-            className="space-y-6 leading-relaxed text-gray-700 text-lg blog-content"
+            className="space-y-6 leading-relaxed text-gray-700 dark:text-gray-300 text-lg blog-content"
             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           />
 
@@ -147,6 +147,25 @@ export function BlogPostContent({ post }: { post: BlogPost }) {
         }
         .blog-content sup {
           font-style: normal;
+        }
+
+        /* Dark mode overrides for blog content */
+        .dark .blog-content h2,
+        .dark .blog-content h3 {
+          color: #F3F4F6;
+        }
+        .dark .blog-content blockquote {
+          color: #9CA3AF;
+        }
+        .dark .blog-content a {
+          color: #34D399;
+        }
+        .dark .blog-content .conclusion {
+          background-color: #1F2937;
+          border-color: #374151;
+        }
+        .dark .blog-content li::marker {
+          color: #34D399;
         }
       `}</style>
     </div>

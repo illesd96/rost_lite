@@ -35,7 +35,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/products/${params.id}`);
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           setError('Product not found');
@@ -59,7 +59,7 @@ export default function ProductPage({ params }: ProductPageProps) {
       <div className="min-h-screen bg-brand-cream-bg flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading product...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading product...</p>
         </div>
       </div>
     );
@@ -69,7 +69,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     return (
       <div className="min-h-screen bg-brand-cream-bg flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             {error || 'Product not found'}
           </h1>
           <Link
@@ -84,17 +84,17 @@ export default function ProductPage({ params }: ProductPageProps) {
     );
   }
 
-  const currentPrice = product.onSale && product.salePriceHuf 
-    ? product.salePriceHuf 
+  const currentPrice = product.onSale && product.salePriceHuf
+    ? product.salePriceHuf
     : product.basePriceHuf;
-  
+
   const discount = calculateDiscount(
-    quantity, 
-    currentPrice, 
-    product.discountThreshold || 5, 
+    quantity,
+    currentPrice,
+    product.discountThreshold || 5,
     product.discountPercentage || 10
   );
-  
+
   const totalPrice = (currentPrice * quantity) - discount;
   const cartItem = isClient ? getItem(product.id) : null;
   const productImages = parseProductImages(product.images, product.imageUrl);
@@ -106,7 +106,7 @@ export default function ProductPage({ params }: ProductPageProps) {
       price: currentPrice,
       quantity: quantity,
     }, quantity);
-    
+
     // Reset quantity after adding
     setQuantity(1);
   };
@@ -122,11 +122,11 @@ export default function ProductPage({ params }: ProductPageProps) {
   return (
     <div className="min-h-screen bg-brand-cream-bg">
       {/* Header */}
-      <div className="bg-white shadow-sm">
+      <div className="bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-950/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link
             href="/"
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
             Back to Shop
@@ -138,32 +138,32 @@ export default function ProductPage({ params }: ProductPageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Product Images */}
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-950/50 overflow-hidden">
             {productImages.length > 0 ? (
               <ProductGallery images={productImages} productName={product.name} />
             ) : (
-              <div className="aspect-square bg-gray-100 flex items-center justify-center">
+              <div className="aspect-square bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                 <img
                   src="/placeholder-product.svg"
                   alt="No image"
-                  className="w-32 h-32 text-gray-400"
+                  className="w-32 h-32 text-gray-400 dark:text-gray-500"
                 />
               </div>
             )}
           </div>
 
           {/* Product Info */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-950/50 p-6">
             <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 {product.name}
               </h1>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                 SKU: {product.sku}
               </p>
-              
+
               {product.description && (
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   {product.description}
                 </p>
               )}
@@ -172,16 +172,16 @@ export default function ProductPage({ params }: ProductPageProps) {
             {/* Price */}
             <div className="mb-6">
               <div className="flex items-center space-x-3 mb-2">
-                <span className="text-3xl font-bold text-gray-900">
+                <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                   {formatPrice(currentPrice)}
                 </span>
                 {product.onSale && product.salePriceHuf && (
-                  <span className="text-xl text-gray-500 line-through">
+                  <span className="text-xl text-gray-500 dark:text-gray-400 line-through">
                     {formatPrice(product.basePriceHuf)}
                   </span>
                 )}
               </div>
-              
+
               {product.onSale && (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                   Sale
@@ -200,39 +200,39 @@ export default function ProductPage({ params }: ProductPageProps) {
 
             {/* Quantity Selector */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Quantity
               </label>
               <div className="flex items-center space-x-3">
                 <button
                   onClick={decrementQuantity}
-                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <Minus className="w-5 h-5 text-gray-600" />
+                  <Minus className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 </button>
-                <span className="w-16 text-center font-medium text-xl text-gray-900">
+                <span className="w-16 text-center font-medium text-xl text-gray-900 dark:text-gray-100">
                   {quantity}
                 </span>
                 <button
                   onClick={incrementQuantity}
-                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <Plus className="w-5 h-5 text-gray-600" />
+                  <Plus className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 </button>
               </div>
             </div>
 
             {/* Price Summary */}
-            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">
+                <span className="text-gray-600 dark:text-gray-400">
                   {quantity} × {formatPrice(currentPrice)}
                 </span>
-                <span className="text-gray-900">
+                <span className="text-gray-900 dark:text-gray-100">
                   {formatPrice(currentPrice * quantity)}
                 </span>
               </div>
-              
+
               {discount > 0 && (
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-green-600">
@@ -243,9 +243,9 @@ export default function ProductPage({ params }: ProductPageProps) {
                   </span>
                 </div>
               )}
-              
+
               <div className="border-t pt-2 flex justify-between items-center">
-                <span className="text-lg font-bold text-gray-900">Total</span>
+                <span className="text-lg font-bold text-gray-900 dark:text-gray-100">Total</span>
                 <span className="text-2xl font-bold text-primary-600">
                   {formatPrice(totalPrice)}
                 </span>
@@ -265,7 +265,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             {isClient && cartItem && (
               <div className="mt-4 p-3 bg-green-50 rounded-lg">
                 <p className="text-sm text-green-800">
-                  <span className="font-medium">{cartItem.quantity} in cart</span> - 
+                  <span className="font-medium">{cartItem.quantity} in cart</span> -
                   <Link href="/cart" className="ml-1 underline hover:no-underline">
                     View Cart
                   </Link>

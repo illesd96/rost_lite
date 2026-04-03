@@ -12,7 +12,7 @@ export default function NewProductPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Form state
   const [formData, setFormData] = useState({
     sku: '',
@@ -24,13 +24,13 @@ export default function NewProductPage() {
     discountThreshold: '1',
     discountPercentage: '0',
   });
-  
+
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     setIsLoading(true);
     setError(null);
 
@@ -42,7 +42,7 @@ export default function NewProductPage() {
 
       // Serialize images for API
       const { images, imageUrl } = serializeProductImages(productImages);
-      
+
       const productData = {
         sku: formData.sku,
         name: formData.name,
@@ -82,15 +82,15 @@ export default function NewProductPage() {
       <div className="space-y-2">
         <Link
           href="/admin/products"
-          className="flex items-center text-gray-600 hover:text-gray-900 w-fit"
+          className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 w-fit"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back to Products
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Add New Product</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm dark:shadow-gray-950/50">
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
@@ -101,28 +101,28 @@ export default function NewProductPage() {
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 SKU *
               </label>
               <input
                 type="text"
                 value={formData.sku}
                 onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                 required
                 placeholder="e.g. PROD-001"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Product Name *
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                 required
                 placeholder="e.g. Premium Headphones"
               />
@@ -131,14 +131,14 @@ export default function NewProductPage() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Description
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
               placeholder="Detailed product description..."
             />
           </div>
@@ -146,14 +146,14 @@ export default function NewProductPage() {
           {/* Pricing */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Base Price (HUF) *
               </label>
               <input
                 type="number"
                 value={formData.basePriceHuf}
                 onChange={(e) => setFormData(prev => ({ ...prev, basePriceHuf: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                 required
                 min="0"
                 placeholder="25000"
@@ -165,23 +165,23 @@ export default function NewProductPage() {
                 type="checkbox"
                 checked={formData.onSale}
                 onChange={(e) => setFormData(prev => ({ ...prev, onSale: e.target.checked }))}
-                className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500"
+                className="w-4 h-4 text-primary-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500"
               />
-              <label className="ml-2 text-sm font-medium text-gray-700">
+              <label className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                 On Sale
               </label>
             </div>
 
             {formData.onSale && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Sale Price (HUF)
                 </label>
                 <input
                   type="number"
                   value={formData.salePriceHuf}
                   onChange={(e) => setFormData(prev => ({ ...prev, salePriceHuf: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                   min="0"
                   placeholder="20000"
                 />
@@ -192,27 +192,27 @@ export default function NewProductPage() {
           {/* Discounts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Discount Threshold (quantity)
               </label>
               <input
                 type="number"
                 value={formData.discountThreshold}
                 onChange={(e) => setFormData(prev => ({ ...prev, discountThreshold: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                 min="1"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Discount Percentage (%)
               </label>
               <input
                 type="number"
                 value={formData.discountPercentage}
                 onChange={(e) => setFormData(prev => ({ ...prev, discountPercentage: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                 min="0"
                 max="100"
               />
@@ -232,7 +232,7 @@ export default function NewProductPage() {
           <div className="flex justify-end space-x-4 pt-6 border-t">
             <Link
               href="/admin/products"
-              className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
             >
               Cancel
             </Link>
