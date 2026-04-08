@@ -55,7 +55,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const inputClass = "w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:bg-white focus:dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100";
+  const inputClass = "w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:bg-white focus:dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0B5D3F] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100";
   const labelClass = "flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 ml-1";
 
   return (
@@ -71,19 +71,18 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
             <X className="w-5 h-5" />
           </button>
 
-          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 leading-tight">
-            Csatlakozás a<br />
-            <span className="text-green-600">Rosti közösséghez</span>
+          <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 leading-tight tracking-tight">
+            Legyetek <span className="text-[#0B5D3F]">Rosti iroda!</span>
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            Add meg az alábbi adatokat, és értesítünk, amint tudunk szállítani nektek.
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 leading-relaxed max-w-xs">
+            Kérj értesítőt, és azonnal szólunk, amint megnyílik a szállítási kapacitás a környéketeken.
           </p>
         </div>
 
         {submitted ? (
           <div className="p-8 text-center">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-16 h-16 bg-[#0B5D3F]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-[#0B5D3F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
@@ -91,7 +90,7 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">Hamarosan felvesszük veled a kapcsolatot.</p>
             <button
               onClick={onClose}
-              className="bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl hover:bg-emerald-700 transition-colors"
+              className="bg-[#0B5D3F] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#147A55] transition-colors"
             >
               Bezárás
             </button>
@@ -224,15 +223,15 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
                   type="checkbox"
                   checked={acceptedTerms}
                   onChange={e => setAcceptedTerms(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-emerald-600 focus:ring-emerald-500"
+                  className="mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-[#0B5D3F] focus:ring-[#0B5D3F]"
                 />
                 <span className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                   A Jelentkezés elküldésére kattintva beleegyezel az{' '}
-                  <a href="/dokumentumok/adatvedelmi" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-emerald-700">
+                  <a href="/dokumentumok/adatvedelmi" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-[#147A55]">
                     adatkezelési tájékoztatóban
                   </a>{' '}
                   foglaltakhoz és az{' '}
-                  <a href="/dokumentumok/aszf" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-emerald-700">
+                  <a href="/dokumentumok/aszf" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-[#147A55]">
                     általános szerződési feltételekhez
                   </a>.
                 </span>
@@ -243,9 +242,9 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={isSubmitting || !acceptedTerms}
-                className="w-full bg-emerald-600 text-white hover:bg-emerald-700 font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-emerald-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#0B5D3F] text-white hover:bg-[#147A55] font-black py-4 rounded-2xl shadow-lg active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#0B5D3F]/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Küldés...' : 'Jelentkezés elküldése'}
+                {isSubmitting ? 'Küldés...' : 'Szóljatok, amint lehet!'}
               </button>
             </div>
           </form>
