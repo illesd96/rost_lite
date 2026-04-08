@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { OrderState, CONSTANTS, isHungarianHoliday } from '../../types/modern-shop';
 import { formatCurrency, getDateFromIndex } from '../../lib/modern-shop-utils';
-import { ChevronUp, ChevronDown, Clock, Snowflake, ArrowDown, X } from 'lucide-react';
+import { Clock, Snowflake, X, Gift, Star, Info } from 'lucide-react';
+import ProtectedEmail from './protected-email';
 
 interface SelectionScreenProps {
   orderState: OrderState;
@@ -12,14 +13,20 @@ interface SelectionScreenProps {
 const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrder, onNext }) => {
   const [showScheduler, setShowScheduler] = useState(false);
   const schedulerRef = useRef<HTMLDivElement>(null);
-  
-  const PRESETS = [20, 30, 40, 50, 100, ];
+
+  const PRESETS = [20, 30, 40, 50, 100];
 
   const totalPrice = orderState.quantity * CONSTANTS.UNIT_PRICE;
   const isFreeShipping = orderState.quantity >= CONSTANTS.FREE_SHIPPING_THRESHOLD;
-  
+
   // Validation logic
-  const isCustomError = orderState.isCustomQuantity && (orderState.quantity < 20 || orderState.quantity > 300);
+  const isUnderMinimum = orderState.isCustomQuantity && orderState.quantity < 20;
+  const isOverMaximum = orderState.isCustomQuantity && orderState.quantity > 300;
+  const isInvalidQuantity = isUnderMinimum || isOverMaximum;
+  const isCustomError = isInvalidQuantity;
+
+  // Slider percentage for custom quantity
+  const sliderPercentage = Math.min(100, Math.max(0, ((orderState.quantity - 20) / (500 - 20)) * 100));
 
   // Helper: build calendar data for a given year/month
   const buildMonth = (year: number, month: number) => {
@@ -55,7 +62,6 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     return { year, month, name: capitalizedName, weeks };
   };
 
-  // Always show 3 months starting from current month (e.g. March, April, May when in March)
   const calendarMonths = useMemo(() => {
     const today = new Date();
     const months: { year: number; month: number; name: string; weeks: (Date | null)[][] }[] = [];
@@ -66,7 +72,6 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     return months;
   }, []);
 
-  // Build date-to-index map through the end of the 3rd visible month (e.g. through May 31 when showing Mar/Apr/May)
   const dateToIndexMap = useMemo(() => {
     const today = new Date();
     const lastDayOfThirdMonth = new Date(today.getFullYear(), today.getMonth() + 3, 0);
@@ -80,7 +85,6 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     return map;
   }, []);
 
-  // Valid Monday/Tuesday indices within the visible 3 months only (not past, not holiday)
   const { allValidMondayIndices, allValidTuesdayIndices } = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -124,17 +128,6 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     updateOrder({ quantity: val });
   };
 
-  const handleIncrement = () => {
-    updateOrder({ quantity: (orderState.quantity || 0) + 1 });
-  };
-
-  const handleDecrement = () => {
-    const current = orderState.quantity || 0;
-    if (current > 0) {
-      updateOrder({ quantity: current - 1 });
-    }
-  };
-
   const toggleCustom = () => {
     updateOrder({ isCustomQuantity: true, quantity: 150 });
   };
@@ -174,7 +167,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
 
   const isDeliveryDay = (date: Date) => {
     const day = date.getDay();
-    return day === 1 || day === 2; // Monday (1) or Tuesday (2)
+    return day === 1 || day === 2;
   };
 
   const isPastDate = (date: Date) => {
@@ -204,9 +197,8 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
     <main className="container mx-auto px-6 py-12 max-w-4xl text-left animate-fade-in flex-grow">
       <div className="mb-12">
         <h1 className="text-3xl sm:text-5xl font-extrabold mb-3 text-gray-900 dark:text-gray-100 tracking-tight leading-tight text-balance">
-          Mennyi Rostit hozzunk<br /><span className="text-green-600">az irodába?</span>
+          Mennyi Rostit hozzunk<br /><span className="text-[#0B5D3F]">az irodába?</span>
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 text-lg">Bökj rá egy számra, vagy adj meg egyedi mennyiséget.</p>
       </div>
 
       <div className="flex flex-col gap-10">
@@ -218,7 +210,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                 onClick={() => handleQtySelect(q)}
                 className={`qty-button p-5 rounded-2xl font-black text-xl border-2 transition-all ${
                   !orderState.isCustomQuantity && orderState.quantity === q
-                    ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 transform scale-105 shadow-emerald-500/10 shadow-lg'
+                    ? 'border-[#0B5D3F] bg-[#EDF7F3] dark:bg-emerald-900/20 text-[#0B5D3F] transform scale-105 shadow-lg'
                     : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
               >
@@ -229,7 +221,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
               onClick={toggleCustom}
               className={`qty-button special p-5 rounded-2xl font-black text-sm sm:text-base border-2 transition-all uppercase tracking-wider ${
                 orderState.isCustomQuantity
-                  ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 transform scale-105 shadow-emerald-500/10 shadow-lg'
+                  ? 'border-[#0B5D3F] bg-[#EDF7F3] dark:bg-emerald-900/20 text-[#0B5D3F] transform scale-105 shadow-lg'
                   : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800'
               }`}
             >
@@ -237,47 +229,117 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
             </button>
           </div>
 
+          {/* (I/c + I/d) Custom Quantity Slider with Edge Cases */}
           {orderState.isCustomQuantity && (
             <div className="mb-10 animate-fade-in text-left">
-              <div className="bg-gray-50 dark:bg-gray-800 border border-dashed border-gray-300 dark:border-gray-600 rounded-[2rem] p-8 flex flex-col md:flex-row items-center gap-6">
-                <div className="flex-grow">
-                  <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">Egyedi mennyiség 20 és 300 palack között</h4>
-                  {isCustomError ? (
-                    <p className="text-xs font-bold text-red-500 transition-colors">Adj meg egy egész számot 20 és 300 között.</p>
-                  ) : (
-                    <p className="text-xs font-bold text-emerald-600 transition-colors">Kiváló mennyiség!</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className={`flex items-center bg-white dark:bg-gray-900 border-2 rounded-2xl pl-5 pr-2 h-[72px] transition-all ${
-                        isCustomError
-                        ? 'border-red-500' 
-                        : 'border-green-600'
+              <div className="bg-gray-50 border border-dashed border-gray-300 rounded-[2rem] py-6 px-6 sm:py-8 sm:px-8 flex flex-col gap-6">
+
+                {/* Header and Input Row */}
+                <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+
+                  {/* Left: Title and Validation Messages */}
+                  <div className="text-left">
+                    <h4 className="font-bold text-sm mb-1 transition-colors text-gray-900">
+                      {isOverMaximum ? 'Kivételes mennyiség.' : isUnderMinimum ? 'Előbb csak kipróbálnátok?' : 'Szabd a csapatodra a rendelést.'}
+                    </h4>
+
+                    {isUnderMinimum && (
+                      <p className="text-xs font-medium text-[#0B5D3F] transition-all duration-300 animate-fade-in mt-1">
+                        A hűtött logisztika miatt a standard szállítás 20 palacknál kezdődik. Ha egyelőre csak megkóstolnátok a Rostit, <ProtectedEmail user="rendeles" domain="rosti.hu" label="írj nekünk" subject="Rosti kóstoló kérése" className="font-bold underline hover:text-[#147A55]" />, és küldünk egy Rosti Starter Packot a csapatnak!
+                      </p>
+                    )}
+
+                    {isOverMaximum && (
+                      <p className="text-xs font-medium text-[#0B5D3F] transition-all duration-300 animate-fade-in mt-1">
+                        Minden Rostit frissen készítünk. Hogy 300 palack felett is garantáljuk a csúcsminőséget, egyedi szervezésre van szükség. <ProtectedEmail user="rendeles" domain="rosti.hu" label="Írj nekünk" subject="Nagy mennyiségű Rosti rendelés (300+)" className="font-bold underline hover:text-[#147A55]" />, és már intézzük is a csapatodnak!
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Right: Number Input */}
+                  <div className="flex items-center gap-3 self-end sm:self-auto">
+                    <div className={`flex items-center justify-center bg-white border-2 rounded-2xl p-3 transition-all shadow-sm w-24 ${
+                        isUnderMinimum ? 'border-[#8F1A37]' : 'border-[#0B5D3F]'
                     }`}>
                       <input
-                        type="text"
-                        inputMode="numeric"
-                        value={orderState.quantity || ''}
-                        onChange={handleCustomQtyChange}
-                        className={`w-24 text-3xl font-black text-center outline-none bg-transparent leading-none ${
-                            isCustomError ? 'text-red-900' : 'text-gray-900 dark:text-gray-100'
-                        }`}
+                          type="text"
+                          inputMode="numeric"
+                          value={orderState.quantity || ''}
+                          onChange={handleCustomQtyChange}
+                          className={`w-full text-xl font-black text-center outline-none bg-transparent leading-none ${
+                              isUnderMinimum ? 'text-[#8F1A37]' : 'text-gray-900'
+                          }`}
                       />
-                      <div className="flex flex-col gap-0.5 ml-2 bg-gray-50 dark:bg-gray-800 p-1 rounded-xl border border-gray-100 dark:border-gray-800">
-                          <button onClick={handleIncrement} className="w-8 h-5 flex items-center justify-center hover:bg-white dark:hover:bg-gray-900 rounded-lg text-gray-400 dark:text-gray-500 hover:text-green-600 transition-all shadow-sm hover:shadow-md active:scale-95">
-                              <ChevronUp size={16} strokeWidth={3} />
-                          </button>
-                          <button onClick={handleDecrement} className="w-8 h-5 flex items-center justify-center hover:bg-white dark:hover:bg-gray-900 rounded-lg text-gray-400 dark:text-gray-500 hover:text-green-600 transition-all shadow-sm hover:shadow-md active:scale-95">
-                              <ChevronDown size={16} strokeWidth={3} />
-                          </button>
-                      </div>
+                    </div>
+                    <span className="text-gray-400 font-bold uppercase text-[10px] sm:text-xs tracking-widest">Palack</span>
                   </div>
-                  <span className="text-gray-400 dark:text-gray-500 font-bold uppercase text-sm tracking-widest">Palack</span>
                 </div>
+
+                {/* Slider and Markers */}
+                <div className="w-full pt-8 pb-1 relative">
+
+                  {/* 60 marker (Free shipping - 8.333%) */}
+                  <div
+                    className="absolute top-1 flex flex-col items-center z-10 group cursor-help"
+                    style={{ left: '8.333%', transform: 'translateX(-50%)' }}
+                  >
+                    <div className="bg-[#EDF7F3] p-1 rounded-full mb-1 shadow-sm relative">
+                      <Gift size={10} className="text-[#0B5D3F]" />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        Ingyenes kiszállítás
+                      </div>
+                    </div>
+                    <div className="w-0.5 h-2.5 bg-[#0B5D3F] opacity-40 rounded-full"></div>
+                  </div>
+
+                  {/* 300 marker (Exceptional quantity - 58.333%) */}
+                  <div
+                    className="absolute top-1 flex flex-col items-center z-10 group cursor-help"
+                    style={{ left: '58.333%', transform: 'translateX(-50%)' }}
+                  >
+                    <div className="bg-[#EDF7F3] p-1 rounded-full mb-1 shadow-sm relative">
+                      <Star size={10} className="text-[#0B5D3F]" />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        Kivételes mennyiség
+                      </div>
+                    </div>
+                    <div className="w-0.5 h-2.5 bg-[#0B5D3F] opacity-40 rounded-full"></div>
+                  </div>
+
+                  {/* Range Input */}
+                  <input
+                    type="range"
+                    min="20"
+                    max="500"
+                    step="1"
+                    value={orderState.quantity || 20}
+                    onChange={(e) => updateOrder({ quantity: parseInt(e.target.value, 10) })}
+                    className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-[#0B5D3F] relative z-20 rosti-slider"
+                    style={{
+                      background: `linear-gradient(to right, #e5e7eb 0%, #e5e7eb ${sliderPercentage}%, rgba(11, 93, 63, 0.3) 100%)`
+                    }}
+                  />
+
+                  {/* Labels below slider */}
+                  <div className="flex justify-between text-[10px] font-bold text-gray-400 mt-3 px-1 uppercase tracking-widest relative">
+                    <div className="flex flex-col items-start">
+                      <span>20</span>
+                      <span className="text-[8px] opacity-70">Min</span>
+                    </div>
+                    <span className="absolute text-[#0B5D3F] opacity-80 translate-x-4 sm:-translate-x-1/2" style={{ left: '8.333%' }}>60</span>
+                    <span className="absolute text-[#0B5D3F] opacity-80 -translate-x-1/2" style={{ left: '58.333%' }}>300</span>
+                    <div className="flex flex-col items-end">
+                      <span>500</span>
+                      <span className="text-[8px] opacity-70">Max</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           )}
 
+          {/* Bottom Bar - Summary */}
           <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row justify-between sm:items-center gap-10 sm:gap-6 border border-gray-100 dark:border-gray-800 text-balance">
             <div className="text-left self-start sm:self-auto">
               <div className="flex items-baseline gap-2 text-nowrap">
@@ -288,42 +350,64 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                 )}
                 <span className="text-gray-500 dark:text-gray-400 font-bold ml-2 uppercase text-sm tracking-widest">Palack</span>
               </div>
-              <p className="text-sm text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-2">friss és nyers <span className="text-green-700 font-black">Rosti</span></p>
+              {/* Left tooltip: FRISS ÉS NYERS ROSTI */}
+              <div className="group relative inline-block">
+                <p className="text-sm text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mt-2 cursor-help">
+                  friss és nyers <span className="text-[#0B5D3F] font-black">Rosti</span>
+                  <Info size={11} className="inline ml-1.5 text-gray-400 group-hover:text-[#0B5D3F] transition-colors" />
+                </p>
+                <div className="absolute top-full left-0 mt-2 w-64 bg-[#063323] text-white p-4 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-left transform origin-top-left translate-y-2 group-hover:translate-y-0">
+                  <p className="text-[11px] font-black text-[#4ADE80] uppercase tracking-wider mb-2">Friss & Nyers</p>
+                  <p className="text-[10px] leading-relaxed font-medium normal-case tracking-normal">
+                    Kizárólag 5 féle nyers zöldséget, frissen facsart citromot, 100% natúr, préselt rostos almalét és szűrt vizet tartalmaz.
+                  </p>
+                  <p className="text-[10px] leading-relaxed font-medium normal-case tracking-normal mt-2">
+                    Allergén: zeller.
+                  </p>
+                  <p className="text-[10px] leading-relaxed font-medium normal-case tracking-normal mt-2">
+                    Semmi mesterséges adalék. Semmi tartósítószer. Friss és nyers.
+                  </p>
+                  <div className="absolute -top-1 left-4 w-2 h-2 bg-[#063323] transform rotate-45"></div>
+                </div>
+              </div>
             </div>
             <div className="text-right self-end sm:self-auto">
-              {/* <div className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Csomagár</div> */}
               {isCustomError ? (
                  <div className="text-4xl font-black text-gray-300 dark:text-gray-600 text-nowrap">-</div>
               ) : (
-                 <div className="text-4xl font-black text-green-700 text-nowrap">{formatCurrency(totalPrice)}</div>
+                 <div className="text-4xl font-black text-[#0B5D3F] text-nowrap">{formatCurrency(totalPrice)}</div>
               )}
-              
+
               {!isCustomError && (
                   <div className="mt-1 flex justify-end">
                       {isFreeShipping ? (
                         <div className="group relative">
+                             {/* Pulsating free shipping badge */}
                              <div className="text-[9px] uppercase tracking-widest flex items-center gap-1.5 font-black cursor-help">
-                                <span className="text-green-600 animate-pulse">✓ Ingyenes szállítás</span>
+                                <span className="bg-[#0B5D3F] text-white px-2 py-1 rounded-md animate-pulse">
+                                  ✓ Ingyenes kiszállítás
+                                </span>
                                 <Snowflake size={11} strokeWidth={2.5} className="text-blue-500" />
                              </div>
-                             <div className="absolute top-full right-0 mt-2 w-56 bg-gray-900 text-white p-4 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-left transform origin-top-right translate-y-2 group-hover:translate-y-0">
+                             {/* Hover Tooltip */}
+                             <div className="absolute top-full right-0 mt-2 w-56 bg-[#063323] text-white p-4 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-left transform origin-top-right translate-y-2 group-hover:translate-y-0">
                                <p className="text-[10px] leading-relaxed font-medium normal-case tracking-normal">
-                                   A Rostikat mindig hűtve szállítjuk, hogy frissességüket tökéletesen megőrizzék.
+                                   A Rostikat mindig hűtve szállítjuk, hogy frissességüket tökéletesen megőrizzék. 60 palacktól a kiszállítást mi álljuk.
                                </p>
-                               <div className="absolute -top-1 right-2 w-2 h-2 bg-gray-900 transform rotate-45"></div>
+                               <div className="absolute -top-1 right-2 w-2 h-2 bg-[#063323] transform rotate-45"></div>
                            </div>
                         </div>
                       ) : (
                         <div className="group relative">
                            <div className="text-[9px] uppercase tracking-widest flex items-center gap-1.5 font-bold cursor-help">
-                               <span className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 transition-colors">+ SZÁLLÍTÁS</span>
+                               <span className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 transition-colors">+ kiszállítás</span>
                                <Snowflake size={11} strokeWidth={2.5} className="text-blue-500" />
                            </div>
-                           <div className="absolute top-full right-0 mt-2 w-56 bg-gray-900 text-white p-4 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-left transform origin-top-right translate-y-2 group-hover:translate-y-0">
+                           <div className="absolute top-full right-0 mt-2 w-56 bg-[#063323] text-white p-4 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 text-left transform origin-top-right translate-y-2 group-hover:translate-y-0">
                                <p className="text-[10px] leading-relaxed font-medium normal-case tracking-normal">
-                                   A Rostikat mindig hűtve szállítjuk, hogy frissességüket tökéletesen megőrizzék.
+                                   A Rostikat mindig hűtve szállítjuk, hogy frissességüket tökéletesen megőrizzék. 60 palacktól a kiszállítást mi álljuk.
                                </p>
-                               <div className="absolute -top-1 right-2 w-2 h-2 bg-gray-900 transform rotate-45"></div>
+                               <div className="absolute -top-1 right-2 w-2 h-2 bg-[#063323] transform rotate-45"></div>
                            </div>
                         </div>
                       )}
@@ -332,186 +416,213 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
             </div>
           </div>
 
+          {/* CTA Button */}
           <button
             onClick={handleAddToCart}
-            disabled={isCustomError}
+            disabled={isInvalidQuantity}
             className={`w-full font-black py-6 rounded-2xl text-xl mt-10 shadow-xl transition transform active:scale-[0.98] ${
-                 isCustomError
-                 ? 'bg-gray-300 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                 : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-emerald-600/20'
+                 isInvalidQuantity
+                 ? 'bg-gray-300 text-gray-400 cursor-not-allowed'
+                 : 'bg-[#0B5D3F] text-white hover:bg-[#147A55] hover:shadow-[#0B5D3F]/20'
             }`}
           >
             Kosárba teszem
           </button>
         </div>
 
+        {/* (I/e) Calendar Section */}
         {showScheduler && (
-          <div ref={schedulerRef} className="bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm animate-fade-in text-balance scroll-mt-24">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 text-left">
-              <div>
-                <h3 className="text-xl font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight">Mikor érkezzen <span className="text-green-600">a frissesség?</span></h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">Válassz szállítási napokat. Hamarosan szerdánként is!</p>
-              </div>
-              <div className="flex flex-row items-center gap-3 w-full md:w-auto">
-                {orderState.schedule.length > 0 && (
+          <>
+            {/* Heading outside the box */}
+            <div className="mb-0">
+              <h2 className="text-3xl sm:text-5xl font-extrabold mb-3 text-gray-900 dark:text-gray-100 tracking-tight leading-tight text-balance">
+                Mikor hozzuk<br /><span className="text-[#0B5D3F]">a friss Rostikat?</span>
+              </h2>
+            </div>
+
+            <div ref={schedulerRef} className="bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm animate-fade-in text-balance scroll-mt-24">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 text-left">
+                <div className="flex flex-row items-center gap-3 w-full md:w-auto">
+                  {orderState.schedule.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={clearAllSelections}
+                      className="flex items-center gap-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition uppercase tracking-wider"
+                    >
+                      Törlés
+                      <X size={14} strokeWidth={2.5} />
+                    </button>
+                  )}
                   <button
-                    type="button"
-                    onClick={clearAllSelections}
-                    className="flex items-center gap-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition uppercase tracking-wider"
-                  >
-                    Törlés
-                    <X size={14} strokeWidth={2.5} />
-                  </button>
-                )}
-                <button 
-                    type="button"
-                    onClick={() => toggleAllDay('mondays')} 
-                    disabled={allValidMondayIndices.length === 0}
-                    className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
-                        ${allValidMondayIndices.length === 0
-                            ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                            : isAllMondaysSelected
-                              ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-700 text-emerald-700'
-                              : 'bg-white dark:bg-gray-900 border-emerald-700 text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
-                        }
-                    `}
-                >
-                    Minden hétfő
-                </button>
-                <button 
-                    type="button"
-                    onClick={() => toggleAllDay('tuesdays')} 
-                    disabled={allValidTuesdayIndices.length === 0}
-                    className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
-                        ${allValidTuesdayIndices.length === 0
-                            ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                            : isAllTuesdaysSelected
-                              ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-700 text-emerald-700'
-                              : 'bg-white dark:bg-gray-900 border-emerald-700 text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
-                        }
-                    `}
-                >
-                    Minden kedd
-                </button>
-              </div>
-            </div>
-
-            {/* Calendar Month View - 3 Months */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
-              {calendarMonths.map((monthData) => (
-                <div key={`${monthData.year}-${monthData.month}`} className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-                  {/* Month Header */}
-                  <h4 className="text-center font-bold text-gray-900 dark:text-gray-100 mb-5 text-lg">
-                    {monthData.name}
-                  </h4>
-                  
-                  {/* Day Headers - Weekdays only */}
-                  <div className="grid grid-cols-5 gap-2 mb-3">
-                    {['H', 'K', 'Sz', 'Cs', 'P'].map((day, i) => (
-                      <div 
-                        key={day + i} 
-                        className={`text-center text-xs font-bold py-1 ${
-                          i === 0 || i === 1 ? 'text-emerald-700' : 'text-gray-400 dark:text-gray-500'
-                        }`}
-                      >
-                        {day}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Calendar Weeks */}
-                  <div className="space-y-2">
-                    {monthData.weeks.map((week, weekIdx) => (
-                      <div key={weekIdx} className="grid grid-cols-5 gap-2">
-                        {week.map((date, dayIdx) => {
-                          if (!date) {
-                            return <div key={`empty-${weekIdx}-${dayIdx}`} className="aspect-square" />;
+                      type="button"
+                      onClick={() => toggleAllDay('mondays')}
+                      disabled={allValidMondayIndices.length === 0}
+                      className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
+                          ${allValidMondayIndices.length === 0
+                              ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                              : isAllMondaysSelected
+                                ? 'bg-[#EDF7F3] dark:bg-emerald-900/20 border-[#0B5D3F] text-[#0B5D3F]'
+                                : 'bg-white dark:bg-gray-900 border-[#0B5D3F] text-[#0B5D3F] hover:bg-[#EDF7F3] dark:hover:bg-emerald-900/20'
                           }
-                          
-                          const dayOfWeek = date.getDay();
-                          const isMonday = dayOfWeek === 1;
-                          const isTuesday = dayOfWeek === 2;
-                          const isDelivery = isMonday || isTuesday;
-                          const isPast = isPastDate(date);
-                          const isHoliday = isDateHoliday(date);
-                          const isSelectable = isDateSelectable(date);
-                          const isSelected = isDateSelected(date);
-                          
-                          return (
-                            <button
-                              key={date.toISOString()}
-                              type="button"
-                              onClick={() => isSelectable && toggleDateByDate(date)}
-                              disabled={!isSelectable}
-                              className={`
-                                aspect-square rounded-full flex items-center justify-center text-sm font-semibold transition-all
-                                ${isHoliday 
-                                  ? 'bg-red-50 dark:bg-red-900/20 text-red-300 cursor-not-allowed' 
-                                  : isSelected
-                                    ? 'bg-emerald-700 text-white shadow-sm'
-                                    : isSelectable
-                                      ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 hover:bg-emerald-100 cursor-pointer'
-                                      : isPast && isDelivery
-                                        ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                                        : 'text-gray-400 dark:text-gray-500 cursor-default'
-                                }
-                              `}
-                            >
-                              {date.getDate()}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </div>
+                      `}
+                  >
+                      Minden hétfő
+                  </button>
+                  <button
+                      type="button"
+                      onClick={() => toggleAllDay('tuesdays')}
+                      disabled={allValidTuesdayIndices.length === 0}
+                      className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
+                          ${allValidTuesdayIndices.length === 0
+                              ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                              : isAllTuesdaysSelected
+                                ? 'bg-[#EDF7F3] dark:bg-emerald-900/20 border-[#0B5D3F] text-[#0B5D3F]'
+                                : 'bg-white dark:bg-gray-900 border-[#0B5D3F] text-[#0B5D3F] hover:bg-[#EDF7F3] dark:hover:bg-emerald-900/20'
+                          }
+                      `}
+                  >
+                      Minden kedd
+                  </button>
                 </div>
-              ))}
-            </div>
+              </div>
 
-            <div className="flex items-center gap-4 p-5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 mb-8 text-balance">
-              <span className="text-blue-700 dark:text-blue-400 font-bold text-lg shrink-0">ⓘ</span>
-              <div className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed font-medium text-left">
-                 Jelenleg <strong>{orderState.schedule.length}</strong> szállítási nap van kijelölve.
-                 {isFreeShipping && ' Örömhír: 50 palacktól a szállítást mi álljuk. 🚚'}
+              {/* Calendar Month View - 3 Months */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+                {calendarMonths.map((monthData) => (
+                  <div key={`${monthData.year}-${monthData.month}`} className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <h4 className="text-center font-bold text-gray-900 dark:text-gray-100 mb-5 text-lg">
+                      {monthData.name}
+                    </h4>
+
+                    <div className="grid grid-cols-5 gap-2 mb-3">
+                      {['H', 'K', 'Sz', 'Cs', 'P'].map((day, i) => (
+                        <div
+                          key={day + i}
+                          className={`text-center text-xs font-bold py-1 ${
+                            i === 0 || i === 1 ? 'text-[#0B5D3F]' : 'text-gray-400 dark:text-gray-500'
+                          }`}
+                        >
+                          {day}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="space-y-2">
+                      {monthData.weeks.map((week, weekIdx) => (
+                        <div key={weekIdx} className="grid grid-cols-5 gap-2">
+                          {week.map((date, dayIdx) => {
+                            if (!date) {
+                              return <div key={`empty-${weekIdx}-${dayIdx}`} className="aspect-square" />;
+                            }
+
+                            const dayOfWeek = date.getDay();
+                            const isMonday = dayOfWeek === 1;
+                            const isTuesday = dayOfWeek === 2;
+                            const isDelivery = isMonday || isTuesday;
+                            const isPast = isPastDate(date);
+                            const isHoliday = isDateHoliday(date);
+                            const isSelectable = isDateSelectable(date);
+                            const isSelected = isDateSelected(date);
+
+                            return (
+                              <button
+                                key={date.toISOString()}
+                                type="button"
+                                onClick={() => isSelectable && toggleDateByDate(date)}
+                                disabled={!isSelectable}
+                                className={`
+                                  aspect-square rounded-full flex items-center justify-center text-sm font-semibold transition-all
+                                  ${isHoliday
+                                    ? 'bg-red-50 dark:bg-red-900/20 text-red-300 cursor-not-allowed'
+                                    : isSelected
+                                      ? 'bg-[#0B5D3F] text-white shadow-sm'
+                                      : isSelectable
+                                        ? 'bg-emerald-50 dark:bg-emerald-900/20 text-[#0B5D3F] hover:bg-emerald-100 cursor-pointer'
+                                        : isPast && isDelivery
+                                          ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                                          : 'text-gray-400 dark:text-gray-500 cursor-default'
+                                  }
+                                `}
+                              >
+                                {date.getDate()}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Info bar */}
+              <div className="flex items-center gap-4 p-5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 mb-8 text-balance">
+                <div className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed font-medium text-left">
+                   Jelenleg <strong>{orderState.schedule.length}</strong> szállítási nap van kijelölve.
+                   {isFreeShipping && (
+                     <span className="inline-flex items-center gap-1 ml-1">
+                       Örömhír: 60 palacktól a szállítást mi álljuk.
+                       <Gift size={12} className="text-blue-600 inline" />
+                     </span>
+                   )}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <button
+                onClick={onNext}
+                disabled={orderState.schedule.length === 0}
+                className={`w-full font-black py-6 rounded-2xl text-xl shadow-xl transition transform active:scale-[0.98] ${
+                   orderState.schedule.length === 0
+                   ? 'bg-gray-300 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                   : 'bg-[#0B5D3F] text-white hover:bg-[#147A55] hover:shadow-[#0B5D3F]/20'
+                }`}
+              >
+                Tovább a számlázáshoz
+              </button>
+
+              {/* Deadline text - plain, no pill */}
+              <div className="mt-6 flex justify-center">
+                  <div className="flex items-center gap-2">
+                      <Clock size={12} className="text-rose-800 dark:text-rose-400" strokeWidth={2.5} />
+                      <span className="text-[11px] font-bold text-rose-900 dark:text-rose-300 text-center sm:text-left leading-tight">
+                          Rendelési határidő: szállítást megelőző péntek 15:00
+                      </span>
+                  </div>
               </div>
             </div>
-            
-            <button
-              onClick={onNext}
-              disabled={orderState.schedule.length === 0}
-              className={`w-full font-black py-6 rounded-2xl text-xl shadow-xl transition transform active:scale-[0.98] ${
-                 orderState.schedule.length === 0
-                 ? 'bg-gray-300 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                 : 'bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-emerald-600/20'
-              }`}
-            >
-              {orderState.isLoggedIn ? 'Tovább a számlázáshoz' : 'Jelentkezz be és tovább a számlázáshoz'}
-            </button>
-
-            <div className="mt-6 flex justify-center">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 rounded-full border border-rose-100 shadow-sm">
-                    <Clock size={12} className="text-rose-800 dark:text-rose-400" strokeWidth={2.5} />
-                    <span className="text-[10px] font-bold text-rose-900 dark:text-rose-300 uppercase tracking-widest text-center sm:text-left leading-tight">
-                        RENDELÉSI HATÁRIDŐ:<br className="block sm:hidden" /> SZÁLLÍTÁST MEGELŐZŐ PÉNTEK 15:00
-                    </span>
-                </div>
-            </div>
-          </div>
+          </>
         )}
 
-        <div className="bg-green-600 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-lg text-balance text-left">
-            <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div>
-                    <h3 className="text-2xl font-black mb-6 tracking-tight uppercase text-left">Segítsünk tervezni?</h3>
-                    <p className="text-sm text-green-50 leading-relaxed font-medium text-left">A Rostikat minden alkalommal frissen, nyers zöldségből készítjük a kiszállítást megelőző éjszaka. Azonnal 2°C-ra hűtjük őket, így érkeznek meg hozzátok reggel.</p>
+        {/* (I/f) Segítsünk tervezni? Educational Box */}
+        <div className="bg-[#EDF7F3] rounded-[2.5rem] p-8 text-[#0B5D3F] relative overflow-hidden shadow-lg text-balance text-left">
+            <h3 className="text-2xl font-black mb-10 tracking-tight text-left relative z-10">Segítsünk tervezni?</h3>
+
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+
+                {/* Left Column */}
+                <div className="flex flex-col space-y-6">
+                    <p className="text-base text-[#0B5D3F] leading-relaxed font-medium text-left">
+                        A Rostikat kizárólag <strong className="font-extrabold">rendelésre</strong>, a kiszállítást megelőző este készítjük.
+                    </p>
+                    <p className="text-base text-[#0B5D3F] leading-relaxed font-medium text-left">
+                        A frissen tisztított zöldségeket <strong className="font-extrabold">hőkezelés nélkül</strong> blendeljük, így megőrizzük a rost- és vitamintartalmat. Ezután azonnal 2°C-ra hűtjük, és hűtve visszük egyenesen az irodátokba.
+                    </p>
                 </div>
-                <div className="flex flex-col justify-end">
-                    <p className="text-sm text-green-50 leading-relaxed font-medium text-left">Ideális tárolással, 2 és 4°C között a Rostik felbontás nélkül akár 3 napig megőrzik kirobbanó frissességüket. Kevésbé hideg hűtőben tárolva javasoljuk az elfogyasztást 48-60 órán belül.</p>
-                    <div className="h-4"></div>
-                    <p className="text-sm text-green-50 leading-relaxed font-medium text-left">Ne feledd, minden frissen készül, ráadásul a legegészségesebb, nyers zöldségekből.</p>
+
+                {/* Right Column (asymmetric offset) */}
+                <div className="flex flex-col space-y-6 md:-mt-8">
+                    <p className="text-base text-[#0B5D3F] leading-relaxed font-medium text-left">
+                        A Rosti egy nyers, tartósítószer-mentes, prémium zöldség-smoothie. Mivel friss termék, a csúcsminőséget a készítést követő <strong className="font-extrabold">60 órában</strong> garantáljuk.
+                    </p>
+                    <p className="text-base text-[#0B5D3F] leading-relaxed font-medium text-left">
+                        A tudatos tervezéshez: a hétfői Rosti-csomag <strong className="font-extrabold">kedd estig</strong>, a keddi <strong className="font-extrabold">szerda nap végéig</strong> nyújtja a maximális élményt (2–4°C közötti tárolás mellett).
+                    </p>
                 </div>
             </div>
-            <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-green-700/30 rounded-full opacity-50"></div>
+
+            {/* Decorative Circle */}
+            <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-[#D4E8E1] rounded-full"></div>
         </div>
       </div>
     </main>
@@ -519,5 +630,3 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
 };
 
 export default SelectionScreen;
-
-

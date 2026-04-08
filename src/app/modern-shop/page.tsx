@@ -29,7 +29,7 @@ const INITIAL_BILLING: BillingData = {
 };
 
 const INITIAL_STATE: OrderState = {
-  quantity: 20,
+  quantity: 30,
   isCustomQuantity: false,
   schedule: [],
   isLoggedIn: false,

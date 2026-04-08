@@ -56,7 +56,7 @@ export const CONSTANTS = {
   UNIT_PRICE: 1490,
   SHIPPING_FEE_HIGH: 5700, // 10-25 bottles
   SHIPPING_FEE_LOW: 3700,  // 26-49 bottles
-  FREE_SHIPPING_THRESHOLD: 50,
+  FREE_SHIPPING_THRESHOLD: 60,
   START_DATE: new Date(2026, 0, 19), // Jan 19, 2026
   HOLIDAY_DATE: new Date(2026, 3, 6), // Apr 6, 2026 (kept for backward compatibility)
 };
