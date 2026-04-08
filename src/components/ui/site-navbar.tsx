@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ArrowRight, User, LogOut, ChevronDown } from 'lucide-react';
+import { ArrowRight, User, LogOut, ChevronDown, Moon, Sun } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { useTheme } from '@/components/providers/theme-provider';
 
 interface SiteNavbarProps {
   /** If true, navbar is not fixed/sticky (for pages that manage their own scroll) */
@@ -19,6 +19,7 @@ interface SiteNavbarProps {
 export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta = false }: SiteNavbarProps) {
   const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const isLoggedIn = !!session?.user;
 
@@ -37,8 +38,6 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
         </Link>
 
         <div className="flex items-center gap-4">
-          <ThemeToggle />
-
           {/* User menu / Guest login */}
           {isLoggedIn && session?.user ? (
             <div className="relative">
@@ -59,6 +58,13 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
                       <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{session.user.email}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Bejelentkezve</p>
                     </div>
+                    <button
+                      onClick={toggleTheme}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                      {theme === 'dark' ? 'Világos mód' : 'Sötét mód'}
+                    </button>
                     <button
                       onClick={() => signOut({ callbackUrl: '/' })}
                       className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -93,7 +99,7 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
 
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://i.imgur.com/h8taJcy.png"
+                src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"
                 alt="Friss zöldségek"
                 className="h-14 w-auto object-contain hidden sm:block transition-transform duration-300 drop-shadow-sm -mb-2 group-hover:scale-110 group-hover:-rotate-3"
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}

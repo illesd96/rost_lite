@@ -6,7 +6,7 @@ import { CartProvider } from '@/components/providers/cart-provider';
 import { KeepAliveProvider } from '@/components/providers/keep-alive-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '700', '800', '900'] });
 
 export const metadata: Metadata = {
   title: 'Rosti - Friss Zöldségitalok Budapest | Természetes Vitaminok és Rostok',

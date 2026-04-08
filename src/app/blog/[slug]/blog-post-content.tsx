@@ -76,7 +76,7 @@ export function BlogPostContent({ post }: { post: BlogPost }) {
               </span>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://i.imgur.com/h8taJcy.png"
+                src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"
                 alt="Friss zöldségek"
                 className="h-14 sm:h-16 w-auto object-contain transition-transform duration-300 drop-shadow-md group-hover:scale-110 group-hover:-rotate-3"
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}

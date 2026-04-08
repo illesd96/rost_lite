@@ -38,8 +38,8 @@ const HoverImage = ({ src, hoverSrc, alt, className = "" }: { src: string, hover
     <div
       className={`aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 group relative cursor-pointer ${className}`}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => setShowAlternate(true)}
+      onMouseLeave={() => { setIsHovered(false); setShowAlternate(false); }}
+      onClick={() => setShowAlternate(prev => !prev)}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -187,7 +187,7 @@ export default function HomePage() {
 
                 <h1 className="text-[40px] sm:text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-gray-100 leading-[1.1] tracking-tight">
                   Egészség az irodában. <br />
-                  <span className="text-[#0B5D3F]">Végre finom.</span>
+                  <span className="text-[#0B5D3F]">Kompromisszumok nélkül.</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-lg">
@@ -206,7 +206,7 @@ export default function HomePage() {
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="https://i.imgur.com/h8taJcy.png"
+                      src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"
                       alt="Rendelés"
                       className="h-24 w-auto object-contain drop-shadow-xl group-hover:-rotate-6 transition-transform duration-300"
                       onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -231,13 +231,10 @@ export default function HomePage() {
               </div>
 
               <div className="relative z-10 lg:h-[650px] flex items-center justify-center order-1 lg:order-2">
-                {/* Background Blob */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-100/40 dark:from-emerald-900/20 to-transparent rounded-full filter blur-[60px]"></div>
-
                 {/* Bottle Image */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://raw.githubusercontent.com/bal1nt/rosti-img/main/Rosti%20HomePage%20bottle_P_tr.png"
+                  src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/tr_Rosti_Hero_bottle.png"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
@@ -250,7 +247,6 @@ export default function HomePage() {
                   <div className="flex items-center gap-3">
                     <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-full text-[#0B5D3F] relative">
                       <Leaf size={20} fill="currentColor" />
-                      <Sparkles size={10} className="absolute -top-1 -right-1 text-emerald-500" fill="currentColor" />
                     </div>
                     <div>
                       <div className="text-sm font-black text-gray-900 dark:text-gray-100">Frissen készül</div>
@@ -340,7 +336,7 @@ export default function HomePage() {
                 </span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://i.imgur.com/h8taJcy.png"
+                  src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"
                   alt="Friss zöldségek"
                   className="h-16 sm:h-20 w-auto object-contain transition-transform duration-300 drop-shadow-sm group-hover:scale-110 group-hover:-rotate-3"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -354,26 +350,26 @@ export default function HomePage() {
         <section className="pt-10 pb-20 px-6">
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col items-center mb-12">
-              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100 text-center">A nap fénypontja, amiért hálás a csapat</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 text-center">A nap fénypontja, amiért hálás a csapat</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               <HoverImage
-                src="/images/product_pictures/Rosti5.jpg"
-                hoverSrc="/images/product_pictures/Rosti7.jpg"
+                src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/Rosti_highlights_1a.png"
+                hoverSrc="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/Rosti_highlights_1b.png"
                 alt="Rosti pillanat"
               />
 
               <HoverImage
-                src="https://i.imgur.com/j3MXOAa.jpeg"
-                hoverSrc="/images/product_pictures/Rosti6.jpg"
+                src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/Rosti_highlights_2a.png"
+                hoverSrc="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/Rosti_highlights_2b.png"
                 alt="Rosti pillanat"
                 className="mt-0 md:mt-8"
               />
 
               <HoverImage
-                src="/images/product_pictures/Rosti4.jpg"
-                hoverSrc="/images/product_pictures/Rosti1.jpg"
+                src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/Rosti_highlights_3a.png"
+                hoverSrc="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/Rosti_highlights_3b.png"
                 alt="Rosti pillanat"
               />
             </div>
