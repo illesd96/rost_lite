@@ -151,10 +151,10 @@ export default function BlogPage() {
             href="/modern-shop"
             className="group flex items-center gap-4 cursor-pointer select-none"
           >
-            <span className="bg-[#0B5D3F] text-white px-8 sm:px-10 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-black shadow-xl transition-all transform group-hover:bg-[#147A55] group-hover:shadow-2xl group-hover:scale-105 flex items-center gap-3">
+            <button className="bg-[#0B5D3F] text-white px-8 sm:px-10 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-black shadow-xl transition-all transform group-hover:bg-[#147A55] group-hover:shadow-2xl group-hover:scale-105 flex items-center gap-3">
               <span>Feltöltöm a hűtőt</span>
               <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-            </span>
+            </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"

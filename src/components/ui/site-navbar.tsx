@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ArrowRight, User, LogOut, ChevronDown, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, ArrowRight, User, LogOut, ChevronDown, Moon, Sun } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { useTheme } from '@/components/providers/theme-provider';
 
 interface SiteNavbarProps {
@@ -20,6 +21,8 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
   const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const pathname = usePathname();
+  const isSubpage = pathname !== '/' && !pathname.startsWith('/modern-shop') && !pathname.startsWith('/auth');
 
   const isLoggedIn = !!session?.user;
 
@@ -27,7 +30,12 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
     <nav className={`${relative ? 'sticky top-0' : 'fixed top-0 left-0 right-0'} z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all`}>
       <div className="container mx-auto px-6 h-20 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="group relative flex items-center gap-2">
+          {isSubpage && (
+            <div className="absolute right-full mr-2 md:mr-3 flex items-center">
+              <ArrowLeft size={20} className="text-[#0B5D3F] group-hover:-translate-x-1 transition-transform" />
+            </div>
+          )}
           <Image
             src="/images/logo.png"
             alt="Rosti"
@@ -92,10 +100,10 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
               href="/modern-shop"
               className="group flex items-center gap-3 cursor-pointer select-none"
             >
-              <span className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
+              <button className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
                 <span>RENDELEK</span>
                 <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-              </span>
+              </button>
 
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img

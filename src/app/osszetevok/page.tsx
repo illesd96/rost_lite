@@ -155,7 +155,7 @@ export default function OsszetevokPage() {
                 <img
                   src="https://raw.githubusercontent.com/bal1nt/rosti-img/main/Rosti%20HomePage%20bottle_P_tr.png"
                   alt="Rosti 5 zöldséges friss, nyers zöldség-smoothie"
-                  className="relative z-10 w-auto h-full max-h-[800px] object-contain"
+                  className="relative z-10 w-auto h-full max-h-[800px] object-contain animate-float drop-shadow-2xl"
                   style={{ filter: 'drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))' }}
                 />
               </div>
@@ -223,10 +223,10 @@ export default function OsszetevokPage() {
             href="/modern-shop"
             className="group flex flex-col sm:flex-row items-center gap-4"
           >
-            <span className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
+            <button className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
               <span>FELTÖLTÖM A HŰTŐT</span>
               <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-            </span>
+            </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"
