@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('[QR Analytics POST] Failed to track visit:', error);
     return NextResponse.json(
       { error: 'Failed to track visit' },
       { status: 500 }
@@ -110,6 +111,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(stats);
   } catch (error) {
+    console.error('[QR Analytics GET] Failed to fetch analytics:', error);
     return NextResponse.json(
       { error: 'Failed to fetch analytics' },
       { status: 500 }
