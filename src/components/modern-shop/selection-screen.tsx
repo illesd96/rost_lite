@@ -399,7 +399,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                         </div>
                       ) : (
                         <div className="group relative">
-                           <div className="text-[9px] uppercase tracking-widest flex items-center gap-1.5 font-bold cursor-help">
+                           <div className="text-[9px] tracking-widest flex items-center gap-1.5 font-bold cursor-help">
                                <span className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 transition-colors">+ kiszállítás</span>
                                <Snowflake size={11} strokeWidth={2.5} className="text-blue-500" />
                            </div>
@@ -434,13 +434,13 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
         {showScheduler && (
           <>
             {/* Heading outside the box */}
-            <div className="mb-0">
+            <div ref={schedulerRef} className="mb-0 scroll-mt-24">
               <h2 className="text-3xl sm:text-5xl font-extrabold mb-3 text-gray-900 dark:text-gray-100 tracking-tight leading-tight text-balance">
                 Mikor hozzuk<br /><span className="text-[#0B5D3F]">a friss Rostikat?</span>
               </h2>
             </div>
 
-            <div ref={schedulerRef} className="bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm animate-fade-in text-balance scroll-mt-24">
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm animate-fade-in text-balance">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 text-left">
                 <div className="flex flex-row items-center gap-3 w-full md:w-auto">
                   {orderState.schedule.length > 0 && (

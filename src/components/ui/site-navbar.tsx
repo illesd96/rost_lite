@@ -84,6 +84,14 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
                 </>
               )}
             </div>
+          ) : hideOrderCta ? (
+            <Link
+              href="/auth/signin"
+              className="flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-bold uppercase tracking-widest select-none cursor-pointer transition-all shadow-sm bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+            >
+              <User size={14} className="text-gray-400" />
+              <span>Bejelentkezés</span>
+            </Link>
           ) : null}
 
           {/* Order CTA */}
