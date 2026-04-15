@@ -95,7 +95,7 @@ function SuccessPageContent() {
   if (!orderNumber) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#0B5D3F]"></div>
       </div>
     );
   }
@@ -115,7 +115,7 @@ export default function ModernShopSuccessPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#0B5D3F]"></div>
       </div>
     }>
       <SuccessPageContent />

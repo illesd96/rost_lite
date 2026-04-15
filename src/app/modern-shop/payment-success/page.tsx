@@ -109,7 +109,7 @@ function PaymentSuccessContent() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800">
-        <Loader2 className="w-16 h-16 text-emerald-600 animate-spin mb-6" />
+        <Loader2 className="w-16 h-16 text-[#0B5D3F] animate-spin mb-6" />
         <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300">Fizetés ellenőrzése...</h2>
         <p className="text-gray-500 dark:text-gray-400 mt-2">Kérjük, ne zárd be az ablakot.</p>
       </div>
@@ -130,7 +130,7 @@ function PaymentSuccessContent() {
           </p>
           <button
             onClick={() => router.push('/modern-shop')}
-            className="w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl hover:bg-emerald-700 transition-colors"
+            className="w-full bg-[#0B5D3F] text-white font-bold py-4 rounded-2xl hover:bg-[#147A55] transition-colors"
           >
             Vissza a boltba
           </button>
@@ -155,7 +155,7 @@ export default function PaymentSuccessPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-600"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0B5D3F]"></div>
         </div>
       }
     >
