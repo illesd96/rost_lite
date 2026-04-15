@@ -65,8 +65,8 @@ const ModernHeader: React.FC<ModernHeaderProps> = ({ onLogoClick, isLoggedIn, on
             onClick={() => router.push('/auth/signin')}
             className="flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-bold uppercase tracking-widest select-none cursor-pointer transition-all shadow-sm bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
           >
-            <span className="w-2.5 h-2.5 rounded-full shadow-sm bg-red-500"></span>
-            <span>Vendég</span>
+            <User size={14} className="text-gray-400" />
+            <span>Bejelentkezés</span>
           </div>
         )}
       </div>

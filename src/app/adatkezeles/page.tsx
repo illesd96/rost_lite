@@ -17,7 +17,7 @@ export default function AdatkezelesPage() {
               <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100">ADATKEZELÉSI TÁJÉKOZTATÓ</h1>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">a Rosti B2B online felületének használatához<br />(2026. április 2. napjától hatályos)</p>
             </div>
-            <a
+            {/* <a
               href="/documents/ROSTI – ADATKEZELÉSI.pdf"
               target="_blank"
               rel="noopener noreferrer"
@@ -25,7 +25,7 @@ export default function AdatkezelesPage() {
             >
               <Download size={14} strokeWidth={2.5} />
               PDF letöltés
-            </a>
+            </a> */}
           </div>
 
           <div className="space-y-8 leading-relaxed text-gray-700 dark:text-gray-300">

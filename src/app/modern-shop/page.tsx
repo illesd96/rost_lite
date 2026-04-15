@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import PromoBar from '../../components/modern-shop/promo-bar';
 import { SiteNavbar } from '../../components/ui/site-navbar';
 import ProgressBar from '../../components/modern-shop/progress-bar';
 import SelectionScreen from '../../components/modern-shop/selection-screen';
@@ -336,8 +335,7 @@ export default function ModernShopPage() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      <PromoBar />
-      <SiteNavbar relative hasPromoBar hideOrderCta />
+      <SiteNavbar relative hideOrderCta />
 
       {showProgressBar && (
         <ProgressBar
