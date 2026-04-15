@@ -4,6 +4,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import SuccessScreen from '../../../components/modern-shop/success-screen';
+import FailedScreen from '../../../components/modern-shop/failed-screen';
 import { OrderState } from '../../../types/modern-shop';
 
 const INITIAL_STATE: OrderState = {
@@ -118,23 +119,11 @@ function PaymentSuccessContent() {
 
   if (status === 'error') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 px-6">
-        <div className="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-lg max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl">⚠️</span>
-          </div>
-          <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-3">Fizetés feldolgozás alatt</h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">
-            A fizetésed feldolgozás alatt van. Ha a fizetés sikeres volt, a rendelésed hamarosan megjelenik.
-            Kérjük, ellenőrizd az e-mail fiókod.
-          </p>
-          <button
-            onClick={() => router.push('/modern-shop')}
-            className="w-full bg-[#0B5D3F] text-white font-bold py-4 rounded-2xl hover:bg-[#147A55] transition-colors"
-          >
-            Vissza a boltba
-          </button>
-        </div>
+      <div className="min-h-screen flex flex-col font-sans">
+        <FailedScreen
+          onRetry={() => router.back()}
+          onBackToHome={() => router.push('/modern-shop')}
+        />
       </div>
     );
   }
