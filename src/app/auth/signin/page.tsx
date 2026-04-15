@@ -36,8 +36,12 @@ export default function SignInPage() {
       if (result?.error) {
         setError('root', { message: 'Érvénytelen email cím vagy jelszó' });
       } else {
-        await getSession();
-        router.push('/modern-shop');
+        const session = await getSession();
+        if (session?.user?.requirePasswordChange) {
+          router.push('/auth/change-password');
+        } else {
+          router.push('/modern-shop');
+        }
         router.refresh();
       }
     } catch {

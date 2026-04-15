@@ -48,6 +48,7 @@ export const authOptions: NextAuthOptions = {
             id: foundUser.id,
             email: foundUser.email,
             role: foundUser.role,
+            requirePasswordChange: foundUser.requirePasswordChange,
           };
         } catch (error) {
           return null;
@@ -59,9 +60,14 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.role = user.role;
+        token.requirePasswordChange = user.requirePasswordChange;
+      }
+      // Allow updating the token when the session is updated (e.g., after password change)
+      if (trigger === 'update' && session?.requirePasswordChange === false) {
+        token.requirePasswordChange = false;
       }
       return token;
     },
@@ -69,6 +75,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.sub!;
         session.user.role = token.role as string;
+        session.user.requirePasswordChange = token.requirePasswordChange as boolean;
       }
       return session;
     },
