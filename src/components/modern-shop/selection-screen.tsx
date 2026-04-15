@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { OrderState, CONSTANTS, isHungarianHoliday } from '../../types/modern-shop';
 import { formatCurrency, getDateFromIndex } from '../../lib/modern-shop-utils';
-import { Clock, Snowflake, X, Gift, Star, Info } from 'lucide-react';
-import ProtectedEmail from './protected-email';
+import { Clock, Snowflake, X, Gift, Info, Check } from 'lucide-react';
 
 interface SelectionScreenProps {
   orderState: OrderState;
@@ -20,13 +19,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
   const isFreeShipping = orderState.quantity >= CONSTANTS.FREE_SHIPPING_THRESHOLD;
 
   // Validation logic
-  const isUnderMinimum = orderState.isCustomQuantity && orderState.quantity < 20;
-  const isOverMaximum = orderState.isCustomQuantity && orderState.quantity > 300;
-  const isInvalidQuantity = isUnderMinimum || isOverMaximum;
-  const isCustomError = isInvalidQuantity;
-
-  // Slider percentage for custom quantity
-  const sliderPercentage = Math.min(100, Math.max(0, ((orderState.quantity - 20) / (500 - 20)) * 100));
+  const isCustomError = orderState.isCustomQuantity && (orderState.quantity < 20 || orderState.quantity > 300);
 
   // Helper: build calendar data for a given year/month
   const buildMonth = (year: number, month: number) => {
@@ -239,27 +232,18 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
 
                   {/* Left: Title and Validation Messages */}
                   <div className="text-left">
-                    <h4 className="font-bold text-sm mb-1 transition-colors text-gray-900">
-                      {isOverMaximum ? 'Kivételes mennyiség.' : isUnderMinimum ? 'Előbb csak kipróbálnátok?' : 'Szabd a csapatodra a rendelést.'}
-                    </h4>
-
-                    {isUnderMinimum && (
-                      <p className="text-xs font-medium text-[#0B5D3F] transition-all duration-300 animate-fade-in mt-1">
-                        A hűtött logisztika miatt a standard szállítás 20 palacknál kezdődik. Ha egyelőre csak megkóstolnátok a Rostit, <ProtectedEmail user="rendeles" domain="rosti.hu" label="írj nekünk" subject="Rosti kóstoló kérése" className="font-bold underline hover:text-[#147A55]" />, és küldünk egy Rosti Starter Packot a csapatnak!
-                      </p>
-                    )}
-
-                    {isOverMaximum && (
-                      <p className="text-xs font-medium text-[#0B5D3F] transition-all duration-300 animate-fade-in mt-1">
-                        Minden Rostit frissen készítünk. Hogy 300 palack felett is garantáljuk a csúcsminőséget, egyedi szervezésre van szükség. <ProtectedEmail user="rendeles" domain="rosti.hu" label="Írj nekünk" subject="Nagy mennyiségű Rosti rendelés (300+)" className="font-bold underline hover:text-[#147A55]" />, és már intézzük is a csapatodnak!
-                      </p>
+                    <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">Egyedi mennyiség</h4>
+                    {isCustomError ? (
+                      <p className="text-xs font-bold text-red-500 transition-colors">20 és 300 palack között.</p>
+                    ) : (
+                      <p className="text-xs font-bold text-[#0B5D3F] transition-colors">Húzd a csúszkát vagy írd be!</p>
                     )}
                   </div>
 
                   {/* Right: Number Input */}
                   <div className="flex items-center gap-3 self-end sm:self-auto">
                     <div className={`flex items-center justify-center bg-white border-2 rounded-2xl p-3 transition-all shadow-sm w-24 ${
-                        isUnderMinimum ? 'border-[#8F1A37]' : 'border-[#0B5D3F]'
+                        isCustomError ? 'border-red-500' : 'border-[#0B5D3F]'
                     }`}>
                       <input
                           type="text"
@@ -267,7 +251,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                           value={orderState.quantity || ''}
                           onChange={handleCustomQtyChange}
                           className={`w-full text-xl font-black text-center outline-none bg-transparent leading-none ${
-                              isUnderMinimum ? 'text-[#8F1A37]' : 'text-gray-900'
+                              isCustomError ? 'text-red-900' : 'text-gray-900'
                           }`}
                       />
                     </div>
@@ -277,61 +261,30 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
 
                 {/* Slider and Markers */}
                 <div className="w-full pt-8 pb-1 relative">
-
-                  {/* 60 marker (Free shipping - 8.333%) */}
+                  {/* Free shipping marker at 60 (14.28%) */}
                   <div
-                    className="absolute top-1 flex flex-col items-center z-10 group cursor-help"
-                    style={{ left: '8.333%', transform: 'translateX(-50%)' }}
+                    className="absolute top-1 flex flex-col items-center pointer-events-none z-10"
+                    style={{ left: '14.2857%', transform: 'translateX(-50%)' }}
                   >
-                    <div className="bg-[#EDF7F3] p-1 rounded-full mb-1 shadow-sm relative">
+                    <div className="bg-[#EDF7F3] p-1 rounded-full mb-1 shadow-sm">
                       <Gift size={10} className="text-[#0B5D3F]" />
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                        Ingyenes kiszállítás
-                      </div>
                     </div>
                     <div className="w-0.5 h-2.5 bg-[#0B5D3F] opacity-40 rounded-full"></div>
                   </div>
 
-                  {/* 300 marker (Exceptional quantity - 58.333%) */}
-                  <div
-                    className="absolute top-1 flex flex-col items-center z-10 group cursor-help"
-                    style={{ left: '58.333%', transform: 'translateX(-50%)' }}
-                  >
-                    <div className="bg-[#EDF7F3] p-1 rounded-full mb-1 shadow-sm relative">
-                      <Star size={10} className="text-[#0B5D3F]" />
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                        Kivételes mennyiség
-                      </div>
-                    </div>
-                    <div className="w-0.5 h-2.5 bg-[#0B5D3F] opacity-40 rounded-full"></div>
-                  </div>
-
-                  {/* Range Input */}
                   <input
                     type="range"
                     min="20"
-                    max="500"
+                    max="300"
                     step="1"
                     value={orderState.quantity || 20}
                     onChange={(e) => updateOrder({ quantity: parseInt(e.target.value, 10) })}
-                    className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-[#0B5D3F] relative z-20 rosti-slider"
-                    style={{
-                      background: `linear-gradient(to right, #e5e7eb 0%, #e5e7eb ${sliderPercentage}%, rgba(11, 93, 63, 0.3) 100%)`
-                    }}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0B5D3F] relative z-20"
                   />
-
-                  {/* Labels below slider */}
                   <div className="flex justify-between text-[10px] font-bold text-gray-400 mt-3 px-1 uppercase tracking-widest relative">
-                    <div className="flex flex-col items-start">
-                      <span>20</span>
-                      <span className="text-[8px] opacity-70">Min</span>
-                    </div>
-                    <span className="absolute text-[#0B5D3F] opacity-80 translate-x-4 sm:-translate-x-1/2" style={{ left: '8.333%' }}>60</span>
-                    <span className="absolute text-[#0B5D3F] opacity-80 -translate-x-1/2" style={{ left: '58.333%' }}>300</span>
-                    <div className="flex flex-col items-end">
-                      <span>500</span>
-                      <span className="text-[8px] opacity-70">Max</span>
-                    </div>
+                    <span>20 min</span>
+                    <span className="absolute text-[#0B5D3F] opacity-80" style={{ left: '14.2857%', transform: 'translateX(-50%)' }}>60</span>
+                    <span>300 max</span>
                   </div>
                 </div>
 
@@ -419,9 +372,9 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
           {/* CTA Button */}
           <button
             onClick={handleAddToCart}
-            disabled={isInvalidQuantity}
+            disabled={isCustomError}
             className={`w-full font-black py-6 rounded-2xl text-xl mt-10 shadow-xl transition transform active:scale-[0.98] ${
-                 isInvalidQuantity
+                 isCustomError
                  ? 'bg-gray-300 text-gray-400 cursor-not-allowed'
                  : 'bg-[#0B5D3F] text-white hover:bg-[#147A55] hover:shadow-[#0B5D3F]/20'
             }`}
@@ -432,120 +385,126 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
 
         {/* (I/e) Calendar Section */}
         {showScheduler && (
-          <>
-            {/* Heading outside the box */}
-            <div ref={schedulerRef} className="mb-0 scroll-mt-24">
-              <h2 className="text-3xl sm:text-5xl font-extrabold mb-3 text-gray-900 dark:text-gray-100 tracking-tight leading-tight text-balance">
-                Mikor hozzuk<br /><span className="text-[#0B5D3F]">a friss Rostikat?</span>
-              </h2>
-            </div>
-
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm animate-fade-in text-balance">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 text-left">
-                <div className="flex flex-row items-center gap-3 w-full md:w-auto">
-                  {orderState.schedule.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={clearAllSelections}
-                      className="flex items-center gap-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition uppercase tracking-wider"
-                    >
-                      Törlés
-                      <X size={14} strokeWidth={2.5} />
-                    </button>
-                  )}
+          <div ref={schedulerRef} className="animate-fade-in scroll-mt-24">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 text-left">
+              <div>
+                <h3 className="text-3xl sm:text-5xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight leading-tight text-balance">
+                  Mikor hozzuk a<br /><span className="text-[#0B5D3F]">friss Rostikat?</span>
+                </h3>
+              </div>
+              <div className="flex flex-row items-center gap-3 w-full md:w-auto justify-end">
+                {/* Clear Button */}
+                {orderState.schedule.length > 0 && (
                   <button
-                      type="button"
-                      onClick={() => toggleAllDay('mondays')}
-                      disabled={allValidMondayIndices.length === 0}
-                      className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
-                          ${allValidMondayIndices.length === 0
-                              ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                              : isAllMondaysSelected
-                                ? 'bg-[#EDF7F3] dark:bg-emerald-900/20 border-[#0B5D3F] text-[#0B5D3F]'
-                                : 'bg-white dark:bg-gray-900 border-[#0B5D3F] text-[#0B5D3F] hover:bg-[#EDF7F3] dark:hover:bg-emerald-900/20'
-                          }
-                      `}
+                    type="button"
+                    onClick={clearAllSelections}
+                    className="group flex items-center gap-1.5 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 hover:text-red-500 transition-colors"
                   >
-                      Minden hétfő
+                    <span className="hidden sm:inline">Törlés</span>
+                    <X size={14} strokeWidth={3} />
                   </button>
+                )}
+
+                {/* Recurring Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto justify-end">
                   <button
-                      type="button"
-                      onClick={() => toggleAllDay('tuesdays')}
-                      disabled={allValidTuesdayIndices.length === 0}
-                      className={`flex-1 md:flex-none text-[9px] sm:text-[10px] font-black px-4 sm:px-6 py-3 rounded-full border-2 transition uppercase tracking-wider sm:tracking-widest text-nowrap text-center
-                          ${allValidTuesdayIndices.length === 0
-                              ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                              : isAllTuesdaysSelected
-                                ? 'bg-[#EDF7F3] dark:bg-emerald-900/20 border-[#0B5D3F] text-[#0B5D3F]'
-                                : 'bg-white dark:bg-gray-900 border-[#0B5D3F] text-[#0B5D3F] hover:bg-[#EDF7F3] dark:hover:bg-emerald-900/20'
-                          }
-                      `}
+                    type="button"
+                    onClick={() => toggleAllDay('mondays')}
+                    disabled={allValidMondayIndices.length === 0}
+                    className={`text-sm font-bold px-5 py-2.5 rounded-full border-2 transition-all text-nowrap text-center flex items-center justify-center gap-2
+                      ${allValidMondayIndices.length === 0
+                        ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                        : isAllMondaysSelected
+                          ? 'bg-[#0B5D3F] border-[#0B5D3F] text-white shadow-lg shadow-[#0B5D3F]/20 hover:bg-[#147A55]'
+                          : 'bg-white dark:bg-gray-900 border-[#0B5D3F] text-[#0B5D3F] hover:bg-[#EDF7F3] dark:hover:bg-emerald-900/20'
+                      }
+                    `}
                   >
-                      Minden kedd
+                    {isAllMondaysSelected && <Check size={16} strokeWidth={3} />}
+                    <span>Minden hétfő</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleAllDay('tuesdays')}
+                    disabled={allValidTuesdayIndices.length === 0}
+                    className={`text-sm font-bold px-5 py-2.5 rounded-full border-2 transition-all text-nowrap text-center flex items-center justify-center gap-2
+                      ${allValidTuesdayIndices.length === 0
+                        ? 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                        : isAllTuesdaysSelected
+                          ? 'bg-[#0B5D3F] border-[#0B5D3F] text-white shadow-lg shadow-[#0B5D3F]/20 hover:bg-[#147A55]'
+                          : 'bg-white dark:bg-gray-900 border-[#0B5D3F] text-[#0B5D3F] hover:bg-[#EDF7F3] dark:hover:bg-emerald-900/20'
+                      }
+                    `}
+                  >
+                    {isAllTuesdaysSelected && <Check size={16} strokeWidth={3} />}
+                    <span>Minden kedd</span>
                   </button>
                 </div>
               </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm text-balance">
 
               {/* Calendar Month View - 3 Months */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {calendarMonths.map((monthData) => (
-                  <div key={`${monthData.year}-${monthData.month}`} className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-                    <h4 className="text-center font-bold text-gray-900 dark:text-gray-100 mb-5 text-lg">
+                  <div key={`${monthData.year}-${monthData.month}`} className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
+                    <h4 className="text-center font-black uppercase tracking-widest text-gray-900 dark:text-gray-100 mb-4 text-sm border-b border-gray-100 dark:border-gray-700 pb-2 capitalize">
                       {monthData.name}
                     </h4>
 
-                    <div className="grid grid-cols-5 gap-2 mb-3">
-                      {['H', 'K', 'Sz', 'Cs', 'P'].map((day, i) => (
-                        <div
-                          key={day + i}
-                          className={`text-center text-xs font-bold py-1 ${
-                            i === 0 || i === 1 ? 'text-[#0B5D3F]' : 'text-gray-400 dark:text-gray-500'
-                          }`}
-                        >
-                          {day}
-                        </div>
+                    {/* Header Row - 5 Columns */}
+                    <div className="grid grid-cols-5 mb-2">
+                      {['H', 'K', 'Sz', 'Cs', 'P'].map(d => (
+                        <div key={d} className="text-center text-[10px] font-bold text-gray-400 dark:text-gray-500">{d}</div>
                       ))}
                     </div>
 
+                    {/* Days Grid - 5 Columns */}
                     <div className="space-y-2">
                       {monthData.weeks.map((week, weekIdx) => (
-                        <div key={weekIdx} className="grid grid-cols-5 gap-2">
+                        <div key={weekIdx} className="grid grid-cols-5 gap-y-2 gap-x-1">
                           {week.map((date, dayIdx) => {
                             if (!date) {
-                              return <div key={`empty-${weekIdx}-${dayIdx}`} className="aspect-square" />;
+                              return <div key={`empty-${weekIdx}-${dayIdx}`} className="h-8" />;
                             }
 
                             const dayOfWeek = date.getDay();
-                            const isMonday = dayOfWeek === 1;
-                            const isTuesday = dayOfWeek === 2;
-                            const isDelivery = isMonday || isTuesday;
+                            const isDelivery = dayOfWeek === 1 || dayOfWeek === 2;
                             const isPast = isPastDate(date);
                             const isHoliday = isDateHoliday(date);
                             const isSelectable = isDateSelectable(date);
                             const isSelected = isDateSelected(date);
 
+                            let cellClass = "h-8 w-8 mx-auto flex items-center justify-center rounded-full text-xs font-bold transition-all select-none ";
+
+                            if (isHoliday) {
+                              cellClass += "bg-red-50 dark:bg-red-900/20 text-red-400 cursor-not-allowed ring-1 ring-red-100 dark:ring-red-800";
+                            } else if (isSelected) {
+                              cellClass += "bg-[#0B5D3F] text-white shadow-md cursor-pointer transform scale-110";
+                            } else if (isSelectable) {
+                              cellClass += "bg-emerald-50 dark:bg-emerald-900/20 text-[#0B5D3F] hover:bg-[#0B5D3F] hover:text-white cursor-pointer ring-1 ring-emerald-100/50 dark:ring-emerald-800/50";
+                            } else if (isPast && isDelivery) {
+                              cellClass += "text-gray-300 dark:text-gray-600 cursor-default";
+                            } else {
+                              cellClass += "text-gray-300 dark:text-gray-600 cursor-default";
+                            }
+
                             return (
-                              <button
-                                key={date.toISOString()}
-                                type="button"
-                                onClick={() => isSelectable && toggleDateByDate(date)}
-                                disabled={!isSelectable}
-                                className={`
-                                  aspect-square rounded-full flex items-center justify-center text-sm font-semibold transition-all
-                                  ${isHoliday
-                                    ? 'bg-red-50 dark:bg-red-900/20 text-red-300 cursor-not-allowed'
-                                    : isSelected
-                                      ? 'bg-[#0B5D3F] text-white shadow-sm'
-                                      : isSelectable
-                                        ? 'bg-emerald-50 dark:bg-emerald-900/20 text-[#0B5D3F] hover:bg-emerald-100 cursor-pointer'
-                                        : isPast && isDelivery
-                                          ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                                          : 'text-gray-400 dark:text-gray-500 cursor-default'
-                                  }
-                                `}
-                              >
-                                {date.getDate()}
-                              </button>
+                              <div key={date.toISOString()} className="flex justify-center relative group">
+                                <div
+                                  onClick={() => !isHoliday && isSelectable && toggleDateByDate(date)}
+                                  className={cellClass}
+                                >
+                                  {date.getDate()}
+                                </div>
+                                {isHoliday && (
+                                  <div className="absolute -top-8 bg-red-500 text-white text-[9px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap font-bold shadow-lg">
+                                    Ünnepnap
+                                  </div>
+                                )}
+                              </div>
                             );
                           })}
                         </div>
@@ -591,7 +550,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                   </div>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {/* (I/f) Segítsünk tervezni? Educational Box */}
