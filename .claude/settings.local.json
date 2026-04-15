@@ -22,7 +22,9 @@
       "Bash(xargs basename:*)",
       "Bash(node -e ':*)",
       "Bash(curl -s http://localhost:3000/api/blog/posts)",
-      "Bash(grep -r \"CREATE TABLE\\\\|INSERT INTO\" /c/Projects/cursor/WebShop/drizzle/*.sql)"
+      "Bash(grep -r \"CREATE TABLE\\\\|INSERT INTO\" /c/Projects/cursor/WebShop/drizzle/*.sql)",
+      "Bash(mkdir -p c:/Projects/cursor/WebShop/src/app/api/modern-shop/profile/orders)",
+      "Bash(mkdir -p c:/Projects/cursor/WebShop/src/app/modern-shop/profile)"
     ],
     "additionalDirectories": [
       "c:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\waitlist"
