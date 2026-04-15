@@ -161,6 +161,17 @@ export default function HomePage() {
 
   const [blogSlugs, setBlogSlugs] = useState<Record<string, string>>({});
 
+  const getBlogHref = (title: string) => {
+    if (blogSlugs[title]) return `/blog/${blogSlugs[title]}`;
+    // Fallback: generate slug from title
+    const slug = title
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+    return `/blog/${slug}`;
+  };
+
   // Fetch blog post slugs for direct linking
   useEffect(() => {
     fetch('/api/blog/posts')
@@ -402,7 +413,7 @@ export default function HomePage() {
 
               <div className="grid md:grid-cols-2 gap-6 mb-10">
                 <Link
-                  href={blogSlugs['Juice vagy smoothie: mi a különbség?'] ? `/blog/${blogSlugs['Juice vagy smoothie: mi a különbség?']}` : '/blog'}
+                  href={getBlogHref('Juice vagy smoothie: mi a különbség?')}
                   className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
@@ -416,7 +427,7 @@ export default function HomePage() {
                 </Link>
 
                 <Link
-                  href={blogSlugs['3 ok, amiért a testnek rostra van szüksége'] ? `/blog/${blogSlugs['3 ok, amiért a testnek rostra van szüksége']}` : '/blog'}
+                  href={getBlogHref('3 ok, amiért a testnek rostra van szüksége')}
                   className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>

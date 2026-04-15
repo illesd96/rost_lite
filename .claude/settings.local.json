@@ -19,7 +19,10 @@
       "Bash(find /c/Projects/cursor/WebShop/src/app -name \"page.tsx\" -exec grep -L \"metadata\\\\|generateMetadata\" {} \\\\;)",
       "Bash(curl -L -o \"c:/Projects/cursor/WebShop/public/images/login-background.jpeg\" \"https://raw.githubusercontent.com/bal1nt/rosti-img/main/Rosti_login_background.jpeg\")",
       "Bash(find /c/Projects/cursor/WebShop/new_version -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" \\\\\\) -exec grep -l \"tooltip\\\\|Tooltip\\\\|popover\\\\|Popover\\\\|group hover\\\\|group-hover\" {} \\\\;)",
-      "Bash(xargs basename:*)"
+      "Bash(xargs basename:*)",
+      "Bash(node -e ':*)",
+      "Bash(curl -s http://localhost:3000/api/blog/posts)",
+      "Bash(grep -r \"CREATE TABLE\\\\|INSERT INTO\" /c/Projects/cursor/WebShop/drizzle/*.sql)"
     ],
     "additionalDirectories": [
       "c:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\waitlist"

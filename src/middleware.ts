@@ -30,8 +30,7 @@ export default withAuth(
         if (pathname.startsWith('/shop') ||
             pathname.startsWith('/cart') ||
             pathname.startsWith('/orders') ||
-            pathname.startsWith('/checkout') ||
-            pathname.startsWith('/modern-shop')) {
+            pathname.startsWith('/checkout')) {
           return !!token;
         }
 
@@ -53,7 +52,6 @@ export const config = {
     '/orders/:path*',
     '/checkout/:path*',
     '/admin/:path*',
-    '/modern-shop/:path*',
     '/auth/change-password',
   ],
 };
