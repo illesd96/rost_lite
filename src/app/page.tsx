@@ -159,29 +159,14 @@ export default function HomePage() {
     ]
   };
 
-  const [blogSlugs, setBlogSlugs] = useState<Record<string, string>>({});
+  const [blogPosts, setBlogPosts] = useState<{ title: string; slug: string; excerpt?: string }[]>([]);
 
-  const getBlogHref = (title: string) => {
-    if (blogSlugs[title]) return `/blog/${blogSlugs[title]}`;
-    // Fallback: generate slug from title
-    const slug = title
-      .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
-    return `/blog/${slug}`;
-  };
-
-  // Fetch blog post slugs for direct linking
+  // Fetch blog posts for the homepage cards
   useEffect(() => {
     fetch('/api/blog/posts')
       .then(res => res.json())
-      .then((posts: { title: string; slug: string }[]) => {
-        const slugMap: Record<string, string> = {};
-        for (const p of posts) {
-          slugMap[p.title] = p.slug;
-        }
-        setBlogSlugs(slugMap);
+      .then((posts: { title: string; slug: string; excerpt?: string }[]) => {
+        setBlogPosts(posts.slice(0, 2));
       })
       .catch(() => {});
   }, []);
@@ -411,35 +396,28 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6 mb-10">
-                <Link
-                  href={getBlogHref('Juice vagy smoothie: mi a különbség?')}
-                  className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                  <h4 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">Juice vagy smoothie: mi a különbség?</h4>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
-                    Még a 100%-os gyümölcs juice is hirtelen vércukorszint-emelkedést okozhat. A zöldségekből készült, rostban gazdag smoothie azonban lassítja a felszívódást...
-                  </p>
-                  <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
-                    ELOLVASOM <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-
-                <Link
-                  href={getBlogHref('3 ok, amiért a testnek rostra van szüksége')}
-                  className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                  <h4 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">3 ok, amiért a testnek rostra van szüksége</h4>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
-                    Sokan úgy nőttek fel, hogy a rostfogyasztás egyetlen célja az emésztés &ldquo;rendben tartása&rdquo;. A modern orvostudomány szerint a rost a bélflóra igazi védőpajzsa...
-                  </p>
-                  <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
-                    ELOLVASOM <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-              </div>
+              {blogPosts.length > 0 && (
+                <div className="grid md:grid-cols-2 gap-6 mb-10">
+                  {blogPosts.map(post => (
+                    <Link
+                      key={post.slug}
+                      href={`/blog/${post.slug}`}
+                      className="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl p-8 hover:shadow-xl hover:border-[#0B5D3F]/30 transition-all duration-300 relative overflow-hidden text-left"
+                    >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-[#0B5D3F]/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                      <h4 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-3 group-hover:text-[#0B5D3F] transition-colors leading-tight min-h-[50px]">{post.title}</h4>
+                      {post.excerpt && (
+                        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-8">
+                          {post.excerpt}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-2 text-[#0B5D3F] font-black text-xs uppercase tracking-widest mt-auto">
+                        ELOLVASOM <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
 
               <div className="flex justify-center">
                 <Link
