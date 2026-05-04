@@ -156,7 +156,7 @@ END:VEVENT
                 />
             </div>
 
-            <h2 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-3 tracking-tight text-center">Készülhet a hűtő!</h2>
+            <h2 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-3 uppercase tracking-tight text-center">Készülhet a hűtő!</h2>
             <div className="flex items-center justify-center gap-1.5 mb-10">
                 <CheckCircle2 size={14} className="text-[#0B5D3F]" />
                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Sikeresen rögzítettük a rendelésedet.</p>
@@ -256,8 +256,8 @@ END:VEVENT
           <div className="w-full lg:w-1/3 order-1 lg:order-2 lg:sticky lg:top-24 space-y-6">
 
              {/* Social Share Card */}
-             <div className="bg-gradient-to-br from-indigo-50 to-white p-8 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-800 shadow-xl relative text-left">
-                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+             <div className="bg-gradient-to-br from-[#EDF7F3] to-white dark:from-emerald-900/20 dark:to-gray-900 p-8 rounded-[2.5rem] border border-[#0B5D3F]/15 dark:border-emerald-800 shadow-xl relative text-left">
+                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none text-[#0B5D3F]">
                     <MessageSquare size={100} />
                 </div>
 
@@ -266,8 +266,8 @@ END:VEVENT
                     Mindenki szereti a jó híreket. Másold ki ezt az üzenetet és dobd be a közös Teams vagy Slack csatornába!
                 </p>
 
-                <div className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-indigo-100 dark:border-indigo-800 shadow-sm mb-6 relative">
-                    <div className="absolute -left-2 top-6 w-2 h-4 bg-indigo-500 rounded-r-full"></div>
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-[#0B5D3F]/15 dark:border-emerald-800 shadow-sm mb-6 relative">
+                    <div className="absolute -left-2 top-6 w-2 h-4 bg-[#0B5D3F] rounded-r-full"></div>
                     <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                         {shareMessage}
                     </pre>
@@ -277,8 +277,8 @@ END:VEVENT
                     onClick={handleCopy}
                     className={`w-full py-4 rounded-xl font-bold text-sm shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2
                         ${copied
-                            ? 'bg-green-600 text-white'
-                            : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-500/20'
+                            ? 'bg-[#147A55] text-white'
+                            : 'bg-[#0B5D3F] text-white hover:bg-[#147A55] hover:shadow-[#0B5D3F]/20'
                         }
                     `}
                 >
@@ -297,8 +297,8 @@ END:VEVENT
              </div>
 
              {/* Calendar Card */}
-             <div className="bg-gradient-to-br from-orange-50 to-white p-8 rounded-[2.5rem] border border-orange-100 dark:border-orange-800 shadow-xl relative text-left">
-                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+             <div className="bg-gradient-to-br from-[#EDF7F3] to-white dark:from-emerald-900/20 dark:to-gray-900 p-8 rounded-[2.5rem] border border-[#0B5D3F]/15 dark:border-emerald-800 shadow-xl relative text-left">
+                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none text-[#0B5D3F]">
                     <Calendar size={100} />
                 </div>
 
@@ -308,14 +308,14 @@ END:VEVENT
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-orange-100 dark:border-orange-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Outlook</span>
-                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-orange-100 dark:border-orange-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Google Calendar</span>
-                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-orange-100 dark:border-orange-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Apple</span>
+                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-[#0B5D3F]/15 dark:border-emerald-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Outlook</span>
+                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-[#0B5D3F]/15 dark:border-emerald-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Google Calendar</span>
+                    <span className="px-2 py-1 bg-white dark:bg-gray-900 border border-[#0B5D3F]/15 dark:border-emerald-800 rounded-md text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase">Apple</span>
                 </div>
 
                 <button
                     onClick={handleDownloadCalendar}
-                    className="w-full py-4 rounded-xl font-bold text-sm bg-orange-500 text-white hover:bg-orange-600 hover:shadow-orange-500/20 shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-xl font-bold text-sm bg-[#0B5D3F] text-white hover:bg-[#147A55] hover:shadow-[#0B5D3F]/20 shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                     <Download size={18} />
                     <span>Mentés naptárba (.ics)</span>

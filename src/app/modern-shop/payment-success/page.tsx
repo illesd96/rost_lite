@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import SuccessScreen from '../../../components/modern-shop/success-screen';
 import FailedScreen from '../../../components/modern-shop/failed-screen';
+import { SiteNavbar } from '../../../components/ui/site-navbar';
 import { OrderState } from '../../../types/modern-shop';
 
 const INITIAL_STATE: OrderState = {
@@ -130,6 +131,7 @@ function PaymentSuccessContent() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
+      <SiteNavbar relative hideOrderCta />
       <SuccessScreen
         orderState={orderState}
         orderNumber={orderNumber}

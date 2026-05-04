@@ -3,6 +3,7 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import SuccessScreen from '../../../components/modern-shop/success-screen';
+import { SiteNavbar } from '../../../components/ui/site-navbar';
 import { OrderState } from '../../../types/modern-shop';
 
 const INITIAL_STATE: OrderState = {
@@ -102,8 +103,9 @@ function SuccessPageContent() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
-      <SuccessScreen 
-        orderState={orderState} 
+      <SiteNavbar relative hideOrderCta />
+      <SuccessScreen
+        orderState={orderState}
         orderNumber={orderNumber}
         onReset={handleReset}
       />
