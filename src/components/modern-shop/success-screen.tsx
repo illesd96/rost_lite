@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { OrderState, CONSTANTS } from '../../types/modern-shop';
-import { Check, Copy, MessageSquare, CheckCircle2, ChevronDown, ChevronUp, Calendar, Download } from 'lucide-react';
+import { Copy, MessageSquare, CheckCircle2, ChevronDown, ChevronUp, Calendar, Download } from 'lucide-react';
 import { getDateFromIndex } from '../../lib/modern-shop-utils';
 
 interface SuccessScreenProps {
@@ -147,11 +147,20 @@ END:VEVENT
 
           {/* Main Success Card */}
           <div className="w-full lg:w-2/3 bg-white dark:bg-gray-900 rounded-[3rem] border border-gray-200 dark:border-gray-700 shadow-2xl p-10 md:p-16 relative overflow-hidden text-balance text-left order-2 lg:order-1">
-            <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
-                <Check className="w-10 h-10" strokeWidth={3} />
+            <div className="flex justify-center mb-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src="https://raw.githubusercontent.com/bal1nt/rosti-img/main/Rosti_double_white-bg_PNG.png"
+                    alt="Rosti"
+                    className="h-32 w-auto object-contain drop-shadow-md"
+                />
             </div>
 
-            <h2 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-10 tracking-tight uppercase text-center">Sikeres rendelés!</h2>
+            <h2 className="text-4xl font-black text-gray-900 dark:text-gray-100 mb-3 tracking-tight text-center">Készülhet a hűtő!</h2>
+            <div className="flex items-center justify-center gap-1.5 mb-10">
+                <CheckCircle2 size={14} className="text-[#0B5D3F]" />
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Sikeresen rögzítettük a rendelésedet.</p>
+            </div>
 
             <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 mb-8 text-left border border-gray-100 dark:border-gray-800 text-balance">
                 {/* Delivery Count with Dropdown */}
@@ -190,8 +199,8 @@ END:VEVENT
                                 {orderState.schedule.length} x
                             </span>
                          )}
-                         <span className="text-xl font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight">
-                            {orderState.quantity} <span className="text-[#0B5D3F] ml-1">ROSTI</span>
+                         <span className="text-xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+                            {orderState.quantity} <span className="text-[#0B5D3F] ml-1">Rosti</span>
                          </span>
                     </div>
                 </div>
@@ -204,31 +213,43 @@ END:VEVENT
                     </span>
                 </div>
 
-                {/* Emails Section */}
-                <div>
-                    <div className="mb-3">
-                        <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-relaxed">
-                            Visszaigazolás és számla 24 órán belül megküldésre kerül
-                        </p>
-                    </div>
-                    <div className="flex flex-wrap gap-x-8 gap-y-3">
-                        {emails.map((email, index) => (
-                            <div key={index} className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                                {email}
-                            </div>
-                        ))}
-                    </div>
+            </div>
+
+            {/* Emails Section */}
+            <div className="mt-6 mb-10">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 leading-relaxed">
+                    A visszaigazolást és a számlát hamarosan küldjük az alábbi címekre:
+                </p>
+                <div className="flex flex-wrap gap-x-8 gap-y-2">
+                    {emails.map((email, index) => (
+                        <div key={index} className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                            {email}
+                        </div>
+                    ))}
                 </div>
             </div>
 
             {/* Disclaimer Text */}
-            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mb-10 text-center leading-relaxed px-4">
-                Adott heti szállítás módosítására legkésőbb a szállítást megelőző péntek 15:00-ig van lehetőség a <a href="mailto:rendeles@rosti.hu" className="text-[#0B5D3F] font-bold hover:underline">rendeles@rosti.hu</a> e-mail címen jelezve.
+            <p className="text-xs text-gray-400 dark:text-gray-500 font-medium text-center leading-relaxed px-4">
+                Adott heti kiszállítás módosítására legkésőbb a kiszállítást megelőző péntek 15:00-ig van lehetőség a <a href="mailto:rendeles@rosti.hu" className="text-[#0B5D3F] font-bold hover:underline">rendeles@rosti.hu</a> e-mail címen jelezve.
             </p>
 
-            <button onClick={onReset} className="w-full text-sm font-bold text-[#0B5D3F] underline underline-offset-4 hover:text-[#147A55] transition text-center">
-                Vissza a kezdőoldalra
-            </button>
+            {/* Science CTA Section */}
+            <div className="mt-12 pt-10 border-t border-gray-100 dark:border-gray-800 text-center">
+                <h3 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tight mb-3">Vágj rendet az egészség-zajban</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-8 leading-relaxed">
+                    A táplálkozási tanácsok gyakran ellentmondásosak, de a tények nem. Tegyél különbséget a trendek és a valóság között.
+                </p>
+                <div className="flex justify-center">
+                    <a
+                        href="/blog"
+                        className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-900 hover:border-[#0B5D3F] hover:text-[#0B5D3F] transition-all shadow-sm hover:shadow-md"
+                    >
+                        <span className="font-black text-xs uppercase tracking-widest">Tudomány, közhelyek nélkül</span>
+                        <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </a>
+                </div>
+            </div>
           </div>
 
           {/* Right Column: Social Share & Calendar */}
