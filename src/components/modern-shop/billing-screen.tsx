@@ -341,8 +341,8 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-4xl font-black text-[#0B5D3F] text-nowrap text-left">{orderState.schedule.length} hétre</div>
-                    <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 text-left">beütemezve</p>
+                    <div className="text-4xl font-black text-[#0B5D3F] text-nowrap text-left">{orderState.schedule.length} <span className="font-bold">kiszállítás</span></div>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mt-1 text-left">beütemezve</p>
                 </div>
             </div>
         </div>

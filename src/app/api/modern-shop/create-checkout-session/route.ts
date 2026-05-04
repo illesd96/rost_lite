@@ -14,7 +14,7 @@ function calculatePricing(orderState: OrderState) {
 
   // Calculate base shipping fee
   let baseShippingFee = 0;
-  if (quantity <= 25) {
+  if (quantity < CONSTANTS.SHIPPING_TIER_BOUNDARY) {
     baseShippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
   } else if (quantity < CONSTANTS.FREE_SHIPPING_THRESHOLD) {
     baseShippingFee = CONSTANTS.SHIPPING_FEE_LOW;

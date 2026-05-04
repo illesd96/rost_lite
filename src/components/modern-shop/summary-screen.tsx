@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { OrderState, CONSTANTS } from '../../types/modern-shop';
-import { ChevronLeft, ChevronDown, Truck, Info, Snowflake, CheckCircle2, Check, X, Lock, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronDown, Truck, Info, Snowflake, CheckCircle2, Check, X, Lock } from 'lucide-react';
 import { formatCurrency, getDateFromIndex } from '../../lib/modern-shop-utils';
 
 interface SummaryScreenProps {
@@ -28,7 +28,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
 
   // Calculate shipping fee based on tiers
   let baseShippingFee = 0;
-  if (quantity <= 25) {
+  if (quantity < CONSTANTS.SHIPPING_TIER_BOUNDARY) {
     baseShippingFee = CONSTANTS.SHIPPING_FEE_HIGH;
   } else if (quantity < CONSTANTS.FREE_SHIPPING_THRESHOLD) {
     baseShippingFee = CONSTANTS.SHIPPING_FEE_LOW;
@@ -186,7 +186,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                                 <X size={16} strokeWidth={2.5} />
                              </button>
                          </div>
-                         <div className="flex flex-col sm:flex-row gap-4">
+                         <div className="flex flex-row gap-3 sm:gap-4">
                             <input
                                 type="text"
                                 placeholder="Írd be a partnerkódot"
@@ -195,13 +195,13 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                                     setCouponInput(e.target.value);
                                     setCouponMessage(null);
                                 }}
-                                className="flex-grow p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 transition-all text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm"
+                                className="flex-grow min-w-0 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 transition-all text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm"
                             />
                             <button
                                 type="button"
                                 onClick={handleCouponValidate}
                                 disabled={!couponInput}
-                                className={`px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm
+                                className={`flex-shrink-0 px-6 sm:px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm
                                     ${couponInput
                                         ? 'bg-[#0B5D3F] text-white shadow-lg hover:bg-[#147A55] active:scale-95'
                                         : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
@@ -248,14 +248,11 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
 
       <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm mb-10 text-left relative overflow-visible">
         <div className="flex justify-between items-center mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
-          <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-400 dark:text-gray-500">
-                  <Calendar size={18} strokeWidth={2.5} />
-              </div>
-              <div>
-                  <h3 className="text-xs font-black text-gray-900 dark:text-gray-100 uppercase tracking-widest text-left">Választott szállítási napok</h3>
-                  <p className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">{deliveryDates.length} alkalom</p>
-              </div>
+          <div className="text-left">
+              <h3 className="text-2xl font-black text-[#0B5D3F] tracking-tight leading-none">
+                {deliveryDates.length} <span className="font-bold">kiszállítás</span>
+              </h3>
+              <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mt-1">beütemezve</p>
           </div>
 
           <div className="group relative z-20">
@@ -266,7 +263,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
             </button>
 
             <div className="absolute right-0 top-full mt-2 w-72 bg-[#063323] text-white p-5 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top-right group-hover:translate-y-0 translate-y-2 pointer-events-none group-hover:pointer-events-auto">
-              <h4 className="font-bold text-xs uppercase tracking-wider mb-3 text-gray-400">Szállítási díj alkalmanként</h4>
+              <h4 className="font-bold text-xs uppercase tracking-wider mb-3 text-gray-400">Hűtött kiszállítás díja</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300">20-39 palack között</span>
@@ -299,14 +296,11 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                   onClick={() => handleToggleMonth(month)}
                   className={`w-full flex items-center justify-between p-5 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${isExpanded ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                 >
-                  <h4 className="font-black text-gray-900 dark:text-gray-100 text-lg flex items-center gap-2">
+                  <h4 className="font-black text-gray-900 dark:text-gray-100 text-lg">
                     {month.replace(/^\d{4}\.\s*/, '')}
-                    <span className="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-wider bg-white dark:bg-gray-900 px-2 py-1 rounded-md border border-gray-200 dark:border-gray-700">
-                      {dates[0].getFullYear()}
-                    </span>
                   </h4>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{dates.length} alkalom</span>
+                    <span className="text-xs font-medium text-gray-400 dark:text-gray-500">{dates.length} alkalom</span>
                     <div className={`w-8 h-8 rounded-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-500 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[#0B5D3F] border-[#0B5D3F]' : ''}`}>
                       <ChevronDown size={16} strokeWidth={2.5} />
                     </div>
@@ -323,15 +317,15 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                           <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center font-black text-gray-900 dark:text-gray-100 shadow-sm border border-gray-100 dark:border-gray-700 text-lg">
                             {d.getDate()}.
                           </div>
-                          <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             {d.toLocaleDateString('hu-HU', { weekday: 'long' })}
                           </div>
                         </div>
 
                         {/* Center Column */}
                         <div className="hidden sm:flex flex-col items-center justify-center w-1/3 text-center">
-                          <span className="text-lg font-black text-gray-900 dark:text-gray-100 uppercase tracking-tight">
-                            {quantity} <span className="text-gray-400 dark:text-gray-500 font-bold text-xs tracking-widest mx-1">PALACK</span> <span className="text-[#0B5D3F]">ROSTI</span>
+                          <span className="text-lg font-black text-gray-900 dark:text-gray-100 tracking-tight">
+                            {quantity} <span className="text-gray-400 dark:text-gray-500 font-bold text-xs uppercase tracking-widest mx-1">PALACK</span> <span className="text-[#0B5D3F] font-bold">Rosti</span>
                           </span>
                         </div>
 
@@ -350,13 +344,13 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
                               discountApplied ? (
                                 <div className="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5">
                                   <span className="line-through">+ {formatCurrency(baseShippingFee)}</span>
-                                  <span className="text-[#0B5D3F] font-bold ml-1">+ {formatCurrency(shippingFee)} szállítás</span>
+                                  <span className="text-[#0B5D3F] font-bold ml-1">+ {formatCurrency(shippingFee)} kiszállítás</span>
                                 </div>
                               ) : (
-                                <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">+ {formatCurrency(shippingFee)} szállítás</span>
+                                <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">+ {formatCurrency(shippingFee)} kiszállítás</span>
                               )
                             ) : (
-                              <span className="text-[10px] font-bold text-[#0B5D3F]">INGYENES SZÁLLÍTÁS</span>
+                              <span className="text-[10px] font-bold text-[#0B5D3F]">Ingyenes kiszállítás</span>
                             )}
                           </div>
                         </div>
@@ -378,7 +372,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
           <div className="w-full md:w-auto">
             <div className="grid grid-cols-[auto_1fr] gap-x-12 gap-y-3 items-baseline">
               {/* ROSTIK ROW */}
-              <span className="text-xs font-black text-[#0B5D3F] uppercase tracking-widest">ROSTIK</span>
+              <span className="text-sm font-bold text-[#0B5D3F]">Rosti csomagok</span>
               <div className="flex items-baseline justify-end gap-1.5">
                 {deliveryDates.length > 1 && (
                   <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500">
@@ -391,7 +385,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
               </div>
 
               {/* SHIPPING ROW */}
-              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">SZÁLLÍTÁS</span>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">kiszállítás</span>
               <div className="flex items-baseline justify-end gap-1.5">
                 {shippingFee === 0 ? (
                   <span className="bg-[#0B5D3F] text-white px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest inline-flex items-center gap-1">
@@ -505,7 +499,7 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
         </button>
         <div className="flex items-center justify-center gap-2 mt-4 text-gray-400 dark:text-gray-500">
           <Lock size={12} />
-          <span className="text-[10px] font-bold uppercase tracking-wider">Biztonságos fizetés a Stripe-on keresztül</span>
+          <span className="text-xs font-medium">Biztonságos, gyors fizetés Stripe-on keresztül</span>
         </div>
       </div>
     </main>

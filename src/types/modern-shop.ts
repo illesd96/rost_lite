@@ -54,8 +54,9 @@ export interface OrderState {
 
 export const CONSTANTS = {
   UNIT_PRICE: 1490,
-  SHIPPING_FEE_HIGH: 5700, // 10-25 bottles
-  SHIPPING_FEE_LOW: 3700,  // 26-49 bottles
+  SHIPPING_FEE_HIGH: 5000, // 15-39 bottles
+  SHIPPING_FEE_LOW: 3000,  // 40-59 bottles
+  SHIPPING_TIER_BOUNDARY: 40, // < this → HIGH, < FREE_SHIPPING_THRESHOLD → LOW, else free
   FREE_SHIPPING_THRESHOLD: 60,
   START_DATE: new Date(2026, 0, 19), // Jan 19, 2026
   HOLIDAY_DATE: new Date(2026, 3, 6), // Apr 6, 2026 (kept for backward compatibility)

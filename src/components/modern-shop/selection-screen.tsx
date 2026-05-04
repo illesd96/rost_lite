@@ -9,6 +9,17 @@ interface SelectionScreenProps {
   onNext: () => void;
 }
 
+// Order cutoff: 15:00 on the Friday before a Monday/Tuesday delivery.
+const isPastOrderDeadline = (date: Date) => {
+  const day = date.getDay();
+  if (day !== 1 && day !== 2) return false;
+  const daysBack = day === 1 ? 3 : 4;
+  const deadline = new Date(date);
+  deadline.setDate(date.getDate() - daysBack);
+  deadline.setHours(15, 0, 0, 0);
+  return new Date() > deadline;
+};
+
 const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrder, onNext }) => {
   const [showScheduler, setShowScheduler] = useState(false);
   const schedulerRef = useRef<HTMLDivElement>(null);
@@ -19,7 +30,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
   const isFreeShipping = orderState.quantity >= CONSTANTS.FREE_SHIPPING_THRESHOLD;
 
   // Validation logic
-  const isCustomError = orderState.isCustomQuantity && (orderState.quantity < 20 || orderState.quantity > 300);
+  const isCustomError = orderState.isCustomQuantity && (orderState.quantity < 15 || orderState.quantity > 300);
 
   // Helper: build calendar data for a given year/month
   const buildMonth = (year: number, month: number) => {
@@ -91,6 +102,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
           const day = date.getDay();
           if (day !== 1 && day !== 2) continue;
           if (date < today) continue;
+          if (isPastOrderDeadline(date)) continue;
           if (isHungarianHoliday(date)) continue;
           const index = dateToIndexMap.get(date.toDateString());
           if (index === undefined) continue;
@@ -183,7 +195,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
   };
 
   const isDateSelectable = (date: Date) => {
-    return isDeliveryDay(date) && !isPastDate(date) && !isDateHoliday(date) && dateToIndexMap.has(date.toDateString());
+    return isDeliveryDay(date) && !isPastDate(date) && !isPastOrderDeadline(date) && !isDateHoliday(date) && dateToIndexMap.has(date.toDateString());
   };
 
   return (
@@ -234,7 +246,7 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
                   <div className="text-left">
                     <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">Egyedi mennyiség</h4>
                     {isCustomError ? (
-                      <p className="text-xs font-bold text-red-500 transition-colors">20 és 300 palack között.</p>
+                      <p className="text-xs font-bold text-red-500 transition-colors">15 és 300 palack között.</p>
                     ) : (
                       <p className="text-xs font-bold text-[#0B5D3F] transition-colors">Húzd a csúszkát vagy írd be!</p>
                     )}
@@ -261,10 +273,10 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
 
                 {/* Slider and Markers */}
                 <div className="w-full pt-8 pb-1 relative">
-                  {/* Free shipping marker at 60 (14.28%) */}
+                  {/* Free shipping marker at 60 ((60-15)/(300-15) ≈ 15.79%) */}
                   <div
                     className="absolute top-1 flex flex-col items-center pointer-events-none z-10"
-                    style={{ left: '14.2857%', transform: 'translateX(-50%)' }}
+                    style={{ left: '15.7895%', transform: 'translateX(-50%)' }}
                   >
                     <div className="bg-[#EDF7F3] p-1 rounded-full mb-1 shadow-sm">
                       <Gift size={10} className="text-[#0B5D3F]" />
@@ -274,16 +286,16 @@ const SelectionScreen: React.FC<SelectionScreenProps> = ({ orderState, updateOrd
 
                   <input
                     type="range"
-                    min="20"
+                    min="15"
                     max="300"
                     step="1"
-                    value={orderState.quantity || 20}
+                    value={orderState.quantity || 15}
                     onChange={(e) => updateOrder({ quantity: parseInt(e.target.value, 10) })}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0B5D3F] relative z-20"
                   />
                   <div className="flex justify-between text-[10px] font-bold text-gray-400 mt-3 px-1 uppercase tracking-widest relative">
-                    <span>20 min</span>
-                    <span className="absolute text-[#0B5D3F] opacity-80" style={{ left: '14.2857%', transform: 'translateX(-50%)' }}>60</span>
+                    <span>15 min</span>
+                    <span className="absolute text-[#0B5D3F] opacity-80" style={{ left: '15.7895%', transform: 'translateX(-50%)' }}>60</span>
                     <span>300 max</span>
                   </div>
                 </div>

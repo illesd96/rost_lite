@@ -63,7 +63,7 @@ export function validateCoupon(
   }
 
   // Calculate savings
-  const baseShippingFee = quantity <= 25
+  const baseShippingFee = quantity < CONSTANTS.SHIPPING_TIER_BOUNDARY
     ? CONSTANTS.SHIPPING_FEE_HIGH
     : quantity < CONSTANTS.FREE_SHIPPING_THRESHOLD
       ? CONSTANTS.SHIPPING_FEE_LOW
