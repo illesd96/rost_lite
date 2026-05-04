@@ -118,7 +118,7 @@ export default function SignInPage() {
               </button>
 
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-                vagy <a href="mailto:rendeles@rosti.hu" className="font-bold text-[#0B5D3F] hover:text-[#147A55] transition-colors no-underline">írj nekünk</a>
+                vagy <a href="mailto:rendeles@rosti.hu" className="font-bold text-[#0B5D3F] hover:text-[#147A55] transition-colors underline underline-offset-2">írj nekünk</a>
               </p>
             </div>
           </div>
@@ -130,7 +130,7 @@ export default function SignInPage() {
               <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">Lépj be, és töltsd fel a csapat hűtőjét.</p>
             </header>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" name="signin" method="post">
               {errors.root && (
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
                   <p className="text-red-700 text-sm font-medium">{errors.root.message}</p>
@@ -143,6 +143,7 @@ export default function SignInPage() {
                   {...register('email')}
                   type="email"
                   id="email"
+                  autoComplete="email"
                   placeholder="írd be az email címed"
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0B5D3F] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100 disabled:opacity-50"
                 />
@@ -158,6 +159,7 @@ export default function SignInPage() {
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
                     id="password"
+                    autoComplete="current-password"
                     placeholder="írd be a jelszavad"
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0B5D3F] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100 disabled:opacity-50"
                   />
@@ -188,7 +190,7 @@ export default function SignInPage() {
             <footer className="mt-10 text-center border-t border-gray-100 dark:border-gray-800 pt-8">
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Probléma a belépéssel?{' '}
-                <a href="mailto:rendeles@rosti.hu" className="font-bold text-gray-900 dark:text-gray-100 hover:text-[#147A55] transition-colors underline underline-offset-2">
+                <a href="mailto:rendeles@rosti.hu" className="font-bold text-[#0B5D3F] hover:text-[#147A55] transition-colors underline underline-offset-2">
                   Írj nekünk
                 </a>
               </p>

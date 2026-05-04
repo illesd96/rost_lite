@@ -18,16 +18,8 @@ interface BlogPost {
   publishedAt: string | null;
 }
 
-const MONTHS = [
-  { key: 'jan', label: 'Január' },
-  { key: 'feb', label: 'Február' },
-  { key: 'mar', label: 'Március' },
-  { key: 'apr', label: 'Április' },
-];
-
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,13 +31,6 @@ export default function BlogPage() {
       })
       .catch(() => setLoading(false));
   }, []);
-
-  const filteredPosts = selectedMonth
-    ? posts.filter(p => p.month === selectedMonth)
-    : posts;
-
-  // Find which months have posts
-  const monthsWithPosts = new Set(posts.map(p => p.month).filter(Boolean));
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans flex flex-col">
@@ -60,53 +45,20 @@ export default function BlogPage() {
         </Link>
 
         <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">Rosti Blog</h1>
-          <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
-            Tudományos háttér, tippek és érdekességek az egészséges irodai élethez.
-          </p>
-        </div>
-
-        {/* Month Navigation */}
-        <div className="flex gap-2 mb-12 overflow-x-auto no-scrollbar pb-2 items-center">
-          <button
-            onClick={() => setSelectedMonth(null)}
-            className={`px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all whitespace-nowrap
-              ${selectedMonth === null
-                ? 'bg-[#0B5D3F] text-white shadow-md transform scale-105'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300'
-              }`}
-          >
-            Összes
-          </button>
-          {MONTHS.map(m => (
-            <button
-              key={m.key}
-              onClick={() => monthsWithPosts.has(m.key) ? setSelectedMonth(m.key) : undefined}
-              disabled={!monthsWithPosts.has(m.key)}
-              className={`px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all whitespace-nowrap
-                ${selectedMonth === m.key
-                  ? 'bg-[#0B5D3F] text-white shadow-md transform scale-105'
-                  : monthsWithPosts.has(m.key)
-                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300'
-                    : 'bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600 cursor-not-allowed border border-gray-100 dark:border-gray-800'
-                }`}
-            >
-              {m.label}
-            </button>
-          ))}
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100">Rosti Blog</h1>
         </div>
 
         {/* Posts Grid */}
         {loading ? (
           <div className="text-center py-20 text-gray-400 dark:text-gray-500">Betöltés...</div>
-        ) : filteredPosts.length === 0 ? (
+        ) : posts.length === 0 ? (
           <div className="text-center py-20">
             <h2 className="text-2xl font-bold text-gray-300 dark:text-gray-600 mb-2">Hamarosan érkezik...</h2>
-            <p className="text-gray-400 dark:text-gray-500">Még nincs bejegyzés ebben a hónapban.</p>
+            <p className="text-gray-400 dark:text-gray-500">Még nincs bejegyzés.</p>
           </div>
         ) : (
           <div className="space-y-8">
-            {filteredPosts.map(post => (
+            {posts.map(post => (
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
@@ -146,20 +98,20 @@ export default function BlogPage() {
         )}
 
         {/* CTA */}
-        <div className="mt-16 flex flex-col items-center">
+        <div className="mt-16 flex flex-col items-center text-center">
           <Link
             href="/modern-shop"
-            className="group flex items-center gap-4 cursor-pointer select-none"
+            className="group flex flex-col sm:flex-row items-center gap-4"
           >
-            <button className="bg-[#0B5D3F] text-white px-8 sm:px-10 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-black shadow-xl transition-all transform group-hover:bg-[#147A55] group-hover:shadow-2xl group-hover:scale-105 flex items-center gap-3">
-              <span>Feltöltöm a hűtőt</span>
-              <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+            <button className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
+              <span>FELTÖLTÖM A HŰTŐT</span>
+              <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"
               alt="Friss zöldségek"
-              className="h-14 sm:h-16 w-auto object-contain transition-transform duration-300 drop-shadow-md group-hover:scale-110 group-hover:-rotate-3"
+              className="h-16 sm:h-20 w-auto object-contain transition-transform duration-300 drop-shadow-sm group-hover:scale-110 group-hover:-rotate-3"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           </Link>

@@ -1,20 +1,23 @@
 import { db } from '@/lib/db';
-import { users, orders } from '@/lib/db/schema';
+import { users, orders, companies } from '@/lib/db/schema';
 import { eq, count, desc } from 'drizzle-orm';
 import { formatPrice } from '@/lib/utils';
 import { UserManagement } from '@/components/admin/user-management';
 import { Users, UserPlus } from 'lucide-react';
 
 export default async function AdminUsersPage() {
-  // Fetch all users with order statistics
+  // Fetch all users with order statistics and their company
   const allUsers = await db
     .select({
       id: users.id,
       email: users.email,
       role: users.role,
       createdAt: users.createdAt,
+      companyId: users.companyId,
+      companyName: companies.companyName,
     })
     .from(users)
+    .leftJoin(companies, eq(users.companyId, companies.id))
     .orderBy(desc(users.createdAt));
 
   // Get order statistics for each user

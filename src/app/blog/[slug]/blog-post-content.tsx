@@ -65,20 +65,20 @@ export function BlogPostContent({ post }: { post: BlogPost }) {
           />
 
           {/* CTA */}
-          <div className="mt-16 flex flex-col items-center">
+          <div className="mt-16 flex flex-col items-center text-center">
             <Link
               href="/modern-shop"
-              className="group flex items-center gap-4 cursor-pointer select-none"
+              className="group flex flex-col sm:flex-row items-center gap-4"
             >
-              <span className="bg-[#0B5D3F] text-white px-8 sm:px-10 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-black shadow-xl transition-all transform group-hover:bg-[#147A55] group-hover:shadow-2xl group-hover:scale-105 flex items-center gap-3">
-                <span>Feltöltöm a hűtőt</span>
-                <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-              </span>
+              <button className="flex items-center gap-2 bg-[#0B5D3F] text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all shadow-lg group-hover:bg-[#147A55] group-hover:shadow-[#0B5D3F]/20 group-hover:scale-105">
+                <span>FELTÖLTÖM A HŰTŐT</span>
+                <ArrowRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+              </button>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://cdn.jsdelivr.net/gh/bal1nt/rosti-img@main/ROSTI_WEBSHOP_P_tr.png"
                 alt="Friss zöldségek"
-                className="h-14 sm:h-16 w-auto object-contain transition-transform duration-300 drop-shadow-md group-hover:scale-110 group-hover:-rotate-3"
+                className="h-16 sm:h-20 w-auto object-contain transition-transform duration-300 drop-shadow-sm group-hover:scale-110 group-hover:-rotate-3"
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             </Link>

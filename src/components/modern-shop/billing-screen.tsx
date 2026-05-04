@@ -149,16 +149,14 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
         Vissza a kosárhoz és naptárhoz
       </button>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 text-balance text-left">
-        <h2 className="text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tight uppercase text-left">SZÁMLÁZÁS</h2>
-
-        {allowPrivateBilling && (
+      {allowPrivateBilling && (
+        <div className="flex justify-end mb-10 text-balance text-left">
           <div className="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl border border-gray-200 dark:border-gray-700 w-full md:w-auto text-balance text-left">
             <button onClick={() => handleTypeChange('business')} className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-balance transition-all ${billingData.type === 'business' ? 'bg-[#0B5D3F] text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}>Céges</button>
             <button onClick={() => handleTypeChange('private')} className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-balance transition-all ${billingData.type === 'private' ? 'bg-[#0B5D3F] text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}>Magánszemély</button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-8 text-left text-balance">
         {/* BASE INFO */}
@@ -251,7 +249,7 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
                 </div>
                 <div>
                     <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase mb-2 ml-1 tracking-widest text-left">Telefonszám</label>
-                    <input type="tel" required value={billingData.contactPhone} onChange={e => updateBilling({ contactPhone: formatPhone(e.target.value) })} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 transition-all font-mono text-left text-gray-700 dark:text-gray-300" />
+                    <input type="tel" required pattern="\+36[0-9]{9}" minLength={12} title="Adj meg egy teljes magyar telefonszámot (+36 és 9 számjegy)" value={billingData.contactPhone} onChange={e => updateBilling({ contactPhone: formatPhone(e.target.value) })} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 transition-all font-mono text-left text-gray-700 dark:text-gray-300" />
                 </div>
              </div>
 
@@ -303,25 +301,6 @@ const BillingScreen: React.FC<BillingScreenProps> = ({ orderState, updateBilling
                </div>
              )}
 
-             <div className="pt-6 border-t border-gray-50 dark:border-gray-800 text-left">
-                <div className="flex flex-col sm:flex-row items-center gap-4 text-gray-600 dark:text-gray-400 font-semibold text-sm text-left">
-                    <span className="whitespace-nowrap text-left">Kérlek, kb.</span>
-                    <div className="flex gap-2 text-left">
-                        {[60, 30, 15].map(min => (
-                            <div
-                                key={min}
-                                onClick={() => updateBilling({ notifyMinutes: billingData.notifyMinutes === min ? null : min as any })}
-                                className={`notification-chip w-14 h-14 rounded-2xl text-lg transition-all cursor-pointer border-2 flex items-center justify-center font-bold
-                                    ${billingData.notifyMinutes === min ? 'border-[#0B5D3F] bg-[#EDF7F3] dark:bg-emerald-900/20 text-[#0B5D3F]' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'}
-                                `}
-                            >
-                                {min}
-                            </div>
-                        ))}
-                    </div>
-                    <span className="text-balance text-left">perccel a Rostik érkezése előtt telefonáljatok</span>
-                </div>
-             </div>
         </div>
 
         <div className="space-y-4">

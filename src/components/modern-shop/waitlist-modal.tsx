@@ -227,11 +227,11 @@ const WaitlistModal: React.FC<WaitlistModalProps> = ({ isOpen, onClose }) => {
                 />
                 <span className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                   A Jelentkezés elküldésére kattintva beleegyezel az{' '}
-                  <a href="/dokumentumok/adatvedelmi" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-[#147A55]">
+                  <a href="/adatkezeles" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-[#147A55]">
                     adatkezelési tájékoztatóban
                   </a>{' '}
                   foglaltakhoz és az{' '}
-                  <a href="/dokumentumok/aszf" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-[#147A55]">
+                  <a href="/altalanos-szerzodesi-feltetelek" target="_blank" className="font-bold text-gray-700 dark:text-gray-300 underline underline-offset-2 hover:text-[#147A55]">
                     általános szerződési feltételekhez
                   </a>.
                 </span>

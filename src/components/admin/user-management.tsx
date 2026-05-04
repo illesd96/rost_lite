@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { formatPrice } from '@/lib/utils';
-import { Shield, User, Edit, Trash2, Calendar } from 'lucide-react';
+import { Shield, User, Edit, Trash2, Calendar, Building2 } from 'lucide-react';
 
 interface UserWithStats {
   id: string;
@@ -11,6 +11,8 @@ interface UserWithStats {
   createdAt: Date;
   orderCount: number;
   totalSpent: number;
+  companyId: string | null;
+  companyName: string | null;
 }
 
 interface UserManagementProps {
@@ -125,6 +127,9 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
                 Role
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Company
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Join Date
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -160,6 +165,19 @@ export function UserManagement({ users: initialUsers }: UserManagementProps) {
                       <RoleIcon className="w-3 h-3 mr-1" />
                       {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                    {user.companyName ? (
+                      <a
+                        href={`/admin/companies/${user.companyId}`}
+                        className="inline-flex items-center hover:text-[#0B5D3F] hover:underline"
+                      >
+                        <Building2 className="w-4 h-4 mr-1.5 text-gray-400 dark:text-gray-500" />
+                        {user.companyName}
+                      </a>
+                    ) : (
+                      <span className="text-gray-400 dark:text-gray-600">—</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     <div className="flex items-center">

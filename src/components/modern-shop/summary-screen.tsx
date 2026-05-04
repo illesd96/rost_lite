@@ -155,7 +155,96 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
         Vissza a számlázáshoz
       </button>
 
-      <h2 className="text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tight uppercase mb-10 text-left">FIZETÉS</h2>
+      {/* PARTNER CODE SECTION */}
+      <div className="mb-4 text-left">
+         {!appliedCoupon ? (
+            <div>
+                 {!isCouponOpen ? (
+                     <div className="flex justify-end">
+                       <button
+                          type="button"
+                          onClick={() => setIsCouponOpen(true)}
+                          className="text-xs font-bold text-[#0B5D3F] uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 px-5 py-3 rounded-xl transition-all border border-transparent hover:border-emerald-100 dark:hover:border-emerald-800"
+                       >
+                           <span className="w-5 h-5 rounded-full border border-[#0B5D3F] flex items-center justify-center text-sm font-normal pb-0.5 leading-none">+</span>
+                           Van partnerkódod?
+                       </button>
+                     </div>
+                 ) : (
+                     <div className="animate-fade-in bg-gray-50 dark:bg-gray-800 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-700 relative">
+                         <div className="flex justify-between items-center mb-4">
+                             <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] text-left">Partnerkód megadása</h3>
+                             <button
+                                type="button"
+                                onClick={() => {
+                                    setIsCouponOpen(false);
+                                    setCouponInput('');
+                                    setCouponMessage(null);
+                                }}
+                                className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                             >
+                                <X size={16} strokeWidth={2.5} />
+                             </button>
+                         </div>
+                         <div className="flex flex-col sm:flex-row gap-4">
+                            <input
+                                type="text"
+                                placeholder="Írd be a partnerkódot"
+                                value={couponInput}
+                                onChange={(e) => {
+                                    setCouponInput(e.target.value);
+                                    setCouponMessage(null);
+                                }}
+                                className="flex-grow p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 transition-all text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm"
+                            />
+                            <button
+                                type="button"
+                                onClick={handleCouponValidate}
+                                disabled={!couponInput}
+                                className={`px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm
+                                    ${couponInput
+                                        ? 'bg-[#0B5D3F] text-white shadow-lg hover:bg-[#147A55] active:scale-95'
+                                        : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                                    }
+                                `}
+                            >
+                                Érvényesítés
+                            </button>
+                         </div>
+
+                         {couponMessage && (
+                             <div className={`mt-3 text-xs font-bold flex items-center gap-2 ${couponMessage.type === 'success' ? 'text-[#0B5D3F]' : 'text-red-500'}`}>
+                                 {couponMessage.type === 'success' ? <Check size={14} /> : <X size={14} />}
+                                 {couponMessage.text}
+                             </div>
+                         )}
+                     </div>
+                 )}
+            </div>
+         ) : (
+             <div className="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 rounded-2xl shadow-sm">
+                 <div className="flex items-center gap-3">
+                     <CheckCircle2 size={24} className="text-[#0B5D3F] flex-shrink-0" />
+                     <div className="text-sm text-emerald-800 dark:text-emerald-300">
+                         <span className="font-black">Siker! {formatCurrency(totalSavings)}-ot spóroltál.</span>
+                         <span className="font-medium ml-1">Ez egy egészséges döntés volt!</span>
+                     </div>
+                 </div>
+                 <button
+                    type="button"
+                    onClick={() => {
+                        updateOrder({ appliedCoupon: undefined });
+                        setCouponInput('');
+                        setCouponMessage(null);
+                        setIsCouponOpen(false);
+                    }}
+                    className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-200 transition-colors p-2"
+                 >
+                     <X size={20} />
+                 </button>
+             </div>
+         )}
+      </div>
 
       <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-[2.5rem] border border-gray-200 dark:border-gray-700 shadow-sm mb-10 text-left relative overflow-visible">
         <div className="flex justify-between items-center mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
@@ -279,95 +368,6 @@ const SummaryScreen: React.FC<SummaryScreenProps> = ({ orderState, updateOrder, 
             );
           })}
         </div>
-      </div>
-
-      {/* PARTNER CODE SECTION */}
-      <div className="mb-10 text-left">
-         {!appliedCoupon ? (
-            <div>
-                 {!isCouponOpen ? (
-                     <button
-                        type="button"
-                        onClick={() => setIsCouponOpen(true)}
-                        className="text-xs font-bold text-[#0B5D3F] uppercase tracking-widest flex items-center gap-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 px-5 py-3 rounded-xl transition-all border border-transparent hover:border-emerald-100 dark:hover:border-emerald-800"
-                     >
-                         <span className="w-5 h-5 rounded-full border border-[#0B5D3F] flex items-center justify-center text-sm font-normal pb-0.5 leading-none">+</span>
-                         Van partnerkódod?
-                     </button>
-                 ) : (
-                     <div className="animate-fade-in bg-gray-50 dark:bg-gray-800 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-700 relative">
-                         <div className="flex justify-between items-center mb-4">
-                             <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] text-left">Partnerkód megadása</h3>
-                             <button
-                                type="button"
-                                onClick={() => {
-                                    setIsCouponOpen(false);
-                                    setCouponInput('');
-                                    setCouponMessage(null);
-                                }}
-                                className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                             >
-                                <X size={16} strokeWidth={2.5} />
-                             </button>
-                         </div>
-                         <div className="flex flex-col sm:flex-row gap-4">
-                            <input
-                                type="text"
-                                placeholder="Írd be a partnerkódot"
-                                value={couponInput}
-                                onChange={(e) => {
-                                    setCouponInput(e.target.value);
-                                    setCouponMessage(null);
-                                }}
-                                className="flex-grow p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 transition-all text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm"
-                            />
-                            <button
-                                type="button"
-                                onClick={handleCouponValidate}
-                                disabled={!couponInput}
-                                className={`px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-sm
-                                    ${couponInput
-                                        ? 'bg-[#0B5D3F] text-white shadow-lg hover:bg-[#147A55] active:scale-95'
-                                        : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                                    }
-                                `}
-                            >
-                                Érvényesítés
-                            </button>
-                         </div>
-
-                         {couponMessage && (
-                             <div className={`mt-3 text-xs font-bold flex items-center gap-2 ${couponMessage.type === 'success' ? 'text-[#0B5D3F]' : 'text-red-500'}`}>
-                                 {couponMessage.type === 'success' ? <Check size={14} /> : <X size={14} />}
-                                 {couponMessage.text}
-                             </div>
-                         )}
-                     </div>
-                 )}
-            </div>
-         ) : (
-             <div className="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 rounded-2xl shadow-sm">
-                 <div className="flex items-center gap-3">
-                     <CheckCircle2 size={24} className="text-[#0B5D3F] flex-shrink-0" />
-                     <div className="text-sm text-emerald-800 dark:text-emerald-300">
-                         <span className="font-black">Siker! {formatCurrency(totalSavings)}-ot spóroltál.</span>
-                         <span className="font-medium ml-1">Ez egy egészséges döntés volt!</span>
-                     </div>
-                 </div>
-                 <button
-                    type="button"
-                    onClick={() => {
-                        updateOrder({ appliedCoupon: undefined });
-                        setCouponInput('');
-                        setCouponMessage(null);
-                        setIsCouponOpen(false);
-                    }}
-                    className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-200 transition-colors p-2"
-                 >
-                     <X size={20} />
-                 </button>
-             </div>
-         )}
       </div>
 
       {/* COST SUMMARY */}

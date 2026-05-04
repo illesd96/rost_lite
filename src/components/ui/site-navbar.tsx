@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, User, LogOut, ChevronDown, Moon, Sun } from 'lucide-react';
+import { ArrowRight, User, LogOut, ChevronDown, Moon, Sun } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
 import { useTheme } from '@/components/providers/theme-provider';
 
 interface SiteNavbarProps {
@@ -21,8 +20,6 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
   const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const pathname = usePathname();
-  const isSubpage = pathname !== '/' && !pathname.startsWith('/modern-shop') && !pathname.startsWith('/auth');
 
   const isLoggedIn = !!session?.user;
 
@@ -30,12 +27,7 @@ export function SiteNavbar({ relative = false, hasPromoBar = false, hideOrderCta
     <nav className={`${relative ? 'sticky top-0' : 'fixed top-0 left-0 right-0'} z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all`}>
       <div className="container mx-auto px-6 h-20 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="group relative flex items-center gap-2">
-          {isSubpage && (
-            <div className="absolute right-full mr-2 md:mr-3 flex items-center">
-              <ArrowLeft size={20} className="text-[#0B5D3F] group-hover:-translate-x-1 transition-transform" />
-            </div>
-          )}
+        <Link href="/" className="group flex items-center gap-2">
           <Image
             src="/images/logo.png"
             alt="Rosti"
