@@ -25,7 +25,11 @@
       "Bash(grep -r \"CREATE TABLE\\\\|INSERT INTO\" /c/Projects/cursor/WebShop/drizzle/*.sql)",
       "Bash(mkdir -p c:/Projects/cursor/WebShop/src/app/api/modern-shop/profile/orders)",
       "Bash(mkdir -p c:/Projects/cursor/WebShop/src/app/modern-shop/profile)",
-      "Bash(find /c/Projects/cursor/WebShop/src -type f \\\\\\( -name \"*.ts\" -o -name \"*.tsx\" -o -name \"*.js\" \\\\\\) -exec grep -l \"generateSlug\\\\|createSlug\\\\|slugify\" {} \\\\;)"
+      "Bash(find /c/Projects/cursor/WebShop/src -type f \\\\\\( -name \"*.ts\" -o -name \"*.tsx\" -o -name \"*.js\" \\\\\\) -exec grep -l \"generateSlug\\\\|createSlug\\\\|slugify\" {} \\\\;)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")",
+      "Bash(npm run *)",
+      "Bash(echo \"---exit $?---\")",
+      "Bash(git checkout *)"
     ],
     "additionalDirectories": [
       "c:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\waitlist"

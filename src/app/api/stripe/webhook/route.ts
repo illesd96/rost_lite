@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { db } from '@/lib/db';
-import { modernShopOrders, orderPaymentGroups } from '@/lib/db/schema';
+import { modernShopOrders, orderPaymentGroups, openDayOrders } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import Stripe from 'stripe';
 
@@ -9,6 +9,20 @@ async function fulfillOrder(session: Stripe.Checkout.Session) {
   const orderId = session.metadata?.orderId;
 
   if (!orderId) {
+    return;
+  }
+
+  // Open-day (event) guest orders live in a separate table
+  if (session.metadata?.orderType === 'open_day') {
+    await db
+      .update(openDayOrders)
+      .set({
+        status: 'confirmed',
+        confirmedAt: new Date(),
+        updatedAt: new Date(),
+        notes: `Stripe session: ${session.id}, Payment intent: ${session.payment_intent}`,
+      })
+      .where(eq(openDayOrders.id, orderId));
     return;
   }
 

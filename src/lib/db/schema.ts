@@ -313,6 +313,36 @@ export const orderDeliverySchedule = pgTable('order_delivery_schedule', {
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
+// Open-day (event) guest orders — standalone single-purchase checkout, no account required
+export const openDayOrders = pgTable('open_day_orders', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  orderNumber: varchar('order_number', { length: 50 }).unique().notNull(),
+
+  // Order details
+  quantity: integer('quantity').notNull(),
+  unitPrice: integer('unit_price').notNull(), // HUF per bottle
+  totalAmount: integer('total_amount').notNull(),
+
+  // Guest billing info
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  postcode: varchar('postcode', { length: 10 }),
+  city: text('city'),
+  streetName: text('street_name'),
+  streetType: varchar('street_type', { length: 20 }),
+  houseNum: varchar('house_num', { length: 20 }),
+
+  // Payment
+  paymentMethod: varchar('payment_method', { length: 20 }).notNull(), // 'card', 'transfer'
+  status: varchar('status', { length: 20 }).default('pending_payment').notNull(), // 'pending_payment', 'confirmed', 'cancelled'
+  stripeSessionId: text('stripe_session_id'),
+  notes: text('notes'),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  confirmedAt: timestamp('confirmed_at'),
+});
+
 // Waitlist applications (for new partners who want to join)
 export const waitlistApplications = pgTable('waitlist_applications', {
   id: uuid('id').primaryKey().defaultRandom(),
