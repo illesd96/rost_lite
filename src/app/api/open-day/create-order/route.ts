@@ -98,7 +98,9 @@ export async function POST(req: NextRequest) {
               name: 'Rosti prémium nyers zöldség-smoothie',
               description: `${quantity} palack (nyíltnapi átvétel)`,
             },
-            unit_amount: unitPrice,
+            // HUF is not zero-decimal in Stripe: amounts are in fillér (×100),
+            // which also satisfies Stripe's "divisible by 100" requirement for HUF.
+            unit_amount: unitPrice * 100,
           },
           quantity,
         },
@@ -122,6 +124,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ orderNumber, url: checkoutSession.url });
   } catch (error) {
+    console.error('open-day create-order failed:', error);
     return NextResponse.json(
       { message: 'Hiba történt a rendelés létrehozása során.' },
       { status: 500 }
