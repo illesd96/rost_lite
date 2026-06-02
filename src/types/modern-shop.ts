@@ -52,6 +52,11 @@ export interface OrderState {
   stripeSessionId?: string;
 }
 
+// TEMPORARY: reduced unit price for the nyíltnap (open-day) flow so we can run a
+// real low-cost Stripe live-mode test. 175 HUF is Stripe's minimum charge for HUF.
+// Revert to CONSTANTS.UNIT_PRICE (1490) once live payment testing is finished.
+export const OPEN_DAY_UNIT_PRICE = 175;
+
 export const CONSTANTS = {
   UNIT_PRICE: 1490,
   SHIPPING_FEE_HIGH: 5000, // 15-39 bottles

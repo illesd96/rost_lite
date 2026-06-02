@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Check, ChevronRight, Lock, Plus, Minus, CreditCard as CardIcon, ChevronDown, Copy, CheckCircle2 } from 'lucide-react';
-import { CONSTANTS } from '@/types/modern-shop';
+import { OPEN_DAY_UNIT_PRICE } from '@/types/modern-shop';
 import { formatCurrency } from '@/lib/modern-shop-utils';
 import { OpenDaySuccessCard } from './open-day-success-card';
 
@@ -45,7 +45,7 @@ export default function OpenDayScreen() {
   const [orderNumber, setOrderNumber] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const totalAmount = quantity * CONSTANTS.UNIT_PRICE;
+  const totalAmount = quantity * OPEN_DAY_UNIT_PRICE;
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
