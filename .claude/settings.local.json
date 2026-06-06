@@ -32,10 +32,12 @@
       "Bash(git checkout *)",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | redirect_url: %{redirect_url} | time: %{time_total}s\\\\n\" -X POST https://www.rosti.hu/api/stripe/webhook -H \"Content-Type: application/json\" -d '{}' --max-time 25)",
       "Bash(curl -sL -o /dev/null -w \"final HTTP %{http_code} | num_redirects: %{num_redirects} | effective_url: %{url_effective}\\\\n\" -X POST https://www.rosti.hu/api/stripe/webhook -H \"Content-Type: application/json\" -d '{}' --max-time 25)",
-      "Bash(curl -s -D - -o /dev/null -X POST https://www.rosti.hu/api/stripe/webhook -H \"Content-Type: application/json\" -d '{}' --max-time 25)"
+      "Bash(curl -s -D - -o /dev/null -X POST https://www.rosti.hu/api/stripe/webhook -H \"Content-Type: application/json\" -d '{}' --max-time 25)",
+      "Read(//c/Users/danii/.claude/projects/c--Projects-cursor-WebShop/memory/**)"
     ],
     "additionalDirectories": [
-      "c:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\waitlist"
+      "c:\\Projects\\cursor\\WebShop\\src\\app\\api\\admin\\waitlist",
+      "c:\\Users\\danii\\.claude\\projects\\c--Projects-cursor-WebShop\\memory"
     ]
   }
 }

@@ -95,7 +95,7 @@ export default function HomePage() {
         "@type": "WebSite",
         "@id": "https://rosti.hu/#website",
         "url": "https://rosti.hu",
-        "name": "Rosti - Friss Zöldségitalok",
+        "name": "Rosti - Prémium Zöldség-Smoothie",
         "description": "Friss és nyers zöldségekből készült Rosti italok Budapesten. Természetes vitaminok, rostok és tápanyagok.",
         "publisher": {
           "@id": "https://rosti.hu/#organization"

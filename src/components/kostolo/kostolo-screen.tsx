@@ -25,12 +25,9 @@ export default function KostoloScreen() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedMarketing, setAcceptedMarketing] = useState(false);
   const [validUntil, setValidUntil] = useState<Date | null>(null);
-
-  const [orderCount, setOrderCount] = useState(() => {
-    if (typeof window === 'undefined') return 1;
-    const saved = localStorage.getItem('kostoloCount');
-    return saved ? parseInt(saved, 10) : 1;
-  });
+  const [ticketNumber, setTicketNumber] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const isQuizComplete = statuses.q1 === 'revealed' && statuses.q2 === 'revealed' && statuses.q3 === 'revealed';
   const isFormValid = name.trim() !== '' && email.includes('@') && acceptedTerms;
@@ -44,21 +41,40 @@ export default function KostoloScreen() {
     }, 600);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!acceptedTerms) {
       alert("Kérjük, fogadd el a feltételeket a továbblépéshez!");
       return;
     }
-    if (name.trim() !== '' && email.includes('@')) {
-        const now = new Date();
-        const expires = new Date(now.getTime() + 10 * 60000);
-        setValidUntil(expires);
-        setStep('success');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        const newCount = orderCount + 1;
-        setOrderCount(newCount);
-        localStorage.setItem('kostoloCount', newCount.toString());
+    if (name.trim() === '' || !email.includes('@')) return;
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch('/api/kostolo/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          acceptedTerms,
+          acceptedMarketing,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Hiba történt a regisztráció során.');
+      }
+      const data = (await res.json()) as { ticketNumber: string; validUntil: string };
+      setTicketNumber(data.ticketNumber);
+      setValidUntil(new Date(data.validUntil));
+      setStep('success');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err: any) {
+      setSubmitError(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -346,16 +362,29 @@ export default function KostoloScreen() {
                         </div>
                     </div>
 
+                    {submitError && (
+                        <div className="mt-6 bg-red-50 border border-red-200 rounded-2xl p-4 text-sm font-medium text-red-700 text-center">
+                            {submitError}
+                        </div>
+                    )}
+
                     <button
                         type="submit"
-                        disabled={!isFormValid}
-                        className={`w-full mt-8 py-4 rounded-full font-bold shadow-sm transition-all ${
-                            isFormValid
+                        disabled={!isFormValid || isSubmitting}
+                        className={`w-full mt-8 py-4 rounded-full font-bold shadow-sm transition-all flex items-center justify-center gap-2 ${
+                            isFormValid && !isSubmitting
                                 ? 'bg-[#0B5D3F] text-white hover:bg-[#147A55]'
                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         }`}
                     >
-                        Kérem a kóstolójegyem!
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 size={18} className="animate-spin" />
+                            Kóstolójegy igénylése...
+                          </>
+                        ) : (
+                          'Kérem a kóstolójegyem!'
+                        )}
                     </button>
                 </form>
            </div>
@@ -399,7 +428,7 @@ export default function KostoloScreen() {
                         </div>
 
                         <div className="bg-gray-50 border border-gray-100 rounded-full px-6 py-3 mt-4">
-                            <p className="font-mono font-bold text-2xl text-gray-900">#KOSTOLO-{String(orderCount - 1).padStart(3, '0')}</p>
+                            <p className="font-mono font-bold text-2xl text-gray-900">#{ticketNumber}</p>
                         </div>
 
                         {validUntil && (

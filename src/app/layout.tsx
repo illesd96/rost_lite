@@ -9,7 +9,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '700', '800', '900'] });
 
 export const metadata: Metadata = {
-  title: 'Rosti - Friss Zöldségitalok Budapest | Természetes Vitaminok és Rostok',
+  title: 'Rosti. Prémium Zöldség-Smoothie. Friss & Nyers',
   description: 'Friss és nyers zöldségekből készült Rosti italok Budapesten. Természetes vitaminok, rostok és tápanyagok. Házhoz szállítás egész Magyarországon. Egészséges életmód, tiszta összetevők.',
   keywords: 'rosti, zöldségital budapest, természetes vitaminok, egészséges italok, friss zöldség, nyers zöldségital, rostok, tápanyagok, házhoz szállítás budapest, egészséges életmód, tiszta összetevők, magyar zöldségital',
   authors: [{ name: 'Rosti Hungary' }],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Rosti - Friss Zöldségitalok Budapest | Természetes Vitaminok',
+    title: 'Rosti. Prémium Zöldség-Smoothie. Friss & Nyers',
     description: 'Friss és nyers zöldségekből készült Rosti italok Budapesten. Természetes vitaminok, rostok és tápanyagok. Házhoz szállítás egész Magyarországon.',
     url: 'https://rosti.hu',
     siteName: 'Rosti',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
         url: 'https://rosti.hu/images/logo.png',
         width: 1200,
         height: 630,
-        alt: 'Rosti - Friss Zöldségitalok',
+        alt: 'Rosti - Prémium Zöldség-Smoothie',
       },
     ],
     locale: 'hu_HU',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rosti - Friss Zöldségitalok Budapest',
+    title: 'Rosti. Prémium Zöldség-Smoothie. Friss & Nyers',
     description: 'Friss és nyers zöldségekből készült Rosti italok. Természetes vitaminok és rostok.',
     images: ['https://rosti.hu/images/logo.png'],
     creator: '@rosti_hungary',

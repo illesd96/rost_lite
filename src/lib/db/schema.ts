@@ -343,6 +343,23 @@ export const openDayOrders = pgTable('open_day_orders', {
   confirmedAt: timestamp('confirmed_at'),
 });
 
+// Open-day tasting (kóstoló) registrations — gamified lead funnel at /kostolo
+export const kostoloRegistrations = pgTable('kostolo_registrations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  ticketNumber: varchar('ticket_number', { length: 50 }).unique().notNull(),
+
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+
+  // GDPR: marketing consent is optional; terms acceptance is mandatory to submit
+  acceptedMarketing: boolean('accepted_marketing').default(false).notNull(),
+
+  // The on-site tasting ticket is valid for 10 minutes after issuance
+  validUntil: timestamp('valid_until').notNull(),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // Waitlist applications (for new partners who want to join)
 export const waitlistApplications = pgTable('waitlist_applications', {
   id: uuid('id').primaryKey().defaultRandom(),

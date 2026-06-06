@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Rendelés - Rosti Zöldségitalok | Friss Házhoz Szállítás',
+  title: 'Rendelés - Rosti Prémium Zöldség-Smoothie | Friss Házhoz Szállítás',
   description:
-    'Rendelj friss Rosti zöldségitalokat az irodádba. Egyszerű online rendelés, hűtött házhoz szállítás Budapesten.',
+    'Rendelj friss Rosti prémium zöldség-smoothie-t az irodádba. Egyszerű online rendelés, hűtött házhoz szállítás Budapesten.',
   openGraph: {
-    title: 'Rendelés - Rosti Zöldségitalok',
+    title: 'Rendelés - Rosti Prémium Zöldség-Smoothie',
     description:
-      'Rendelj friss Rosti zöldségitalokat az irodádba. Házhoz szállítás Budapesten.',
+      'Rendelj friss Rosti prémium zöldség-smoothie-t az irodádba. Házhoz szállítás Budapesten.',
     url: 'https://rosti.hu/modern-shop',
     type: 'website',
     locale: 'hu_HU',

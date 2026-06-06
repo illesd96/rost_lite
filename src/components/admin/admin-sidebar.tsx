@@ -13,7 +13,8 @@ import {
   FileText,
   BookOpen,
   Building2,
-  PartyPopper
+  PartyPopper,
+  Ticket
 } from 'lucide-react';
 
 const navigation = [
@@ -24,6 +25,7 @@ const navigation = [
   { name: 'Billing', href: '/admin/billing', icon: FileText },
   { name: 'Modern Orders', href: '/admin/modern-orders', icon: Package },
   { name: 'Nyíltnap', href: '/admin/open-day-orders', icon: PartyPopper },
+  { name: 'Kóstoló', href: '/admin/kostolo', icon: Ticket },
   { name: 'Blog', href: '/admin/blog', icon: BookOpen },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
