@@ -2,8 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Check, ChevronRight, Lock, Plus, Minus, CreditCard as CardIcon, ChevronDown, Copy, CheckCircle2 } from 'lucide-react';
-import { OPEN_DAY_UNIT_PRICE } from '@/types/modern-shop';
+import { ArrowLeft, Check, ChevronRight, Lock, Plus, Minus, CreditCard as CardIcon, ChevronDown, Copy, CheckCircle2, Info } from 'lucide-react';
+import { getOpenDayUnitPrice, getOpenDayPerLiterPrice } from '@/types/modern-shop';
 import { formatCurrency } from '@/lib/modern-shop-utils';
 import { OpenDaySuccessCard } from './open-day-success-card';
 
@@ -28,7 +28,7 @@ export default function OpenDayScreen() {
   const billingRef = useRef<HTMLDivElement>(null);
   const paymentRef = useRef<HTMLDivElement>(null);
 
-  const [quantity, setQuantity] = useState<number>(3);
+  const [quantity, setQuantity] = useState<number>(1);
   const [billingData, setBillingData] = useState({
     name: '',
     email: '',
@@ -45,7 +45,11 @@ export default function OpenDayScreen() {
   const [orderNumber, setOrderNumber] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const totalAmount = quantity * OPEN_DAY_UNIT_PRICE;
+  // --- ÁRAZÁSI LOGIKA (tiered, shared with the server) ---
+  const getUnitPrice = getOpenDayUnitPrice;
+  const getUnitPerLiterPrice = getOpenDayPerLiterPrice;
+  const totalAmount = quantity * getUnitPrice(quantity);
+  // -------------------------------------------------------
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -140,7 +144,7 @@ export default function OpenDayScreen() {
   };
 
   const handleReset = () => {
-    setQuantity(3);
+    setQuantity(1);
     setBillingData({ name: '', email: '', postcode: '', city: '', streetName: '', streetType: 'utca', houseNum: '' });
     setPaymentMethod('card');
     setOrderNumber('');
@@ -197,10 +201,65 @@ export default function OpenDayScreen() {
                   <span className="text-[12px] font-black tracking-widest text-[#0B5D3F] uppercase whitespace-nowrap opacity-80 rotate-[15deg] inline-block">250 ml</span>
                 </div>
               </div>
-              <span className="text-[13px] font-bold text-gray-400 dark:text-gray-500 mt-3 uppercase tracking-wide">Prémium nyers zöldség-smoothie</span>
+              {/* TOOLTIP BLOKK KEZDETE */}
+              <div className="flex items-center justify-center gap-2 mt-3 group relative cursor-pointer mx-auto w-fit">
+                <span className="text-[13px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                  Prémium nyers zöldség-smoothie
+                </span>
+                <div className="text-gray-400 group-hover:text-[#0B5D3F] transition-colors p-1">
+                  <Info size={16} />
+                </div>
+
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 w-64 md:w-72 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 shadow-xl rounded-2xl p-5 text-sm text-gray-600 dark:text-gray-300 font-medium z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none group-hover:pointer-events-auto text-left">
+                  <span className="block font-black text-gray-900 dark:text-gray-100 mb-2 tracking-wide">FRISS &amp; NYERS</span>
+                  Kizárólag 5 féle nyers zöldséget, frissen facsart citromot, 100% natúr, préselt rostos almalét és szűrt vizet tartalmaz.<br/><br/>
+                  <span className="font-bold text-gray-900 dark:text-gray-100">Allergén:</span> zeller.<br/><br/>
+                  Semmi mesterséges adalék. Semmi tartósítószer.
+                  {/* Nyíl */}
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white dark:bg-gray-900 border-t border-l border-gray-100 dark:border-gray-700 rotate-45"></div>
+                </div>
+              </div>
+              {/* TOOLTIP BLOKK VÉGE */}
             </div>
 
             <div className="bg-white dark:bg-gray-900 rounded-[2rem] p-8 border border-gray-100 dark:border-gray-800 shadow-sm mb-4 flex flex-col items-center">
+
+              {/* CSS Animáció a fény-effekthez */}
+              <style>{`
+                @keyframes sweep {
+                  0% { transform: translateX(-150%) skewX(-20deg); }
+                  100% { transform: translateX(150%) skewX(-20deg); }
+                }
+                .animate-sweep {
+                  animation: sweep 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                }
+              `}</style>
+
+              {/* Dinamikus Motivációs Üzenetek */}
+              {quantity < 3 && (
+                <div className="w-full bg-[#0B5D3F]/10 text-[#0B5D3F] text-[13px] font-bold text-center py-2.5 px-4 rounded-xl mb-6 animate-fade-in transition-all opacity-80">
+                  Már csak {3 - quantity} palack, és feloldod a kedvezményt.
+                </div>
+              )}
+              {quantity === 3 && (
+                <div key="tier1" className="relative overflow-hidden w-full bg-[#0B5D3F]/10 text-[#0B5D3F] text-[13px] font-bold text-center py-2.5 px-4 rounded-xl mb-6 animate-fade-in transition-all">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0B5D3F]/10 to-transparent w-full h-full animate-sweep" />
+                  <span className="relative z-10">Több Rosti, jobb ár! 11% kedvezmény érvényesítve.</span>
+                </div>
+              )}
+              {quantity > 3 && quantity < 7 && (
+                <div className="w-full bg-[#0B5D3F]/10 text-[#0B5D3F] text-[13px] font-bold text-center py-2.5 px-4 rounded-xl mb-6 animate-fade-in transition-all opacity-80">
+                  Már csak {7 - quantity} palack a maximális kedvezményig.
+                </div>
+              )}
+              {quantity >= 7 && (
+                <div key="tier2" className="relative overflow-hidden w-full bg-[#0B5D3F]/10 text-[#0B5D3F] text-[13px] font-bold text-center py-2.5 px-4 rounded-xl mb-6 animate-fade-in transition-all scale-105 shadow-sm">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0B5D3F]/10 to-transparent w-full h-full animate-sweep" />
+                  <span className="relative z-10">Maximális kedvezmény feloldva. Így éri meg a legjobban.</span>
+                </div>
+              )}
+
+              {/* Quantity Controllok (+ / - gombok) */}
               <div className="flex items-center justify-center gap-6 mb-6">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -216,13 +275,31 @@ export default function OpenDayScreen() {
                   <Plus size={24} />
                 </button>
               </div>
+
               <div className="text-gray-400 dark:text-gray-500 font-bold pb-4 border-b border-gray-100 dark:border-gray-800 w-full mb-4 flex justify-center text-sm uppercase tracking-wider">
                 <span>{quantity} palack</span>
               </div>
-              <div className="flex justify-between w-full items-center">
-                <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Összesen:</span>
-                <span className="text-2xl font-black text-gray-900 dark:text-gray-100">{formatCurrency(totalAmount)}</span>
+
+              {/* Ár Kalkulátor (Anchoringgal és letisztult per-liter kiírással) */}
+              <div className="flex flex-col w-full">
+                <div className="flex justify-between w-full items-center">
+                  <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Összesen:</span>
+                  <div className="flex items-center gap-2">
+                    {quantity >= 3 && (
+                      <span className="text-sm font-bold text-gray-400 line-through decoration-gray-300">
+                        {formatCurrency(quantity * 1490)}
+                      </span>
+                    )}
+                    <span className="text-2xl font-black text-[#0B5D3F]">
+                      {formatCurrency(totalAmount)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-end w-full">
+                  <span className="text-[11px] font-medium text-gray-400">({formatCurrency(getUnitPerLiterPrice(quantity))}/l)</span>
+                </div>
               </div>
+
             </div>
 
             {step === 'quantity' && (
@@ -395,7 +472,7 @@ export default function OpenDayScreen() {
             </div>
 
             <div className="text-center mb-6">
-              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1 block">Fizetendő összeg</span>
+              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1 block">Fizetendő összeg (bruttó)</span>
               <span className="text-3xl font-black text-gray-900 dark:text-gray-100">{formatCurrency(totalAmount)}</span>
             </div>
 
@@ -425,11 +502,10 @@ export default function OpenDayScreen() {
               )}
             </button>
 
+            {/* JOGI TÁJÉKOZTATÓ: KÖZVETLENÜL A FIZETÉS GOMB ALÁ */}
             <div className="text-center mt-4 mb-2">
               <span className="text-xs text-gray-500 dark:text-gray-400 font-medium text-balance">
-                A &apos;Fizetek&apos; gomb megnyomásával elfogadod az{' '}
-                <a href="/altalanos-szerzodesi-feltetelek" target="_blank" rel="noopener noreferrer" className="font-bold text-[#0B5D3F] underline">ÁSZF</a>-et és az{' '}
-                <a href="/adatkezeles" target="_blank" rel="noopener noreferrer" className="font-bold text-[#0B5D3F] underline">Adatkezelési Tájékoztatót</a>.
+                A „Fizetek” gomb megnyomásával elfogadod a <a href="/nyilt-nap-szabalyzat#vasarlas" target="_blank" rel="noopener noreferrer" className="font-bold text-[#0B5D3F] hover:text-[#147A55] underline transition-colors">Nyílt Napi Vásárlási és Kóstoló Szabályzatot</a>, és tudomásul veszed az <a href="/nyilt-nap-szabalyzat#adatkezeles" target="_blank" rel="noopener noreferrer" className="font-bold text-[#0B5D3F] hover:text-[#147A55] underline transition-colors">Adatkezelési Tájékoztatót</a>.
               </span>
             </div>
 

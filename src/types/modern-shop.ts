@@ -52,10 +52,23 @@ export interface OrderState {
   stripeSessionId?: string;
 }
 
-// TEMPORARY: reduced unit price for the nyíltnap (open-day) flow so we can run a
-// real low-cost Stripe live-mode test. 175 HUF is Stripe's minimum charge for HUF.
-// Revert to CONSTANTS.UNIT_PRICE (1490) once live payment testing is finished.
-export const OPEN_DAY_UNIT_PRICE = 175;
+// Nyíltnap (open-day) tiered pricing — single source of truth shared by the
+// open-day UI and the server-side checkout so the displayed and charged amounts
+// always match. Goal-gradient discount tiers:
+//   1–2 db: 1490 Ft/db (5960 Ft/l)
+//   3–6 db: 1330 Ft/db (5320 Ft/l)  ~11% off
+//   7+  db: 1280 Ft/db (5120 Ft/l)  max discount
+export const getOpenDayUnitPrice = (quantity: number): number => {
+  if (quantity >= 7) return 1280;
+  if (quantity >= 3) return 1330;
+  return 1490;
+};
+
+export const getOpenDayPerLiterPrice = (quantity: number): number => {
+  if (quantity >= 7) return 5120;
+  if (quantity >= 3) return 5320;
+  return 5960;
+};
 
 export const CONSTANTS = {
   UNIT_PRICE: 1490,

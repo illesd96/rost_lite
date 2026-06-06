@@ -3,7 +3,7 @@ import { stripe } from '@/lib/stripe';
 import { db } from '@/lib/db';
 import { openDayOrders } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import { OPEN_DAY_UNIT_PRICE } from '@/types/modern-shop';
+import { getOpenDayUnitPrice } from '@/types/modern-shop';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 const MAX_QUANTITY = 50;
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Érvénytelen fizetési mód.' }, { status: 400 });
     }
 
-    const unitPrice = OPEN_DAY_UNIT_PRICE;
+    const unitPrice = getOpenDayUnitPrice(quantity);
     const totalAmount = unitPrice * quantity;
     const orderNumber = generateOrderNumber();
 
