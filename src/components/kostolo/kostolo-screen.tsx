@@ -304,6 +304,7 @@ export default function KostoloScreen() {
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 required
+                                autoComplete="name"
                                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 text-gray-700 transition-all"
                             />
                         </div>
@@ -315,6 +316,7 @@ export default function KostoloScreen() {
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
                                 required
+                                autoComplete="email"
                                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-[#0B5D3F]/20 text-gray-700 transition-all"
                             />
                         </div>
